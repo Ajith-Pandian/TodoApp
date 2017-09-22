@@ -8,6 +8,7 @@ import OtpScreen from "./OtpScreen";
 import HomeScreen from "./HomeScreen";
 
 import getStore from "./Store";
+import { APP_COLOR } from "./Constants";
 
 class StackApp extends Component {
   state = { isLoggedIn: true };
@@ -40,7 +41,7 @@ const MyStatusBar = ({ backgroundColor, ...props }) => (
 );
 const App = () => (
   <View style={{ flex: 1 }}>
-    <MyStatusBar backgroundColor="rgb(0, 131, 195)" barStyle="light-content" />
+    <MyStatusBar backgroundColor={APP_COLOR} barStyle="light-content" />
     <StackApp />
   </View>
 );

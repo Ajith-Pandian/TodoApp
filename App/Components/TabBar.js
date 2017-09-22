@@ -16,7 +16,7 @@ import {
   onSearchStateChange
 } from "../Store/Actions/SearchActions";
 import { connect } from "react-redux";
-
+import { APP_COLOR, ACCENT_COLOR } from "../Constants";
 const SEARCH_ICON = require("../Resources/search.png");
 const CLOSE_ICON = require("../Resources/close.png");
 const WIDTH = Dimensions.get("window").width;
@@ -49,7 +49,7 @@ class TabBar extends Component {
             marginLeft: 10,
             fontSize: 16,
             fontWeight: "500",
-            color: "black"
+            color: "white"
           }}
         >
           Todo App
@@ -89,7 +89,6 @@ class TabBar extends Component {
           alignItems: "center"
         }}
       >
-        {!searchState ? <AddButton onPress={() => console.log()} /> : null}
         <TouchableOpacity
           activeOpacity={0.4}
           onPress={() => {
@@ -98,10 +97,16 @@ class TabBar extends Component {
           }}
         >
           <Image
-            style={{ margin: 10, width: 25, height: 25 }}
+            style={{
+              margin: 10,
+              width: 25,
+              height: 25,
+              tintColor: ACCENT_COLOR
+            }}
             source={searchState ? CLOSE_ICON : SEARCH_ICON}
           />
         </TouchableOpacity>
+        {!searchState ? <AddButton onPress={() => console.log()} /> : null}
       </View>
     );
     return (
@@ -116,7 +121,7 @@ const styles = StyleSheet.create({
   container: {
     height: Platform.OS !== "ios" ? 56 : 48,
     marginBottom: 1,
-    backgroundColor: "white",
+    backgroundColor: APP_COLOR,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between"

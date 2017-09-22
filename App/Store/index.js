@@ -4,7 +4,6 @@ import { AsyncStorage } from "react-native";
 import thunk from "redux-thunk";
 import logger from "redux-logger";
 import getRootReducer from "./Reducers";
-
 const middlewares = [];
 middlewares.push(thunk);
 //Configuring Redux Logger only for Development

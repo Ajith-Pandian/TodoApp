@@ -21,11 +21,11 @@ function getRandomColor() {
 const TodoItem = ({ index, todo }) => {
   let { card, shadow, container, leftDecorator, textLayout } = styles;
   let { assignor, description, completionTime, id, title } = todo;
-  let color = getRandomColor();
+  let color = "white";
   return (
     <View style={[container, { marginBottom: isLast ? 2 * MARGIN : MARGIN }]}>
-      <TouchableOpacity activeOpacity={0.8} style={[card, shadow]}>
-        <View style={[{ backgroundColor: color }, leftDecorator]} />
+      <TouchableOpacity activeOpacity={0.8} style={[card]}>
+        {/*<View style={[{ backgroundColor: color }, leftDecorator]} />*/}
         <View style={textLayout}>
           <Text style={{ fontSize: 16, fontWeight: "500" }}>{title}</Text>
           <Text>{description}</Text>

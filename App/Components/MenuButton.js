@@ -6,7 +6,7 @@ import {
   StyleSheet,
   BackHandler
 } from "react-native";
-
+import { ACCENT_COLOR } from "../Constants";
 const MenuButton = ({ onPress }) => {
   return (
     <TouchableOpacity
@@ -15,7 +15,7 @@ const MenuButton = ({ onPress }) => {
       }}
     >
       <Image
-        style={{ margin: 10, width: 30, height: 30 }}
+        style={{ margin: 10, width: 30, height: 30, tintColor: ACCENT_COLOR }}
         source={require("../Resources/menu.png")}
       />
     </TouchableOpacity>
