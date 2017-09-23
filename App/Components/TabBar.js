@@ -43,7 +43,7 @@ class TabBar extends Component {
           alignItems: "center"
         }}
       >
-        <MenuButton onPress={() => onNavPress()} />
+        {/*<MenuButton onPress={() => onNavPress()} />*/}
         <Text
           style={{
             marginLeft: 10,
@@ -120,7 +120,6 @@ class TabBar extends Component {
 const styles = StyleSheet.create({
   container: {
     height: Platform.OS !== "ios" ? 56 : 48,
-    marginBottom: 1,
     backgroundColor: APP_COLOR,
     flexDirection: "row",
     alignItems: "center",

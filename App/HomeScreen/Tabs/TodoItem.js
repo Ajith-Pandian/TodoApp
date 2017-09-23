@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,75 @@ import {
   TouchableOpacity
 } from "react-native";
 import { getTimeString } from "../../Utils";
+
+const SCREEN_WIDTH = Dimensions.get("window").width;
+const DIVIDER_WIDTH = 1,
+  MARGIN = 10,
+  CONTAINER_PADDING = 10;
+
+class TodoItem extends Component {
+  
+  state = { descriptionWidth: SCREEN_WIDTH * 0.7 };
+
+  render() {
+    let { index, todo } = this.props;
+    let {
+      container,
+      dateLayout,
+      time,
+      timeSuffix,
+      divider,
+      descriptionLayout,
+      nameAndTime,
+      smallFont,
+      descriptionText
+    } = styles;
+    let { assignor, description, completionTime, id, title } = todo;
+    let color = "white";
+    return (
+      <TouchableOpacity activeOpacity={0.8}>
+        <View style={container}>
+          <View
+            style={dateLayout}
+            onLayout={event => {
+              const { width } = event.nativeEvent.layout;
+              let descriptionWidth =
+                SCREEN_WIDTH -
+                (4 * MARGIN + 2 * CONTAINER_PADDING + DIVIDER_WIDTH + width);
+              this.setState({ descriptionWidth });
+            }}
+          >
+            <Text style={time}>9:25</Text>
+            <Text style={timeSuffix}>AM</Text>
+            <Text>Aug 07</Text>
+          </View>
+          <View style={divider} />
+          <View style={descriptionLayout}>
+            <View style={nameAndTime}>
+              <Text style={smallFont}>John</Text>
+              <Text style={smallFont}>15 mins</Text>
+            </View>
+            <Text
+              numberOfLines={3}
+              style={[
+                descriptionText,
+                {
+                  width: this.state.descriptionWidth
+                }
+              ]}
+            >
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco laboris
+              nisi ut aliquip ex ea commodo consequat.
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  }
+}
+
 function getRandomColor() {
   return (
     "rgb(" +
@@ -18,76 +87,38 @@ function getRandomColor() {
     ")"
   );
 }
-const TodoItem = ({ index, todo }) => {
-  let { card, shadow, container, leftDecorator, textLayout } = styles;
-  let { assignor, description, completionTime, id, title } = todo;
-  let color = "white";
-  return (
-    <View style={[container, { marginBottom: isLast ? 2 * MARGIN : MARGIN }]}>
-      <TouchableOpacity activeOpacity={0.8} style={[card]}>
-        {/*<View style={[{ backgroundColor: color }, leftDecorator]} />*/}
-        <View style={textLayout}>
-          <Text style={{ fontSize: 16, fontWeight: "500" }}>{title}</Text>
-          <Text>{description}</Text>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between"
-            }}
-          >
-            <Text style={{ color, fontSize: 12 }}>{assignor}</Text>
-            <Text style={{ fontSize: 12 }}>
-              {completionTime.format("hh:mm a")}
-            </Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    </View>
-  );
-};
-const width = Dimensions.get("window").width;
-const MARGIN = 7;
-const CARD_WIDTH = width - 2 * MARGIN;
+
 const styles = StyleSheet.create({
   container: {
-    marginLeft: MARGIN,
-    marginRight: MARGIN,
-    marginTop: MARGIN,
     height: 100,
-    width: CARD_WIDTH
-  },
-  card: {
-    flex: 1,
-    alignItems: "flex-start",
-    justifyContent: "center",
+    width: SCREEN_WIDTH,
+    marginBottom: 2,
+    padding: CONTAINER_PADDING,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     backgroundColor: "white"
   },
-  shadow: {
-    borderWidth: 0,
-    borderRadius: 10,
-    borderColor: "#ddd",
-    borderBottomWidth: 1,
-    shadowColor: "#161616",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 1,
-    elevation: 2
+  dateLayout: {
+    alignItems: "flex-end",
+    marginRight: MARGIN,
+    marginLeft: MARGIN
   },
-  leftDecorator: {
-    position: "absolute",
-    left: 0,
-    height: 100,
-    width: 10,
-    borderBottomLeftRadius: 10,
-    borderTopLeftRadius: 10
+  time: { fontSize: 20, fontWeight: "500" },
+  timeSuffix: {},
+  divider: {
+    backgroundColor: "#c2c2c2",
+    width: DIVIDER_WIDTH,
+    height: 70
   },
-  textLayout: {
-    height: 70,
-    width: CARD_WIDTH - 30,
-    marginLeft: 20,
+  descriptionLayout: { marginRight: MARGIN, marginLeft: MARGIN },
+  nameAndTime: {
+    flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between"
-  }
+  },
+  smallFont: { fontSize: 12 },
+  descriptionText: { fontWeight: "bold" }
 });
 
 export default TodoItem;

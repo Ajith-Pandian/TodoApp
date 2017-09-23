@@ -30,25 +30,25 @@ getIcon = name => {
 class Tab extends Component {
   constructor(props) {
     super(props);
-    console.log(props);
   }
-
-  static navigationOptions = ({ navigation }) => {
+  static navigationOptions = props => {
+    let { navigation, screenProps } = props;
+    let { tabBarVisible } = screenProps;
     return {
-      tabBarIcon: ({ tintColor }) => {
-        return (
-          <Image
-            source={getIcon(navigation.state.key)}
-            style={{
-              width: 26,
-              height: 26,
-              tintColor
-            }}
-          />
-        );
-      }
+      tabBarIcon: ({ tintColor }) => (
+        <Image
+          source={getIcon(navigation.state.key)}
+          style={{
+            width: 26,
+            height: 26,
+            tintColor
+          }}
+        />
+      ),
+      tabBarVisible
     };
   };
+
   render() {
     return <TodoList {...this.props} />;
   }
@@ -67,23 +67,29 @@ const MyApp = TabNavigator(
     tabBarComponent: TabBarBottom,
     tabBarOptions: {
       style: {
-        backgroundColor: isIos ? "rgba(28, 28, 28, 0.75)" : "white"
+        backgroundColor: isIos ? "rgba(28, 28, 28, 0.75)" : "white",
+        overflow: "hidden"
       },
       activeTintColor: isIos ? "white" : ACCENT_COLOR_1,
       inactiveTintColor: isIos ? "#9d9d9d" : "black"
     }
   }
 );
+
 class Tabs extends Component {
+  state = { tabBarVisible: true };
   render() {
     let { dispatch } = this.props;
     return (
       <MyApp
         onNavigationStateChange={(prev, current) => {
           let { routes, index } = current;
-          console.log(routes[index].key);
-          dispatch(onSearchStateChange(false));
+          const newRoute = routes[index];
+          let tabBarVisible = newRoute.params && newRoute.params.tabBarVisible;
+          this.setState({ tabBarVisible });
+          //  dispatch(onSearchStateChange(false));
         }}
+        screenProps={{ tabBarVisible: this.state.tabBarVisible }}
       />
     );
   }
@@ -98,4 +104,4 @@ Tabs.navigationOptions = {
   )
 };
 
-export default connect()(Tabs);
+export default Tabs;
