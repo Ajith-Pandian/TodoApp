@@ -4,7 +4,8 @@ import { TabNavigator, TabBarBottom } from "react-navigation";
 import TodoList from "./TodoList";
 import { onSearchStateChange } from "../../Store/Actions/SearchActions";
 import { connect } from "react-redux";
-import { ACCENT_COLOR_1 } from "../../Constants";
+import Profile from "./Profile";
+import { ACCENT_COLOR_1, APP_COLOR } from "../../Constants";
 let IC_TODAY = require("../../Resources/today.png");
 let IC_WEEK = require("../../Resources/week.png");
 let IC_ALL = require("../../Resources/all.png");
@@ -58,7 +59,8 @@ const MyApp = TabNavigator(
   {
     Today: { screen: Tab },
     Week: { screen: Tab },
-    All: { screen: Tab }
+    All: { screen: Tab },
+    Profile: { screen: Profile }
   },
   {
     animationEnabled: true,
@@ -67,11 +69,12 @@ const MyApp = TabNavigator(
     tabBarComponent: TabBarBottom,
     tabBarOptions: {
       style: {
-        backgroundColor: isIos ? "rgba(28, 28, 28, 0.75)" : "white",
+        backgroundColor: APP_COLOR,
         overflow: "hidden"
       },
-      activeTintColor: isIos ? "white" : ACCENT_COLOR_1,
-      inactiveTintColor: isIos ? "#9d9d9d" : "black"
+      activeTintColor: "white",
+      inactiveTintColor: "#9d9d9d",
+      showLabel: !isIos
     }
   }
 );

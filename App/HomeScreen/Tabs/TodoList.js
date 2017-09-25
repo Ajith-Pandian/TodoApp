@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import { FlatList } from "react-native";
+import { FlatList, ToastAndroid } from "react-native";
 import TodoItem from "./TodoItem";
 import {
   onSearchTermChange,
   onSearchStateChange
 } from "../../Store/Actions/SearchActions";
 import { connect } from "react-redux";
-
+import SwipeList from "../../Components/SwipeActionView";
 class TodoList extends Component {
   state = { offset: 0 };
   onScrollList = event => {
@@ -15,7 +15,7 @@ class TodoList extends Component {
     const scrollOffsetY = contentOffset.y;
     const isScrollingUp = scrollOffsetY < offset;
     const isReachedBottom =
-      layoutMeasurement.height + contentOffset.y >= contentSize.height - 200 ;
+      layoutMeasurement.height + contentOffset.y >= contentSize.height - 200;
     const shouldShowTabBar = isScrollingUp || isReachedBottom;
     this.props.navigation.setParams({ tabBarVisible: shouldShowTabBar });
     offset = scrollOffsetY;
@@ -38,19 +38,22 @@ class TodoList extends Component {
       searchTerm = "";
     }
     return (
-      <FlatList
+      <SwipeList
         data={todos}
         style={{ margin: 1 }}
+        removeClippedSubviews={false}
         onScroll={e => this.onScrollList(e)}
         scrollEventThrottle={16}
         keyExtractor={item => item.id}
         showsVerticalScrollIndicator={false}
-        renderItem={({ item, index }) => {
+        renderItem={(item, index) => {
           isLast = todos.length - 1 === index;
           return (
             <TodoItem key={index} index={index} isLast={isLast} todo={item} />
           );
         }}
+        onSwipeRight={() => console.log("Rejected")}
+        onSwipeLeft={() => console.log("Accepted")}
       />
     );
   }
