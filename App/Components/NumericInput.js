@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import {
   View,
   Text,
-  TextInput,
   Dimensions,
   Keyboard,
   StyleSheet,
   BackHandler
 } from "react-native";
+import { TextInputComponent } from "./TextComponents";
 
 export default class NumericInput extends Component {
   constructor(props) {
@@ -69,8 +69,17 @@ export default class NumericInput extends Component {
     let { isError, text, placeholder, maxLength } = this.state;
     return (
       <View style={inputContainer}>
-        {isOtp ? null : <Text style={prefixText}>+91</Text>}
-        <TextInput
+        {/*isOtp ? null : (
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center"
+            }}
+          >
+            <Text style={prefixText}>+91</Text>
+          </View>
+        )*/}
+        <TextInputComponent
           style={isError ? inputError : input}
           maxLength={maxLength}
           multiline={false}
@@ -112,7 +121,8 @@ function getStyles(isOtp) {
       height: INPUT_CONTAINER_HEIGHT,
       fontSize: FONT_SIZE,
       textAlign: "center",
-      textAlignVertical: "center"
+      textAlignVertical: "center",
+      lineHeight: 13
     },
     input: {
       flex: INPUT_WIDTH_PERCENTAGE,

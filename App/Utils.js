@@ -12,9 +12,6 @@ export const resetNavigationToFirst = (targetRoute, navigation) => {
 
 export const withBackExit = WrappedComponent => {
   return class extends Component {
-    static navigationOptions = ({ navigation }) =>
-      WrappedComponent.navigationOptions(navigation);
-
     componentWillMount() {
       this.backHandler = BackHandler.addEventListener(
         "hardwareBackPress",

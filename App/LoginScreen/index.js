@@ -3,14 +3,14 @@ import { View, Text, TextInput, StyleSheet, StatusBar } from "react-native";
 import NumericInput from "../Components/NumericInput";
 import GetInButton from "../Components/GetInButton";
 import { withBackExit, resetNavigationToFirst } from "../Utils";
-
+import BackgroundContainer from "../Components/BackgroundContainer";
 export default class LoginScreen extends Component {
   static navigationOptions = { header: null };
   render() {
     let { container, input, prefixText, inputContainer } = styles;
     let { navigation } = this.props;
     return (
-      <View style={container}>
+      <BackgroundContainer style={container}>
         <NumericInput
           ref={ref => (this.InputRef = ref)}
           isOtp={false}
@@ -24,7 +24,7 @@ export default class LoginScreen extends Component {
             this.InputRef.validateInput();
           }}
         />
-      </View>
+      </BackgroundContainer>
     );
   }
 }
@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: StatusBar.currentHeight,
-    backgroundColor: "powderblue"
+    paddingTop: StatusBar.currentHeight
   }
 });

@@ -69,11 +69,11 @@ const MyApp = TabNavigator(
     tabBarComponent: TabBarBottom,
     tabBarOptions: {
       style: {
-        backgroundColor: APP_COLOR,
+        backgroundColor: isIos ? "black" : "white",
         overflow: "hidden"
       },
-      activeTintColor: "white",
-      inactiveTintColor: "#9d9d9d",
+      activeTintColor: isIos ? "white" : ACCENT_COLOR_1,
+      inactiveTintColor: isIos ? "#9d9d9d" : "black",
       showLabel: !isIos
     }
   }

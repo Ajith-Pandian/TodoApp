@@ -9,9 +9,9 @@ import HomeScreen from "./HomeScreen";
 
 import getStore from "./Store";
 import { APP_COLOR } from "./Constants";
-
+import Swipe from "./Swipe";
 class StackApp extends Component {
-  state = { isLoggedIn: true };
+  state = { isLoggedIn: false };
   render() {
     let { isLoggedIn } = this.state;
     let AppNavigator = StackNavigator(
