@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, TextInput, StyleSheet, StatusBar } from "react-native";
 import NumericInput from "../Components/NumericInput";
-import GetInButton from "../Components/GetInButton";
+import RoundButton from "../Components/RoundButton";
 import { withBackExit, resetNavigationToFirst } from "../Utils";
 import BackgroundContainer from "../Components/BackgroundContainer";
 export default class LoginScreen extends Component {
@@ -19,7 +19,9 @@ export default class LoginScreen extends Component {
             resetNavigationToFirst("Otp", navigation);
           }}
         />
-        <GetInButton
+        <RoundButton
+          size={35}
+          icon={"right"}
           onPress={() => {
             this.InputRef.validateInput();
           }}
