@@ -60,6 +60,7 @@ class SwipeListRow extends Component {
       exitAnim: new Animated.Value(0),
       isRight: false
     };
+    this.timeouts = [];
   }
 
   animateScroll = e => {
@@ -117,16 +118,17 @@ class SwipeListRow extends Component {
   };
   scrollToInitialPos = animated => {
     if (this.scrollView)
-      this.clearId = setTimeout(
-        () => this.scrollView.scrollTo({ x: ACTION_BLOCK_WIDTH, animated }),
-        0
+      this.timeouts.push(
+        setTimeout(
+          () => this.scrollView.scrollTo({ x: ACTION_BLOCK_WIDTH, animated }),
+          0
+        )
       );
   };
   scrollToEnd = () => {
     if (this.scrollView)
-      this.clearId = setTimeout(
-        () => this.scrollView.scrollToEnd({ animated: true }),
-        0
+      this.timeouts.push(
+        setTimeout(() => this.scrollView.scrollToEnd({ animated: true }), 0)
       );
   };
   componentDidMount() {
@@ -134,7 +136,11 @@ class SwipeListRow extends Component {
   }
 
   componentWillUnmount() {
-    this.clearTimeout(this.clearId);
+    let timeoutsSize = this.timeouts.length;
+    for (var i = 0; i < timeoutsSize; i++) {
+      clearTimeout(this.timeouts[i]);
+    }
+    this.timeouts = [];
   }
   render() {
     const { swipeEnabled, children } = this.props;

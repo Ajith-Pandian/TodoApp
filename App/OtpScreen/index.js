@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { View, Text, TextInput, StyleSheet, StatusBar } from "react-native";
-import NumericInput from "../Components/NumericInput";
+import { View, StyleSheet, StatusBar, TouchableOpacity } from "react-native";
+import InputBox from "../Components/InputBox";
 import RoundButton from "../Components/RoundButton";
+import { TextComponent } from "../Components/TextComponents";
 import { withBackExit, resetNavigationToFirst } from "../Utils";
 import BackgroundContainer from "../Components/BackgroundContainer";
 
@@ -11,21 +12,65 @@ class OtpScreen extends Component {
     let { navigation } = this.props;
     return (
       <BackgroundContainer style={container}>
-        <NumericInput
-          ref={ref => (this.InputRef = ref)}
-          isOtp={true}
-          onSuccess={() => {
-            //console.log("called");
-            resetNavigationToFirst("Home", navigation);
+        <View
+          style={{
+            height: 400,
+            position: "absolute",
+            width: "80%",
+            alignItems: "center",
+            justifyContent: "space-between"
           }}
-        />
-        <RoundButton
-          size={35}
-          icon={"right"}
-          onPress={() => {
-            this.InputRef.validateInput();
-          }}
-        />
+        >
+          <View>
+            <TextComponent
+              style={{
+                textAlign: "center",
+                fontSize: 25
+              }}
+            >
+              One Time Password
+            </TextComponent>
+            <TextComponent style={{ textAlign: "center", fontSize: 16 }}>
+              Please enter the code sent to 123456789
+            </TextComponent>
+          </View>
+          <View
+            style={{
+              alignItems: "center"
+            }}
+          >
+            <InputBox
+              ref={ref => (this.InputRef = ref)}
+              placeholder={"Enter Otp"}
+              autoFocus={true}
+              maxLength={6}
+              widthPercentage={60}
+              type={InputBox.OTP}
+              onSuccess={() => {
+                resetNavigationToFirst("Home", navigation);
+              }}
+            />
+            <RoundButton
+              size={35}
+              icon={"right"}
+              onPress={() => {
+                this.InputRef.validateInput(InputBox.OTP);
+              }}
+            />
+          </View>
+          <View>
+            <TextComponent style={{ textAlign: "center" }}>
+              {"Didn't get OTP?"}
+            </TextComponent>
+            <TouchableOpacity>
+              <TextComponent
+                style={{ textAlign: "center", fontWeight: "bold" }}
+              >
+                Request again
+              </TextComponent>
+            </TouchableOpacity>
+          </View>
+        </View>
       </BackgroundContainer>
     );
   }

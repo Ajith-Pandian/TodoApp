@@ -5,10 +5,11 @@ import {
   Dimensions,
   Keyboard,
   StyleSheet,
-  BackHandler
+  BackHandler,
+  Platform
 } from "react-native";
 import { TextInputComponent } from "./TextComponents";
-
+import { GRAY } from "../Constants";
 export default class NumericInput extends Component {
   constructor(props) {
     super(props);
@@ -65,22 +66,14 @@ export default class NumericInput extends Component {
   }
   render() {
     let { isOtp } = this.props;
-    let { inputContainer, input, inputError, prefixText } = getStyles(isOtp);
+    let { inputContainer, input, inputError } = getStyles(isOtp);
     let { isError, text, placeholder, maxLength } = this.state;
+    const isIos = Platform.OS === "ios";
+    let extraStyle = isIos ? getIosStyle() : {};
     return (
-      <View style={inputContainer}>
-        {/*isOtp ? null : (
-          <View
-            style={{
-              justifyContent: "center",
-              alignItems: "center"
-            }}
-          >
-            <Text style={prefixText}>+91</Text>
-          </View>
-        )*/}
+      <View style={[inputContainer]}>
         <TextInputComponent
-          style={isError ? inputError : input}
+          style={[isError ? inputError : input, extraStyle]}
           maxLength={maxLength}
           multiline={false}
           placeholder={placeholder}
@@ -99,6 +92,12 @@ export default class NumericInput extends Component {
   }
 }
 
+function getIosStyle() {
+  return {
+    borderBottomWidth: 1,
+    borderBottomColor: GRAY
+  };
+}
 function getStyles(isOtp) {
   const WIDTH = Dimensions.get("window").width;
   const FONT_SIZE = 16;
@@ -112,17 +111,7 @@ function getStyles(isOtp) {
       flexDirection: "row",
       alignItems: "center",
       height: INPUT_CONTAINER_HEIGHT,
-      width: INPUT_CONTAINER_WIDTH,
-      backgroundColor: "#fff",
-      borderRadius: 10
-    },
-    prefixText: {
-      flex: PREFIX_WIDTH_PERCENTAGE,
-      height: INPUT_CONTAINER_HEIGHT,
-      fontSize: FONT_SIZE,
-      textAlign: "center",
-      textAlignVertical: "center",
-      lineHeight: 13
+      width: INPUT_CONTAINER_WIDTH
     },
     input: {
       flex: INPUT_WIDTH_PERCENTAGE,
@@ -143,5 +132,6 @@ function getStyles(isOtp) {
       margin: 2
     }
   };
+
   return styles;
 }
