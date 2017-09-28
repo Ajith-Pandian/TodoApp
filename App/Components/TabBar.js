@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import {
   View,
-  Text,
-  TextInput,
   Image,
   Dimensions,
   TouchableOpacity,
@@ -10,13 +8,16 @@ import {
   StyleSheet
 } from "react-native";
 import MenuButton from "./MenuButton";
-import AddButton from "./AddButton";
+import RoundButton from "./RoundButton";
 import {
   onSearchTermChange,
   onSearchStateChange
 } from "../Store/Actions/SearchActions";
 import { connect } from "react-redux";
+import { TextComponent, TextInputComponent } from "./TextComponents";
 import { APP_COLOR, ACCENT_COLOR } from "../Constants";
+import { NavigationActions } from "react-navigation";
+
 const SEARCH_ICON = require("../Resources/search.png");
 const CLOSE_ICON = require("../Resources/close.png");
 const WIDTH = Dimensions.get("window").width;
@@ -32,7 +33,8 @@ class TabBar extends Component {
       onChangeText,
       _onSearchStateChange,
       _onSearchTermChange,
-      searchState
+      searchState,
+      navigation
     } = this.props;
     let { container } = styles;
     this.timeout = null;
@@ -44,21 +46,20 @@ class TabBar extends Component {
         }}
       >
         {/*<MenuButton onPress={() => onNavPress()} />*/}
-        <Text
+        <TextComponent
           style={{
             marginLeft: 10,
             fontSize: 16,
-            fontWeight: "500",
             color: "white"
           }}
         >
           Todo App
-        </Text>
+        </TextComponent>
       </View>
     );
     let searchComp = (
       <View style={{ margin: 10 }}>
-        <TextInput
+        <TextInputComponent
           multiline={false}
           placeholder={"Search"}
           autoFocus={true}
@@ -106,7 +107,15 @@ class TabBar extends Component {
             source={searchState ? CLOSE_ICON : SEARCH_ICON}
           />
         </TouchableOpacity>
-        {!searchState ? <AddButton onPress={() => console.log()} /> : null}
+        {!searchState ? (
+          <RoundButton
+            size={30}
+            icon={RoundButton.ADD}
+            onPress={() => {
+              navigation.navigate("CreateTodo");
+            }}
+          />
+        ) : null}
       </View>
     );
     return (

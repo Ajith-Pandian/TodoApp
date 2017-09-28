@@ -6,6 +6,7 @@ import { onSearchStateChange } from "../../Store/Actions/SearchActions";
 import { connect } from "react-redux";
 import Profile from "./Profile";
 import { ACCENT_COLOR_1, APP_COLOR } from "../../Constants";
+import TabBar from "../../Components/TabBar";
 let IC_TODAY = require("../../Resources/today.png");
 let IC_WEEK = require("../../Resources/week.png");
 let IC_ALL = require("../../Resources/all.png");
@@ -81,6 +82,21 @@ const MyApp = TabNavigator(
 
 class Tabs extends Component {
   state = { tabBarVisible: true };
+  static navigationOptions = ({ navigation }) => {
+    return {
+      header: (
+        <TabBar
+          navigation={navigation}
+          onNavPress={() => {
+            navigation.state.index === 0
+              ? navigation.navigate("DrawerOpen")
+              : navigation.navigate("DrawerClose");
+          }}
+          onChangeText={text => console.log(text)}
+        />
+      )
+    };
+  };
   render() {
     let { dispatch } = this.props;
     return (
@@ -97,14 +113,4 @@ class Tabs extends Component {
     );
   }
 }
-Tabs.navigationOptions = {
-  drawerLabel: "Home",
-  drawerIcon: ({ tintColor }) => (
-    <Image
-      source={require("../../Resources/home.png")}
-      style={[styles.icon, { tintColor: tintColor }]}
-    />
-  )
-};
-
 export default Tabs;

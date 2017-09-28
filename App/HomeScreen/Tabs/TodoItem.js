@@ -1,20 +1,13 @@
 import React, { Component } from "react";
-import {
-  View,
-  Text,
-  Dimensions,
-  StyleSheet,
-  TouchableOpacity
-} from "react-native";
+import { View, Dimensions, StyleSheet, TouchableOpacity } from "react-native";
 import { getTimeString } from "../../Utils";
-
+import { TextComponent } from "../../Components/TextComponents";
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const DIVIDER_WIDTH = 1,
   MARGIN = 10,
   CONTAINER_PADDING = 10;
 
 class TodoItem extends Component {
-  
   state = { descriptionWidth: SCREEN_WIDTH * 0.7 };
 
   render() {
@@ -45,19 +38,19 @@ class TodoItem extends Component {
               this.setState({ descriptionWidth });
             }}
           >
-            <Text style={time}>9:25</Text>
-            <Text style={timeSuffix}>AM</Text>
-            <Text>Aug 07</Text>
+            <TextComponent textStyle={time}>9:25</TextComponent>
+            <TextComponent textStyle={timeSuffix}>AM</TextComponent>
+            <TextComponent>Aug 07</TextComponent>
           </View>
           <View style={divider} />
           <View style={descriptionLayout}>
             <View style={nameAndTime}>
-              <Text style={smallFont}>John</Text>
-              <Text style={smallFont}>15 mins</Text>
+              <TextComponent textStyle={smallFont}>John</TextComponent>
+              <TextComponent textStyle={smallFont}>15 mins</TextComponent>
             </View>
-            <Text
+            <TextComponent
               numberOfLines={3}
-              style={[
+              textStyle={[
                 descriptionText,
                 {
                   width: this.state.descriptionWidth
@@ -68,7 +61,7 @@ class TodoItem extends Component {
               eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
               enim ad minim veniam, quis nostrud exercitation ullamco laboris
               nisi ut aliquip ex ea commodo consequat.
-            </Text>
+            </TextComponent>
           </View>
         </View>
       </TouchableOpacity>

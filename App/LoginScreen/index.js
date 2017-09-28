@@ -27,7 +27,7 @@ export default class LoginScreen extends Component {
           <View style={itemContainer}>
             <View>
               <TextComponent
-                style={{
+                textStyle={{
                   fontSize: 20,
                   backgroundColor: "transparent"
                 }}
@@ -47,7 +47,7 @@ export default class LoginScreen extends Component {
               />
               <RoundButton
                 size={35}
-                icon={"right"}
+                icon={RoundButton.RIGHT}
                 onPress={() => {
                   this.InputRef.validateInput(InputBox.MOBILE);
                 }}

@@ -2,15 +2,18 @@ import React from "react";
 import { Text, TextInput } from "react-native";
 import { GRAY } from "../Constants";
 export const TextComponent = props => {
-  let { style, children } = props;
+  let { textStyle, isBold, children } = props;
   return (
     <Text
-      style={{
-        fontFamily: "Montserrat",
-        backgroundColor: "transparent",
-        color: GRAY,
-        ...style
-      }}
+      style={[
+        {
+          fontFamily: "Montserrat",
+          backgroundColor: "transparent",
+          color: GRAY
+        },
+        textStyle
+      ]}
+      {...props}
     >
       {children}
     </Text>

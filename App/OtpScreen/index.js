@@ -23,14 +23,14 @@ class OtpScreen extends Component {
         >
           <View>
             <TextComponent
-              style={{
+              textStyle={{
                 textAlign: "center",
                 fontSize: 25
               }}
             >
               One Time Password
             </TextComponent>
-            <TextComponent style={{ textAlign: "center", fontSize: 16 }}>
+            <TextComponent textStyle={{ textAlign: "center", fontSize: 16 }}>
               Please enter the code sent to 123456789
             </TextComponent>
           </View>
@@ -52,20 +52,18 @@ class OtpScreen extends Component {
             />
             <RoundButton
               size={35}
-              icon={"right"}
+              icon={RoundButton.RIGHT}
               onPress={() => {
                 this.InputRef.validateInput(InputBox.OTP);
               }}
             />
           </View>
           <View>
-            <TextComponent style={{ textAlign: "center" }}>
+            <TextComponent textStyle={{ textAlign: "center" }}>
               {"Didn't get OTP?"}
             </TextComponent>
             <TouchableOpacity>
-              <TextComponent
-                style={{ textAlign: "center", fontWeight: "bold" }}
-              >
+              <TextComponent textStyle={{ textAlign: "center" }}>
                 Request again
               </TextComponent>
             </TouchableOpacity>

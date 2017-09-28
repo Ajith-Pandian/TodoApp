@@ -7,34 +7,56 @@ import {
   StyleSheet
 } from "react-native";
 import { ACCENT_COLOR_1 } from "../Constants";
-import { Right, Question } from "./Icons";
-const RoundButton = props => {
-  let { onPress, size, style, icon } = props;
-  let centerIcon;
-  switch (icon) {
-    case "right":
-      centerIcon = <Right size={size - 5} color="white" />;
-      break;
-    default:
-      centerIcon = <Question size={size - 5} color="white" />;
-      break;
+import { Right, Question, Add } from "./Icons";
+class RoundButton extends Component {
+  static RIGHT = "right";
+  static ADD = "add";
+  constructor() {
+    super();
   }
-  return (
-    <TouchableOpacity
-      style={[
-        styles.roundButton,
-        {
-          width: size,
-          height: size
-        },
-        style
-      ]}
-      onPress={() => onPress()}
-    >
-      {centerIcon}
-    </TouchableOpacity>
-  );
-};
+  render() {
+    let { onPress, size, style, icon } = this.props;
+    let centerIcon;
+    switch (icon) {
+      case RoundButton.RIGHT:
+        centerIcon = (
+          <Right
+            size={size - 5}
+            style={{ backgroundColor: "transparent" }}
+            color="white"
+          />
+        );
+        break;
+      case RoundButton.ADD:
+        centerIcon = (
+          <Add
+            size={size - 5}
+            style={{ backgroundColor: "transparent" }}
+            color="white"
+          />
+        );
+        break;
+      default:
+        centerIcon = <Question size={size - 5} color="white" />;
+        break;
+    }
+    return (
+      <TouchableOpacity
+        style={[
+          styles.roundButton,
+          {
+            width: size,
+            height: size
+          },
+          style
+        ]}
+        onPress={() => onPress()}
+      >
+        {centerIcon}
+      </TouchableOpacity>
+    );
+  }
+}
 
 const styles = {
   roundButton: {

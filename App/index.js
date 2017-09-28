@@ -6,6 +6,7 @@ import { connect, Provider } from "react-redux";
 import LoginScreen from "./LoginScreen";
 import OtpScreen from "./OtpScreen";
 import HomeScreen from "./HomeScreen";
+import CreateTodo from "./CreateTodo";
 
 import getStore from "./Store";
 import { APP_COLOR } from "./Constants";
@@ -16,12 +17,13 @@ class StackApp extends Component {
     let { isLoggedIn } = this.state;
     let AppNavigator = StackNavigator(
       {
-        Login: { screen: LoginScreen },
-        Otp: { screen: OtpScreen },
-        Home: { screen: HomeScreen }
+        Login: { screen: LoginScreen, navigationOptions: { header: null } },
+        Otp: { screen: OtpScreen, navigationOptions: { header: null } },
+        Home: { screen: HomeScreen },
+        CreateTodo: { screen: CreateTodo, navigationOptions: { header: null } }
       },
       {
-        headerMode: "none",
+        headerMode: "screen",
         title: "App",
         initialRouteName: isLoggedIn ? "Home" : "Login"
       }
