@@ -15,11 +15,17 @@ import {
 } from "../Store/Actions/SearchActions";
 import { connect } from "react-redux";
 import { TextComponent, TextInputComponent } from "./TextComponents";
+import { Search, Close, NewTasks } from "./Icons";
 import { APP_COLOR, ACCENT_COLOR } from "../Constants";
 import { NavigationActions } from "react-navigation";
 
-const SEARCH_ICON = require("../Resources/search.png");
-const CLOSE_ICON = require("../Resources/close.png");
+const SEARCH_ICON = (
+  <Search size={25} style={{ backgroundColor: "transparent" }} color="white" />
+);
+const CLOSE_ICON = (
+  <Close size={25} style={{ backgroundColor: "transparent" }} color="white" />
+);
+
 const WIDTH = Dimensions.get("window").width;
 
 class TabBar extends Component {
@@ -96,23 +102,33 @@ class TabBar extends Component {
             let newSearchState = !searchState;
             _onSearchStateChange(newSearchState);
           }}
+          style={{ marginLeft: 5, marginRight: 5 }}
         >
-          <Image
-            style={{
-              margin: 10,
-              width: 25,
-              height: 25,
-              tintColor: ACCENT_COLOR
-            }}
-            source={searchState ? CLOSE_ICON : SEARCH_ICON}
-          />
+          {searchState ? CLOSE_ICON : SEARCH_ICON}
         </TouchableOpacity>
+        {!searchState ? (
+          <TouchableOpacity
+            activeOpacity={0.4}
+            onPress={() => {
+              navigation.navigate("NewTasks");
+            }}
+            style={{ marginLeft: 5, marginRight: 5 }}
+          >
+            <NewTasks
+              size={25}
+              style={{
+                backgroundColor: "transparent"
+              }}
+              color="white"
+            />
+          </TouchableOpacity>
+        ) : null}
         {!searchState ? (
           <RoundButton
             size={30}
             icon={RoundButton.ADD}
             onPress={() => {
-              navigation.navigate("CreateTodo");
+              navigation.navigate("CreateTask");
             }}
           />
         ) : null}

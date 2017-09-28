@@ -6,13 +6,14 @@ import { connect, Provider } from "react-redux";
 import LoginScreen from "./LoginScreen";
 import OtpScreen from "./OtpScreen";
 import HomeScreen from "./HomeScreen";
-import CreateTodo from "./CreateTodo";
+import CreateTask from "./CreateTask";
+import NewTasks from "./NewTasks";
 
 import getStore from "./Store";
 import { APP_COLOR } from "./Constants";
 import Swipe from "./Swipe";
 class StackApp extends Component {
-  state = { isLoggedIn: false };
+  state = { isLoggedIn: true };
   render() {
     let { isLoggedIn } = this.state;
     let AppNavigator = StackNavigator(
@@ -20,7 +21,8 @@ class StackApp extends Component {
         Login: { screen: LoginScreen, navigationOptions: { header: null } },
         Otp: { screen: OtpScreen, navigationOptions: { header: null } },
         Home: { screen: HomeScreen },
-        CreateTodo: { screen: CreateTodo, navigationOptions: { header: null } }
+        CreateTask: { screen: CreateTask, navigationOptions: { header: null } },
+        NewTasks: { screen: NewTasks, navigationOptions: { header: null } }
       },
       {
         headerMode: "screen",
