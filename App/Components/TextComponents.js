@@ -23,6 +23,10 @@ export const TextComponent = props => {
 export const TextInputComponent = props => {
   let { inputStyle } = props;
   return (
-    <TextInput style={[{ fontFamily: "Montserrat" }, inputStyle]} {...props} />
+    <TextInput
+      style={[inputStyle, { fontFamily: "Montserrat" }]}
+      {...props}
+      placeholderTextColor={GRAY}
+    />
   );
 };

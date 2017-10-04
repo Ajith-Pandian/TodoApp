@@ -8,6 +8,7 @@ import OtpScreen from "./OtpScreen";
 import HomeScreen from "./HomeScreen";
 import CreateTask from "./CreateTask";
 import NewTasks from "./NewTasks";
+import ContactsScreen from "./Contacts";
 
 import getStore from "./Store";
 import { APP_COLOR } from "./Constants";
@@ -22,7 +23,11 @@ class StackApp extends Component {
         Otp: { screen: OtpScreen, navigationOptions: { header: null } },
         Home: { screen: HomeScreen },
         CreateTask: { screen: CreateTask, navigationOptions: { header: null } },
-        NewTasks: { screen: NewTasks, navigationOptions: { header: null } }
+        NewTasks: { screen: NewTasks, navigationOptions: { header: null } },
+        Contacts: {
+          screen: ContactsScreen,
+          navigationOptions: { header: null }
+        }
       },
       {
         headerMode: "screen",

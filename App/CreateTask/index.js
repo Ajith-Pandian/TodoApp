@@ -4,8 +4,11 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  Dimensions
+  Dimensions,
+  ToastAndroid
 } from "react-native";
+import DateTimePicker from "react-native-modal-datetime-picker";
+
 import { Close, Calendar, Time, Attach } from "../Components/Icons";
 import { GRAY, ACCENT_COLOR_1 } from "../Constants";
 import BackgroundContainer from "../Components/BackgroundContainer";
@@ -14,14 +17,15 @@ import {
   TextInputComponent
 } from "../Components/TextComponents";
 
-const CALENDAR = "calendar";
+const TO = "To";
+const DATE = "date";
 const TIME = "time";
 const ATTACH = "attach";
 const getIcons = name => {
   let icon;
 
   switch (name) {
-    case CALENDAR:
+    case DATE:
       icon = (
         <Calendar
           size={25}
@@ -55,45 +59,75 @@ const getIcons = name => {
       break;
   }
 
-  return icon;
+  return (
+    <View style={{ alignItems: "center", justifyContent: "center" }}>
+      {icon}
+    </View>
+  );
 };
 export default class CreateTask extends Component {
   constructor() {
     super();
+    this.state = { pickerVisible: false, mode: "date" };
   }
-  getInputComponent = () => {
+  getInputComponent = type => {
     return (
       <TextInputComponent
+        inputStyle={styles.inputComp}
         multiline={false}
-        placeholder={"To"}
+        placeholder={type}
         underlineColorAndroid={"transparent"}
         returnKeyType={"done"}
-        onChangeText={text => this.setState({ text })}
+        onChangeText={text =>
+          this.setState({ [type]: text }, () => console.log(this.state))}
         onEndEditing={() => {}}
         onFocus={() => this.setState({ isError: false })}
       />
     );
   };
-  getClickableComponent = (text, icon) => {
+  _handleClick = type => {
+    switch (type) {
+      case TO:
+        this.props.navigation.navigate("Contacts", {
+          onContactSelected: item => {
+            console.log("Contact with back nav");
+            console.log(item);
+          }
+        });
+        break;
+      case DATE:
+      case TIME:
+        this.setState({ pickerVisible: true, mode: type });
+        break;
+      case ATTACH:
+        console.log("Attach clicked");
+        break;
+      default:
+        console.log(`Item ${type} clicked`);
+    }
+  };
+  getClickableComponent = (text, type) => {
     return (
-      <TouchableOpacity style={styles.clickableComp}>
-        {icon ? getIcons(icon) : null}
-        <View style={{ justifyContent: "center" }}>
-          <TextComponent
-            textStyle={{
-              marginLeft: icon ? 10 : 0,
-              textAlign: "left",
-              textAlignVertical: "center"
-            }}
-          >
-            {text}
-          </TextComponent>
-        </View>
+      <TouchableOpacity
+        style={styles.clickableComp}
+        onPress={() => this._handleClick(type ? type : text)}
+      >
+        {type ? getIcons(type) : null}
+        <TextComponent
+          textStyle={{
+            marginLeft: type ? 10 : 0,
+            textAlign: "left",
+            textAlignVertical: "center"
+          }}
+        >
+          {text}
+        </TextComponent>
       </TouchableOpacity>
     );
   };
   render() {
     let { goBack } = this.props.navigation;
+    let { pickerVisible, mode } = this.state;
     return (
       <BackgroundContainer style={{ flex: 1 }} isTop={true}>
         <View style={{ alignItems: "center" }}>
@@ -113,10 +147,10 @@ export default class CreateTask extends Component {
             </TextComponent>
           </View>
           <View style={{ marginTop: 30 }}>
-            {this.getClickableComponent("To")}
-            {this.getClickableComponent("Title")}
-            {this.getClickableComponent("Description")}
-            {this.getClickableComponent("Date", CALENDAR)}
+            {this.getClickableComponent(TO)}
+            {this.getInputComponent("Title")}
+            {this.getInputComponent("Description")}
+            {this.getClickableComponent("Date", DATE)}
             {this.getClickableComponent("Time", TIME)}
             {this.getClickableComponent("Attachment", ATTACH)}
           </View>
@@ -124,6 +158,16 @@ export default class CreateTask extends Component {
             <TextComponent textStyle={{ color: "white" }}>Done</TextComponent>
           </TouchableOpacity>
         </View>
+        <DateTimePicker
+          isVisible={pickerVisible}
+          onConfirm={selectedDate => {
+            console.log(selectedDate);
+          }}
+          onCancel={() => this.setState({ pickerVisible: false })}
+          mode={mode}
+          date={new Date()}
+          titleIOS={"Pick Time"}
+        />
       </BackgroundContainer>
     );
   }
@@ -134,12 +178,20 @@ const H_BUTTON_PADDING = 3 * V_BUTTON_PADDING;
 const styles = StyleSheet.create({
   clickableComp: {
     flexDirection: "row",
-    marginTop: 10,
-    marginBottom: 10,
-    height: 30,
+    marginTop: 5,
+    marginBottom: 5,
+    height: 40,
     borderBottomColor: GRAY,
     borderBottomWidth: 0.5,
     width: WIDTH - 100
+  },
+  inputComp: {
+    height: 40,
+    borderBottomColor: GRAY,
+    borderBottomWidth: 0.5,
+    width: WIDTH - 100,
+    marginTop: 5,
+    marginBottom: 5
   },
   button: {
     backgroundColor: ACCENT_COLOR_1,
