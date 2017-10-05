@@ -13,8 +13,9 @@ import {
   TextComponent,
   TextInputComponent
 } from "../Components/TextComponents";
-
-export default class NewTasks extends Component {
+import SwipeDeck from "./SwipeDeck";
+export default SwipeDeck;
+class NewTasks extends Component {
   constructor() {
     super();
   }
@@ -38,6 +39,7 @@ export default class NewTasks extends Component {
             <TextComponent textStyle={{ fontSize: 26, textAlign: "left" }}>
               NewTasks!
             </TextComponent>
+            <SwipeDeck />
           </View>
         </View>
       </BackgroundContainer>
