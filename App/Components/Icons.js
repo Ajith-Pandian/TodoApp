@@ -1,6 +1,10 @@
 import React from "react";
 import Icon from "react-native-vector-icons/Ionicons";
 
+//Tab Icons
+export const Activity = props => <Icon name="md-clipboard" {...props} />;
+
+
 export const Right = props => <Icon name="ios-arrow-forward" {...props} />;
 export const Question = props => <Icon name="help" {...props} />;
 export const Search = props => <Icon name="md-search" {...props} />;

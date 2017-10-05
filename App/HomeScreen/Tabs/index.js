@@ -4,7 +4,7 @@ import { TabNavigator, TabBarBottom } from "react-navigation";
 import TodoList from "./TodoList";
 import { onSearchStateChange } from "../../Store/Actions/SearchActions";
 import { connect } from "react-redux";
-import Profile from "./Profile";
+import Activity from "./Activity";
 import { ACCENT_COLOR_1, APP_COLOR } from "../../Constants";
 import TabBar from "../../Components/TabBar";
 let IC_TODAY = require("../../Resources/today.png");
@@ -61,7 +61,7 @@ const MyApp = TabNavigator(
     Today: { screen: Tab },
     Week: { screen: Tab },
     All: { screen: Tab },
-    Profile: { screen: Profile }
+    Activity: { screen: Activity }
   },
   {
     animationEnabled: true,
