@@ -12,6 +12,7 @@ import RoundButton from "../Components/RoundButton";
 import { TextComponent } from "../Components/TextComponents";
 import { withBackExit, resetNavigationToFirst } from "../Utils";
 import BackgroundContainer from "../Components/BackgroundContainer";
+import ApiHelper from "../ApiHelper";
 export default class LoginScreen extends Component {
   static navigationOptions = { header: null };
   render() {
@@ -41,8 +42,10 @@ export default class LoginScreen extends Component {
                 placeholder={"Mobile Number"}
                 maxLength={10}
                 type={InputBox.MOBILE}
-                onSuccess={() => {
-                  resetNavigationToFirst("Otp", navigation);
+                onSuccess={text => {
+                  ApiHelper.authenticate(text).then(() =>
+                    resetNavigationToFirst("Otp", navigation)
+                  );
                 }}
               />
               <RoundButton
