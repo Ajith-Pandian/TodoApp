@@ -7,6 +7,7 @@ import {
   StatusBar,
   KeyboardAvoidingView
 } from "react-native";
+import Spinner from "react-native-spinkit";
 import InputBox from "../Components/InputBox";
 import RoundButton from "../Components/RoundButton";
 import { TextComponent } from "../Components/TextComponents";
@@ -14,10 +15,12 @@ import { withBackExit, resetNavigationToFirst } from "../Utils";
 import BackgroundContainer from "../Components/BackgroundContainer";
 import ApiHelper from "../ApiHelper";
 export default class LoginScreen extends Component {
+  state = { isLoading: false };
   static navigationOptions = { header: null };
   render() {
     let { container, itemContainer } = styles;
     let { navigation } = this.props;
+    let { isLoading } = this.state;
     return (
       <BackgroundContainer style={container}>
         <KeyboardAvoidingView
@@ -43,18 +46,32 @@ export default class LoginScreen extends Component {
                 maxLength={10}
                 type={InputBox.MOBILE}
                 onSuccess={text => {
-                  ApiHelper.authenticate(text).then(() =>
-                    resetNavigationToFirst("Otp", navigation)
-                  );
+                  this.setState({ isLoading: true });
+                  ApiHelper.authenticate(text).then(res => {
+                    this.setState({ isLoading: false });
+                    res.success
+                      ? resetNavigationToFirst("Otp", navigation)
+                      : console.log("otp send failed");
+                  });
                 }}
               />
-              <RoundButton
-                size={35}
-                icon={RoundButton.RIGHT}
-                onPress={() => {
-                  this.InputRef.validateInput(InputBox.MOBILE);
-                }}
-              />
+              {isLoading ? (
+                <Spinner
+                  style={{ margin: 5 }}
+                  isVisible={true}
+                  size={40}
+                  type={"Bounce"}
+                  color={"#ff2a68"}
+                />
+              ) : (
+                <RoundButton
+                  size={35}
+                  icon={RoundButton.RIGHT}
+                  onPress={() => {
+                    this.InputRef.validateInput(InputBox.MOBILE);
+                  }}
+                />
+              )}
             </View>
           </View>
         </KeyboardAvoidingView>

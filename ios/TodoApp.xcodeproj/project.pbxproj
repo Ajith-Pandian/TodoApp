@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -51,6 +50,8 @@
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		B1BF5B8D5F4A43C3BDD630C5 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B8CD49C579C445DF89EACF5E /* Zocial.ttf */; };
 		E44B77A2F8A1429E886BA86B /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3EC8AFECA3524F32882322D4 /* Ionicons.ttf */; };
+		E113F0D1E4AD49EABDD1BE20 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BDBDCC14EE35497D9D10E391 /* libRCTActionSheet.a */; };
+		C579C8DB22ED46CE9B6FD4BF /* libRNSpinkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 71FCC7B31E324582A8DFD929 /* libRNSpinkit.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -343,6 +344,10 @@
 		D3CFBA9A13744AE7A6D337B8 /* RCTContacts.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTContacts.xcodeproj; path = "../node_modules/react-native-contacts/ios/RCTContacts.xcodeproj"; sourceTree = "<group>"; };
 		ED0F151BD9BE469A8E9F8ED7 /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		F4249879223F43D9A3C804B0 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
+		F29CEE72C8334376A8FEA4DA /* Exemple.xcodeproj */ = {isa = PBXFileReference; name = "Exemple.xcodeproj"; path = "../node_modules/react-native-deck-swiper/Exemples/ios/Exemple.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		BDBDCC14EE35497D9D10E391 /* libRCTActionSheet.a */ = {isa = PBXFileReference; name = "libRCTActionSheet.a"; path = "libRCTActionSheet.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		8F4498C491BA41C8AE3CFF16 /* RNSpinkit.xcodeproj */ = {isa = PBXFileReference; name = "RNSpinkit.xcodeproj"; path = "../node_modules/react-native-spinkit/ios/RNSpinkit.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		71FCC7B31E324582A8DFD929 /* libRNSpinkit.a */ = {isa = PBXFileReference; name = "libRNSpinkit.a"; path = "libRNSpinkit.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -373,6 +378,8 @@
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				8CFBB14EDF694FDEB13A864B /* libRNVectorIcons.a in Frameworks */,
 				0DBDB46A95EA43A1960ABFBE /* libRCTContacts.a in Frameworks */,
+				E113F0D1E4AD49EABDD1BE20 /* libRCTActionSheet.a in Frameworks */,
+				C579C8DB22ED46CE9B6FD4BF /* libRNSpinkit.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -546,6 +553,8 @@
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				F4249879223F43D9A3C804B0 /* RNVectorIcons.xcodeproj */,
 				D3CFBA9A13744AE7A6D337B8 /* RCTContacts.xcodeproj */,
+				F29CEE72C8334376A8FEA4DA /* Exemple.xcodeproj */,
+				8F4498C491BA41C8AE3CFF16 /* RNSpinkit.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1209,12 +1218,16 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-contacts/ios/RCTContacts",
+					"$(SRCROOT)/../node_modules/react-native-deck-swiper/Exemples/ios/Exemple/**",
+					"$(SRCROOT)/../node_modules/react-native-spinkit/ios/**",
 				);
 				INFOPLIST_FILE = TodoAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1237,12 +1250,16 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-contacts/ios/RCTContacts",
+					"$(SRCROOT)/../node_modules/react-native-deck-swiper/Exemples/ios/Exemple/**",
+					"$(SRCROOT)/../node_modules/react-native-spinkit/ios/**",
 				);
 				INFOPLIST_FILE = TodoAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1266,6 +1283,8 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-contacts/ios/RCTContacts",
+					"$(SRCROOT)/../node_modules/react-native-deck-swiper/Exemples/ios/Exemple/**",
+					"$(SRCROOT)/../node_modules/react-native-spinkit/ios/**",
 				);
 				INFOPLIST_FILE = TodoApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1289,6 +1308,8 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-contacts/ios/RCTContacts",
+					"$(SRCROOT)/../node_modules/react-native-deck-swiper/Exemples/ios/Exemple/**",
+					"$(SRCROOT)/../node_modules/react-native-spinkit/ios/**",
 				);
 				INFOPLIST_FILE = TodoApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1319,11 +1340,15 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-contacts/ios/RCTContacts",
+					"$(SRCROOT)/../node_modules/react-native-deck-swiper/Exemples/ios/Exemple/**",
+					"$(SRCROOT)/../node_modules/react-native-spinkit/ios/**",
 				);
 				INFOPLIST_FILE = "TodoApp-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1356,11 +1381,15 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-contacts/ios/RCTContacts",
+					"$(SRCROOT)/../node_modules/react-native-deck-swiper/Exemples/ios/Exemple/**",
+					"$(SRCROOT)/../node_modules/react-native-spinkit/ios/**",
 				);
 				INFOPLIST_FILE = "TodoApp-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1394,6 +1423,8 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.TodoApp-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1419,6 +1450,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
