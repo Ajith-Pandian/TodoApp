@@ -1,7 +1,7 @@
 import {
-  LOGIN_REQUEST,
-  LOGIN_REQUEST_SUCCESS,
-  LOGIN_REQUEST_FAILURE
+  OTP_REQUEST,
+  OTP_REQUEST_SUCCESS,
+  OTP_REQUEST_FAILURE
 } from "../StoreConstants";
 
 const initialState = {
@@ -10,16 +10,16 @@ const initialState = {
   isSuccess: false
 };
 
-export default function LoginReducer(state = initialState, action) {
+export default function OtpReducer(state = initialState, action) {
   switch (action.type) {
-    case LOGIN_REQUEST:
+    case OTP_REQUEST:
       return {
         ...state,
         isLoading: true,
         isSuccess: false,
         isError: false
       };
-    case LOGIN_REQUEST_SUCCESS: {
+    case OTP_REQUEST_SUCCESS: {
       return {
         ...state,
         isLoading: false,
@@ -27,7 +27,7 @@ export default function LoginReducer(state = initialState, action) {
         isError: false
       };
     }
-    case LOGIN_REQUEST_FAILURE: {
+    case OTP_REQUEST_FAILURE: {
       return {
         ...state,
         isLoading: false,

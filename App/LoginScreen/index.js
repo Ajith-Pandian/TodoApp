@@ -7,20 +7,27 @@ import {
   StatusBar,
   KeyboardAvoidingView
 } from "react-native";
+import { connect } from "react-redux";
 import Spinner from "react-native-spinkit";
 import InputBox from "../Components/InputBox";
+import DisplayMessage from "../Components/DisplayMessage";
 import RoundButton from "../Components/RoundButton";
 import { TextComponent } from "../Components/TextComponents";
 import { withBackExit, resetNavigationToFirst } from "../Utils";
 import BackgroundContainer from "../Components/BackgroundContainer";
-import ApiHelper from "../ApiHelper";
-export default class LoginScreen extends Component {
-  state = { isLoading: false };
+import { onLogin } from "../Store/Actions/LoginActions";
+class LoginScreen extends Component {
   static navigationOptions = { header: null };
+
+  componentWillReceiveProps(nextProps) {
+    let { isSuccess, isError, navigation } = nextProps;
+    isSuccess ? resetNavigationToFirst("Otp", navigation) : "";
+    isError ? DisplayMessage("Connection failed. Retry") : "";
+  }
+
   render() {
     let { container, itemContainer } = styles;
-    let { navigation } = this.props;
-    let { isLoading } = this.state;
+    let { navigation, _onLogin, isLoading, isError } = this.props;
     return (
       <BackgroundContainer style={container}>
         <KeyboardAvoidingView
@@ -46,13 +53,7 @@ export default class LoginScreen extends Component {
                 maxLength={10}
                 type={InputBox.MOBILE}
                 onSuccess={text => {
-                  this.setState({ isLoading: true });
-                  ApiHelper.authenticate(text).then(res => {
-                    this.setState({ isLoading: false });
-                    res.success
-                      ? resetNavigationToFirst("Otp", navigation)
-                      : console.log("otp send failed");
-                  });
+                  _onLogin(text);
                 }}
               />
               {isLoading ? (
@@ -93,3 +94,20 @@ const styles = StyleSheet.create({
     justifyContent: "space-between"
   }
 });
+
+const mapStateToProps = ({ LoginReducer }) => {
+  let { isLoading, isError, isSuccess } = LoginReducer;
+  return {
+    isLoading,
+    isError,
+    isSuccess
+  };
+};
+
+const mapDispatchToProps = (dispatch, props) => ({
+  _onLogin: phoneNum => {
+    dispatch(onLogin(phoneNum));
+  }
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
