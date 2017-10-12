@@ -75,6 +75,12 @@ class LoginScreen extends Component {
               )}
             </View>
           </View>
+          <Text
+            style={{ margin: 10, backgroundColor: "transparent" }}
+            onPress={() => this.props.navigation.navigate("Register")}
+          >
+            Register
+          </Text>
         </KeyboardAvoidingView>
       </BackgroundContainer>
     );

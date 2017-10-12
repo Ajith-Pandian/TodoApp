@@ -13,12 +13,14 @@ import ContactsScreen from "./Contacts";
 import getStore from "./Store";
 import { APP_COLOR } from "./Constants";
 import Swipe from "./Swipe";
+import Register from "./Register";
 class StackApp extends Component {
   state = { isLoggedIn: false };
   render() {
     let { isLoggedIn } = this.state;
     let AppNavigator = StackNavigator(
       {
+        Register: { screen: Register, navigationOptions: { header: null } },
         Login: { screen: LoginScreen, navigationOptions: { header: null } },
         Otp: { screen: OtpScreen, navigationOptions: { header: null } },
         Home: { screen: HomeScreen },

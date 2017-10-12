@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { View, StyleSheet, StatusBar, TouchableOpacity } from "react-native";
 import { connect } from "react-redux";
+import Spinner from "react-native-spinkit";
 import InputBox from "../Components/InputBox";
 import RoundButton from "../Components/RoundButton";
 import { TextComponent } from "../Components/TextComponents";
@@ -57,13 +58,23 @@ class OtpScreen extends Component {
                 _verifyOtp(phoneNum, enteredOtp);
               }}
             />
-            <RoundButton
-              size={35}
-              icon={RoundButton.RIGHT}
-              onPress={() => {
-                this.InputRef.validateInput(InputBox.OTP);
-              }}
-            />
+            {isLoading ? (
+              <Spinner
+                style={{ margin: 5 }}
+                isVisible={true}
+                size={40}
+                type={"Bounce"}
+                color={"#ff2a68"}
+              />
+            ) : (
+              <RoundButton
+                size={35}
+                icon={RoundButton.RIGHT}
+                onPress={() => {
+                  this.InputRef.validateInput(InputBox.OTP);
+                }}
+              />
+            )}
           </View>
           <View>
             <TextComponent textStyle={centerText}>

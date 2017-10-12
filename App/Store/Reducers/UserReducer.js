@@ -1,4 +1,8 @@
-import { UPDATE_USER, UPDATE_USER_NUMBER } from "../StoreConstants";
+import {
+  UPDATE_USER,
+  UPDATE_USER_NUMBER,
+  UPDATE_USER_AUTH_TOKEN
+} from "../StoreConstants";
 
 const initialState = {
   user: {}
@@ -15,6 +19,11 @@ export default function UserReducer(state = initialState, action) {
       return {
         ...state,
         user: { phoneNum: action.phoneNum, otp: action.otp }
+      };
+    case UPDATE_USER_AUTH_TOKEN:
+      return {
+        ...state,
+        user: { authToken: action.authToken }
       };
 
     default:

@@ -2,7 +2,7 @@ export default class Api {
   static headers() {
     return {
       Accept: "application/json",
-      "Content-Type": "application/json"
+    //  "Content-Type": "multipart/form-data"
     };
   }
 
@@ -23,11 +23,18 @@ export default class Api {
   }
 
   static request(url, token, params, verb) {
+    var formData = new FormData();
+
+    for (var name in params) {
+      formData.append(name, params[name]);
+    }
     let options = Object.assign(
       { method: verb },
-      params ? { body: JSON.stringify(params) } : null
+      params ? { body: formData } : null
     );
-    options.headers = { ...Api.headers(), token};
+
+    console.log(options);
+    options.headers = { ...Api.headers(), token };
     return fetch(url, options)
       .then(response => response.json())
       .then(responseJson => responseJson)

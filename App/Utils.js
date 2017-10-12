@@ -2,6 +2,16 @@ import React, { Component } from "react";
 import { BackHandler } from "react-native";
 import { NavigationActions } from "react-navigation";
 
+export function isEmail(email) {
+  let emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return emailRegex.test(email);
+}
+
+export function isDigitsOnly(number) {
+  let digitsOnlyRegex = /^\d+$/;
+  return digitsOnlyRegex.test(number);
+}
+
 export const resetNavigationToFirst = (targetRoute, navigation) => {
   const resetAction = NavigationActions.reset({
     index: 0,

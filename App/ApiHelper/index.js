@@ -1,6 +1,6 @@
 import Api from "./Api";
 
-const BASE_URL = "http://192.168.0.3:8000";
+const BASE_URL = "http://192.168.0.7:8000";
 const authUrl = phoneNum => `${BASE_URL}/phone/?phone=${phoneNum}`;
 const otpCheckUrl = (phoneNum, otp) =>
   `${BASE_URL}/otpverify/?phone=${phoneNum}&otp=${otp}`;
@@ -37,7 +37,7 @@ export default class ApiHelper {
     });
   }
   static register(user) {
-    return Api.post(registerUrl, user).then(res => {
+    return Api.post(registerUrl, null, { ...user }).then(res => {
       console.log(res);
       return res;
     });

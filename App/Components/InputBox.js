@@ -9,12 +9,11 @@ import {
 } from "react-native";
 import { TextComponent, TextInputComponent } from "./TextComponents";
 import { GRAY, RED } from "../Constants";
+import { isDigitsOnly } from "../Utils";
 
 export default class InputBox extends Component {
   static MOBILE = "mobile";
-  static NAME = "name";
   static OTP = "otp";
-  static EMAIL = "otp";
   constructor(props) {
     super(props);
     let { maxLength, placeholder, type } = props;
@@ -46,7 +45,7 @@ export default class InputBox extends Component {
         break;
       case InputBox.OTP:
         {
-          let isDigitsOnly = /^\d+$/.test(text);
+          let isDigitsOnly = isDigitsOnly(text);
           let hasMaxDigits = text.length === maxLength;
           let isValid = hasMaxDigits && isDigitsOnly;
           isError = !isValid;
@@ -93,7 +92,7 @@ export default class InputBox extends Component {
     let { isOtp } = this.props;
     let { isError, errorMessage, text } = this.state;
     let { placeholder, maxLength, autoFocus, style, type } = this.props;
-    let { inputContainer, input, inputError } = this.getStyles(isError);
+    let { inputContainer, input, inputErrorText } = this.getStyles(isError);
     let extraStyle = getExtraStyle(isError);
     return (
       <View style={[inputContainer]}>
@@ -114,7 +113,7 @@ export default class InputBox extends Component {
           onFocus={() => this.setState({ isError: false })}
         />
         {isError ? (
-          <TextComponent style={inputError}>{errorMessage}</TextComponent>
+          <TextComponent style={inputErrorText}>{errorMessage}</TextComponent>
         ) : null}
       </View>
     );
@@ -145,7 +144,7 @@ export default class InputBox extends Component {
         backgroundColor: "transparent",
         color: GRAY
       },
-      inputError: {
+      inputErrorText: {
         marginTop: ERROR_MARGIN,
         marginBottom: ERROR_MARGIN,
         height: INPUT_CONTAINER_HEIGHT / 2,
