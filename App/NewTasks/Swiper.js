@@ -4,9 +4,9 @@ import {
   PanResponder,
   Text,
   View,
-  Dimensions,
   Animated,
-  StyleSheet
+  StyleSheet,
+  Dimensions
 } from "react-native";
 
 const styles = StyleSheet.create({
@@ -15,7 +15,6 @@ const styles = StyleSheet.create({
     position: "absolute"
   },
   container: {
-    alignItems: "stretch",
     position: "absolute",
     top: 0,
     left: 0,
@@ -49,7 +48,8 @@ const styles = StyleSheet.create({
   }
 });
 
-const { height, width } = Dimensions.get("window");
+const height = 350;
+const width = Dimensions.get("window").width;
 const LABEL_TYPES = {
   NONE: "none",
   LEFT: "left",
@@ -665,7 +665,6 @@ class Swiper extends Component {
     });
 
   render() {
-    console.log("Rendered");
     return (
       <View
         style={[
@@ -674,7 +673,8 @@ class Swiper extends Component {
             backgroundColor: this.props.backgroundColor,
             marginTop: this.props.marginTop,
             marginBottom: this.props.marginBottom
-          }
+          },
+          this.props.style
         ]}
       >
         {this.renderChildren()}
@@ -860,11 +860,11 @@ Swiper.propTypes = {
 Swiper.defaultProps = {
   animateCardOpacity: false,
   animateOverlayLabelsOpacity: false,
-  backgroundColor: "#4FD0E9",
+  backgroundColor: "transparent",
   cardHorizontalMargin: 20,
   cardIndex: 0,
   cardStyle: {},
-  cardVerticalMargin: 60,
+  cardVerticalMargin: 20,
   childrenOnTop: false,
   disableBottomSwipe: false,
   disableLeftSwipe: false,
@@ -921,7 +921,7 @@ Swiper.defaultProps = {
   overlayLabels: null,
   previousCardInitialPositionX: 0,
   previousCardInitialPositionY: -height,
-  secondCardZoom: 0.50,
+  secondCardZoom: 0.7,
   showSecondCard: true,
   swipeAnimationDuration: 350,
   swipeBackAnimationDuration: 600,

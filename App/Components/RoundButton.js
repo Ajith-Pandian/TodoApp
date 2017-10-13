@@ -7,21 +7,24 @@ import {
   StyleSheet
 } from "react-native";
 import { ACCENT_COLOR_1 } from "../Constants";
-import { Right, Question, Add } from "./Icons";
+import { Right, Question, Add, Close, CheckMark } from "./Icons";
 class RoundButton extends Component {
   static RIGHT = "right";
   static ADD = "add";
+  static CLOSE = "close";
+  static CHECKMARK = "checkmark";
   constructor() {
     super();
   }
   render() {
-    let { onPress, size, style, icon } = this.props;
+    let { onPress, size, style, icon, padding } = this.props;
     let centerIcon;
+    padding = padding ? padding : 5;
     switch (icon) {
       case RoundButton.RIGHT:
         centerIcon = (
           <Right
-            size={size - 5}
+            size={size - padding}
             style={{ backgroundColor: "transparent" }}
             color="white"
           />
@@ -30,14 +33,32 @@ class RoundButton extends Component {
       case RoundButton.ADD:
         centerIcon = (
           <Add
-            size={size - 5}
+            size={size - padding}
+            style={{ backgroundColor: "transparent" }}
+            color="white"
+          />
+        );
+        break;
+      case RoundButton.CLOSE:
+        centerIcon = (
+          <Close
+            size={size - padding}
+            style={{ backgroundColor: "transparent" }}
+            color="white"
+          />
+        );
+        break;
+      case RoundButton.CHECKMARK:
+        centerIcon = (
+          <CheckMark
+            size={size - padding}
             style={{ backgroundColor: "transparent" }}
             color="white"
           />
         );
         break;
       default:
-        centerIcon = <Question size={size - 5} color="white" />;
+        centerIcon = <Question size={size - padding} color="white" />;
         break;
     }
     return (

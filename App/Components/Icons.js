@@ -16,3 +16,4 @@ export const NewTasks = props => <Icon name="md-chatboxes" {...props} />;
 export const Person = props => <Icon name="md-person" {...props} />;
 export const Email = props => <Icon name="md-mail" {...props} />;
 export const Phone = props => <Icon name="md-phone-portrait" {...props} />;
+export const CheckMark = props => <Icon name="md-checkmark" {...props} />;

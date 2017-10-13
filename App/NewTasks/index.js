@@ -14,8 +14,10 @@ import {
   TextInputComponent
 } from "../Components/TextComponents";
 import SwipeDeck from "./SwipeDeck";
-export default SwipeDeck;
-class NewTasks extends Component {
+const WIDTH = Dimensions.get("window").width;
+
+//export default SwipeDeck;
+export default class NewTasks extends Component {
   constructor() {
     super();
   }
@@ -24,7 +26,7 @@ class NewTasks extends Component {
     let { goBack } = this.props.navigation;
     return (
       <BackgroundContainer style={{ flex: 1 }} isTop={true}>
-        <View style={{ alignItems: "center" }}>
+        <View style={{ flex: 1, alignItems: "center" }}>
           <TouchableOpacity
             onPress={() => goBack()}
             style={{ alignSelf: "flex-end", margin: 10, padding: 10 }}
@@ -36,9 +38,19 @@ class NewTasks extends Component {
             />
           </TouchableOpacity>
           <View>
-            <TextComponent textStyle={{ fontSize: 26, textAlign: "left" }}>
+            <TextComponent
+              textStyle={{
+                fontSize: 20,
+                textAlign: "left",
+                margin: 10,
+                marginLeft: 20
+              }}
+            >
               NewTasks!
             </TextComponent>
+            <View
+              style={{ width: WIDTH, height: 0.5, backgroundColor: GRAY }}
+            />
             <SwipeDeck />
           </View>
         </View>

@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import Swiper from "./Swiper";
-import { StyleSheet, View, Text, Button } from "react-native";
-
+import { StyleSheet, View, Text, Button, Dimensions } from "react-native";
+import RoundButton from "../Components/RoundButton";
+import TaskItem from "./TaskItem";
 export default class SwipeDeck extends Component {
   constructor(props) {
     super(props);
@@ -10,16 +11,13 @@ export default class SwipeDeck extends Component {
       swipedAllCards: false,
       swipeDirection: "",
       isSwipingBack: false,
-      cardIndex: 0
+      cardIndex: 0,
+      height: Math.round(Dimensions.get("window").height * 0.80633802816)
     };
   }
 
   renderCard = card => {
-    return (
-      <View style={styles.card}>
-        <Text style={styles.text}>{card}</Text>
-      </View>
-    );
+    return <TaskItem />;
   };
 
   onSwipedAllCards = () => {
@@ -48,74 +46,93 @@ export default class SwipeDeck extends Component {
   };
 
   jumpTo = () => {
-    this.swiper.swipeLeft();
+    console.log("Card Tapped");
   };
 
   render() {
     return (
-      <View style={styles.container}>
+      <View
+        style={styles.container}
+        onLayout={event => {
+          let { y, height } = event.nativeEvent.layout;
+          height = height - y;
+          this.setState({ height });
+        }}
+      >
         <Swiper
           ref={swiper => {
             this.swiper = swiper;
+          }}
+          style={{
+            height: this.state.height
           }}
           onSwiped={this.onSwiped}
           onTapCard={this.jumpTo}
           cards={this.state.cards}
           cardIndex={this.state.cardIndex}
-          cardVerticalMargin={80}
           renderCard={this.renderCard}
           onSwipedAll={this.onSwipedAllCards}
-          overlayLabels={{
-            bottom: {
-              title: "BLEAH",
-              swipeColor: "#9262C2",
-              backgroundOpacity: "0.75",
-              fontColor: "#FFF"
-            },
-            left: {
-              title: "NOPE",
-              swipeColor: "#FF6C6C",
-              backgroundOpacity: "0.75",
-              fontColor: "#FFF"
-            },
-            right: {
-              title: "LIKE",
-              swipeColor: "#4CCC93",
-              backgroundOpacity: "0.75",
-              fontColor: "#FFF"
-            },
-            top: {
-              title: "SUPER LIKE",
-              swipeColor: "#4EB8B7",
-              backgroundOpacity: "0.75",
-              fontColor: "#FFF"
-            }
-          }}
           animateOverlayLabelsOpacity
           animateCardOpacity
-        />
+        >
+          <View
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: 100,
+              alignItems: "center"
+            }}
+          >
+            <View
+              style={{
+                width: "80%",
+                alignItems: "center",
+                justifyContent: "space-around",
+                flexDirection: "row"
+              }}
+            >
+              <RoundButton
+                size={40}
+                padding={15}
+                icon={RoundButton.CLOSE}
+                onPress={() => {
+                  this.swiper.swipeLeft();
+                }}
+              />
+              <RoundButton
+                size={40}
+                padding={15}
+                style={{ backgroundColor: "green" }}
+                icon={RoundButton.CHECKMARK}
+                onPress={() => {
+                  this.swiper.swipeRight();
+                }}
+              />
+            </View>
+          </View>
+        </Swiper>
       </View>
     );
   }
 }
-
+const WIDTH = Dimensions.get("window").width;
 const styles = StyleSheet.create({
-  box1: {
-    flex: 1
-  },
   container: {
     flex: 1,
-    backgroundColor: "#F5FCFF"
+    backgroundColor: "transparent",
+    width: WIDTH,
+    alignItems: "center",
+    justifyContent: "center"
   },
   card: {
     flex: 1,
-    height: 250,
-    width: 250,
     borderRadius: 4,
     borderWidth: 2,
     borderColor: "#E8E8E8",
     justifyContent: "center",
-    backgroundColor: "white"
+    backgroundColor: "powderblue"
   },
   text: {
     textAlign: "center",

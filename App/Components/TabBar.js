@@ -53,7 +53,7 @@ class TabBar extends Component {
       >
         {/*<MenuButton onPress={() => onNavPress()} />*/}
         <TextComponent
-          style={{
+          textStyle={{
             marginLeft: 10,
             fontSize: 16,
             color: "white"
