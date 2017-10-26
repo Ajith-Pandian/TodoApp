@@ -5,27 +5,26 @@ import {
   TouchableOpacity,
   StyleSheet,
   Dimensions,
-  ToastAndroid
+  ToastAndroid,
+  ScrollView
 } from "react-native";
 import DateTimePicker from "react-native-modal-datetime-picker";
+import moment from "moment";
+import { connect } from "react-redux";
 
 import { Close, Calendar, Time, Attach } from "../Components/Icons";
-import { GRAY, ACCENT_COLOR_1 } from "../Constants";
+import { GRAY, RED, ACCENT_COLOR_1 } from "../Constants";
 import BackgroundContainer from "../Components/BackgroundContainer";
 import {
   TextComponent,
   TextInputComponent
 } from "../Components/TextComponents";
+import { createTodo } from "../Store/Actions/TodoActions";
 
-const TO = "To";
-const DATE = "date";
-const TIME = "time";
-const ATTACH = "attach";
-const getIcons = name => {
+const Icon = ({ name }) => {
   let icon;
-
   switch (name) {
-    case DATE:
+    case ClickableComponent.DATE:
       icon = (
         <Calendar
           size={25}
@@ -34,7 +33,7 @@ const getIcons = name => {
         />
       );
       break;
-    case TIME:
+    case ClickableComponent.TIME:
       icon = (
         <Time
           size={25}
@@ -44,7 +43,7 @@ const getIcons = name => {
       );
       break;
 
-    case ATTACH:
+    case ClickableComponent.ATTACH:
       icon = (
         <Attach
           size={25}
@@ -53,84 +52,197 @@ const getIcons = name => {
         />
       );
       break;
-
-    default:
-      icon = <TextComponent>No Item</TextComponent>;
-      break;
   }
-
   return (
     <View style={{ alignItems: "center", justifyContent: "center" }}>
       {icon}
     </View>
   );
 };
-export default class CreateTask extends Component {
+class InputComponent extends Component {
+  state = { isError: false, errorMessage: "" };
+  static TITLE = "title";
+  static DESCRIPTION = "description";
+  validate = () => {
+    let { type } = this.props;
+    let content = this.state[type];
+    let isError = !(content && content.length > 0);
+    let errorMessage = `Enter ${type}`;
+    this.setState({ isError, errorMessage });
+  };
+  render() {
+    let { type } = this.props;
+    let { isError, errorMessage } = this.state;
+    return (
+      <View style={{ height: isError ? 70 : 50 }}>
+        <TextInputComponent
+          inputStyle={[
+            styles.inputComp,
+            { borderBottomColor: isError ? RED : GRAY }
+          ]}
+          multiline={false}
+          placeholder={type.charAt(0).toUpperCase() + type.slice(1)}
+          underlineColorAndroid={"transparent"}
+          returnKeyType={"done"}
+          onChangeText={text =>
+            this.setState({ [type]: text }, () => console.log(this.state))}
+          onEndEditing={() => {
+            this.validate();
+          }}
+          onFocus={() => this.setState({ isError: false })}
+        />
+        {isError ? (
+          <View
+            style={{
+              height: 20,
+              width: WIDTH - 100,
+              backgroundColor: "transparent"
+            }}
+          >
+            <Text style={{ color: RED }}>{errorMessage}</Text>
+          </View>
+        ) : null}
+      </View>
+    );
+  }
+}
+class ClickableComponent extends Component {
+  state = { isError: false, errorMessage: "Error" };
+  static TO = "To";
+  static DATE = "date";
+  static TIME = "time";
+  static ATTACH = "attach";
+  setError = isError => {
+    this.setState({ isError });
+  };
+  setErrorMessage = () => {
+    let { type } = this.props;
+    let errorMessage = "Error";
+    switch (type) {
+      case ClickableComponent.TO:
+        errorMessage = "Select contact";
+        break;
+      case ClickableComponent.DATE:
+        errorMessage = "Select date";
+        break;
+      case ClickableComponent.TIME:
+        errorMessage = "Select Time";
+        break;
+    }
+    this.setState({ errorMessage });
+  };
+  componentDidMount() {
+    this.setErrorMessage();
+  }
+  render() {
+    let { type, text, onClick } = this.props;
+    let { isError, errorMessage } = this.state;
+
+    return (
+      <View style={{ height: isError ? 70 : 50 }}>
+        <TouchableOpacity
+          style={[
+            styles.clickableComp,
+            {
+              borderBottomColor: isError ? RED : GRAY
+            }
+          ]}
+          onPress={() => onClick()}
+        >
+          {type && type !== ClickableComponent.TO ? <Icon name={type} /> : null}
+          <TextComponent
+            textStyle={{
+              marginLeft: type ? 10 : 0,
+              textAlign: "left",
+              textAlignVertical: "center"
+            }}
+          >
+            {text}
+          </TextComponent>
+        </TouchableOpacity>
+        {isError ? (
+          <View
+            style={{
+              height: 20,
+              width: WIDTH - 100,
+              backgroundColor: "transparent"
+            }}
+          >
+            <Text style={{ color: RED }}>{errorMessage}</Text>
+          </View>
+        ) : null}
+      </View>
+    );
+  }
+}
+class CreateTask extends Component {
   constructor() {
     super();
     this.state = { pickerVisible: false, mode: "date" };
   }
-  getInputComponent = type => {
-    return (
-      <TextInputComponent
-        inputStyle={styles.inputComp}
-        multiline={false}
-        placeholder={type}
-        underlineColorAndroid={"transparent"}
-        returnKeyType={"done"}
-        onChangeText={text =>
-          this.setState({ [type]: text }, () => console.log(this.state))}
-        onEndEditing={() => {}}
-        onFocus={() => this.setState({ isError: false })}
-      />
-    );
+
+  syncDateTimeAndCreate = () => {
+    let { date, time, title, description, contact } = this.state;
+    let { _createTodo } = this.props;
+    let dateString = date.toString();
+    let momentDate = moment(dateString, "ddd MMM D YYYY HH:mm:ss ZZ");
+    momentDate.set({ h: time.getHours(), m: time.getMinutes() });
+    let formattedDate = momentDate.format("YYYY-MM-DD HH:MM:ssZ");
+    date = momentDate.toDate();
+    this.setState({ date });
+    _createTodo({
+      title,
+      description,
+      receiver: contact.number,
+      due_date: formattedDate
+    });
   };
-  _handleClick = type => {
+  handleClick = type => {
     switch (type) {
-      case TO:
+      case ClickableComponent.TO:
         this.props.navigation.navigate("Contacts", {
-          onContactSelected: item => {
-            console.log("Contact with back nav");
-            console.log(item);
+          onContactSelected: contact => {
+            if (contact) this.setState({ contact });
           }
         });
         break;
-      case DATE:
-      case TIME:
+      case ClickableComponent.DATE:
+      case ClickableComponent.TIME:
         this.setState({ pickerVisible: true, mode: type });
         break;
-      case ATTACH:
+      case ClickableComponent.ATTACH:
         console.log("Attach clicked");
         break;
       default:
         console.log(`Item ${type} clicked`);
     }
   };
-  getClickableComponent = (text, type) => {
-    return (
-      <TouchableOpacity
-        style={styles.clickableComp}
-        onPress={() => this._handleClick(type ? type : text)}
-      >
-        {type ? getIcons(type) : null}
-        <TextComponent
-          textStyle={{
-            marginLeft: type ? 10 : 0,
-            textAlign: "left",
-            textAlignVertical: "center"
-          }}
-        >
-          {text}
-        </TextComponent>
-      </TouchableOpacity>
-    );
+  validateAndCreate = () => {
+    let { contact, date, time } = this.state;
+    if (!contact) this.contactRef.setError(true);
+    else this.contactRef.setError(false);
+
+    this.titleRef.validate();
+    this.descriptionRef.validate();
+
+    if (!date) this.dateRef.setError(true);
+    else this.dateRef.setError(false);
+    if (!time) this.timeRef.setError(true);
+    else this.timeRef.setError(false);
+    if (date && time) this.syncDateTimeAndCreate();
   };
+
   render() {
     let { goBack } = this.props.navigation;
-    let { pickerVisible, mode } = this.state;
+    let { pickerVisible, mode, contact, date, time } = this.state;
+    console.log(this.state);
+    let visibleDateOrtime =
+      mode === ClickableComponent.DATE && date
+        ? date
+        : mode === ClickableComponent.TIME && time ? time : new Date();
     return (
       <BackgroundContainer style={{ flex: 1 }} isTop={true}>
-        <View style={{ alignItems: "center" }}>
+        <ScrollView contentContainerStyle={{ alignItems: "center" }}>
           <TouchableOpacity
             onPress={() => goBack()}
             style={{ alignSelf: "flex-end", margin: 10, padding: 10 }}
@@ -147,26 +259,59 @@ export default class CreateTask extends Component {
             </TextComponent>
           </View>
           <View style={{ marginTop: 30 }}>
-            {this.getClickableComponent(TO)}
-            {this.getInputComponent("Title")}
-            {this.getInputComponent("Description")}
-            {this.getClickableComponent("Date", DATE)}
-            {this.getClickableComponent("Time", TIME)}
-            {this.getClickableComponent("Attachment", ATTACH)}
+            <ClickableComponent
+              text={contact ? contact.name : ClickableComponent.TO}
+              type={ClickableComponent.TO}
+              ref={ref => (this.contactRef = ref)}
+              onClick={() => this.handleClick(ClickableComponent.TO)}
+            />
+            <InputComponent
+              type={InputComponent.TITLE}
+              ref={ref => (this.titleRef = ref)}
+            />
+            <InputComponent
+              type={InputComponent.DESCRIPTION}
+              ref={ref => (this.descriptionRef = ref)}
+            />
+            <ClickableComponent
+              text={date ? moment(date).format("ll") : "Date"}
+              type={ClickableComponent.DATE}
+              ref={ref => (this.dateRef = ref)}
+              onClick={() => this.handleClick(ClickableComponent.DATE)}
+            />
+            <ClickableComponent
+              text={time ? moment(time).format("LT") : "Time"}
+              type={ClickableComponent.TIME}
+              ref={ref => (this.timeRef = ref)}
+              onClick={() => this.handleClick(ClickableComponent.TIME)}
+            />
+            <ClickableComponent
+              text={"Attachment"}
+              type={ClickableComponent.ATTACH}
+              onClick={() => this.handleClick(ClickableComponent.ATTACH)}
+            />
           </View>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              console.log("Done clicked");
+              this.validateAndCreate();
+            }}
+          >
             <TextComponent textStyle={{ color: "white" }}>Done</TextComponent>
           </TouchableOpacity>
-        </View>
+        </ScrollView>
         <DateTimePicker
           isVisible={pickerVisible}
           onConfirm={selectedDate => {
             console.log(selectedDate);
+            this.setState({ pickerVisible: false, [mode]: selectedDate });
           }}
           onCancel={() => this.setState({ pickerVisible: false })}
           mode={mode}
-          date={new Date()}
-          titleIOS={"Pick Time"}
+          date={visibleDateOrtime}
+          is24Hour={false}
+          titleIOS={"Pick " + mode}
         />
       </BackgroundContainer>
     );
@@ -181,13 +326,12 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 5,
     height: 40,
-    borderBottomColor: GRAY,
     borderBottomWidth: 0.5,
-    width: WIDTH - 100
+    width: WIDTH - 100,
+    alignItems: "center"
   },
   inputComp: {
     height: 40,
-    borderBottomColor: GRAY,
     borderBottomWidth: 0.5,
     width: WIDTH - 100,
     marginTop: 5,
@@ -203,3 +347,20 @@ const styles = StyleSheet.create({
     paddingBottom: V_BUTTON_PADDING
   }
 });
+
+const mapStateToProps = ({ TodoReducer }) => {
+  let { isLoading, isError, isSuccess } = TodoReducer;
+  return {
+    isLoading,
+    isError,
+    isSuccess
+  };
+};
+
+const mapDispatchToProps = (dispatch, props) => ({
+  _createTodo: todo => {
+    dispatch(createTodo(todo));
+  }
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateTask);

@@ -1,6 +1,6 @@
 import Api from "./Api";
 
-const BASE_URL = "http://192.168.0.7:8000";
+const BASE_URL = "http://192.168.31.2:8000";
 const authUrl = phoneNum => `${BASE_URL}/phone/?phone=${phoneNum}`;
 const otpCheckUrl = (phoneNum, otp) =>
   `${BASE_URL}/otpverify/?phone=${phoneNum}&otp=${otp}`;
@@ -10,7 +10,8 @@ const getProfileUrl = `${BASE_URL}/profile/`;
 const registerUrl = `${BASE_URL}/register/`;
 const createTaskUrl = `${BASE_URL}/createtask/`;
 const acceptTaskUrl = `${BASE_URL}/accepttask/`;
-const token = ""; //accessToken
+const token =
+  "eyJwaG9uZSI6ICIxMjM0NTEyMzQ1IiwgInNhbHQiOiAiMWYwZTEwIiwgImV4cGlyZXMiOiAxNTA4OTE0Mzg2LjI0MjY3M338DWF5oVRL58N6xd_2z1C2lz9C16D_1QVK9DeVrS1Q-g=="; //accessToken
 export default class ApiHelper {
   static authenticate(phoneNum) {
     return Api.get(authUrl(phoneNum)).then(res => {
@@ -37,7 +38,7 @@ export default class ApiHelper {
     });
   }
   static register(user) {
-    return Api.post(registerUrl, null, { ...user }).then(res => {
+    return Api.post(registerUrl, null, user).then(res => {
       console.log(res);
       return res;
     });
