@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { FlatList, ToastAndroid } from "react-native";
+import { NavigationActions } from "react-navigation";
 import TodoItem from "./TodoItem";
 import {
   onSearchTermChange,
@@ -17,7 +18,7 @@ class TodoList extends Component {
     const isReachedBottom =
       layoutMeasurement.height + contentOffset.y >= contentSize.height - 200;
     const shouldShowTabBar = isScrollingUp || isReachedBottom;
-    this.props.navigation.setParams({ tabBarVisible: shouldShowTabBar });
+    this.props.onTabBarVisibilityChange(shouldShowTabBar);
     offset = scrollOffsetY;
     this.setState({ offset });
   };
@@ -26,7 +27,8 @@ class TodoList extends Component {
     else return true;
   }
   render() {
-    let { todos, searchTerm, searchState } = this.props;
+    let { todos, searchTerm, searchState, screenProps } = this.props;
+    console.log(screenProps);
     if (searchState && searchTerm && searchTerm.length > 0) {
       searchTerm = searchTerm.toLowerCase();
       todos = todos.filter(
@@ -49,7 +51,16 @@ class TodoList extends Component {
         renderItem={(item, index) => {
           isLast = todos.length - 1 === index;
           return (
-            <TodoItem key={index} index={index} isLast={isLast} todo={item} />
+            <TodoItem
+              key={index}
+              index={index}
+              isLast={isLast}
+              todo={item}
+              onClick={() => {
+                let { navigate } = screenProps.rootNavigation;
+                navigate("TaskDetails");
+              }}
+            />
           );
         }}
         onSwipeRight={() => console.log("Rejected")}

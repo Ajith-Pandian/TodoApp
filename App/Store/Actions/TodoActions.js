@@ -5,6 +5,9 @@ import {
   CREATE_TODO,
   CREATE_TODO_SUCCESS,
   CREATE_TODO_FAILURE,
+  ACCEPT_TODO,
+  ACCEPT_TODO_SUCCESS,
+  ACCEPT_TODO_FAILURE,
   REJECT_TODO,
   REJECT_TODO_SUCCESS,
   REJECT_TODO_FAILURE,
@@ -66,6 +69,48 @@ function _createTodoSuccess() {
 function _createTodoFailure() {
   return {
     type: CREATE_TODO_FAILURE
+  };
+}
+
+export function acceptTodo(taskId) {
+  return dispatch => {
+    dispatch(_acceptTodo());
+    ApiHelper.acceptTask({
+      todo_id: taskId,
+      is_accepted: true
+    }).then(res => {
+      if (res && res.success) dispatch(_acceptTodoSuccess());
+      else dispatch(_acceptTodoFailure());
+    });
+  };
+}
+
+function _acceptTodo() {
+  return {
+    type: ACCEPT_TODO
+  };
+}
+function _acceptTodoSuccess() {
+  return {
+    type: ACCEPT_TODO_SUCCESS
+  };
+}
+function _acceptTodoFailure() {
+  return {
+    type: ACCEPT_TODO_FAILURE
+  };
+}
+
+export function rejectTodo(taskId) {
+  return dispatch => {
+    dispatch(_rejectTodo());
+    ApiHelper.acceptTask({
+      todo_id: taskId,
+      is_accepted: false
+    }).then(res => {
+      if (res && res.success) dispatch(_rejectTodoSuccess());
+      else dispatch(_rejectTodoFailure());
+    });
   };
 }
 

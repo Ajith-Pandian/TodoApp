@@ -35,7 +35,7 @@ class TabBar extends Component {
 
   render() {
     let {
-      onNavPress,
+      //onNavPress,
       onChangeText,
       _onSearchStateChange,
       _onSearchTermChange,

@@ -35,7 +35,8 @@ class Tab extends Component {
   }
   static navigationOptions = props => {
     let { navigation, screenProps } = props;
-    let { tabBarVisible } = screenProps;
+    let tabBarVisible =
+      navigation.state.params && navigation.state.params.tabBarVisible;
     return {
       tabBarIcon: ({ tintColor }) => (
         <Image
@@ -52,7 +53,13 @@ class Tab extends Component {
   };
 
   render() {
-    return <TodoList {...this.props} />;
+    return (
+      <TodoList
+        {...this.props}
+        onTabBarVisibilityChange={tabBarVisible =>
+          this.props.navigation.setParams({ tabBarVisible })}
+      />
+    );
   }
 }
 const isIos = Platform.OS === "ios";
@@ -81,34 +88,24 @@ const MyApp = TabNavigator(
 );
 
 class Tabs extends Component {
-  state = { tabBarVisible: true };
   static navigationOptions = ({ navigation }) => {
     return {
       header: (
         <TabBar
           navigation={navigation}
-          onNavPress={() => {
-            navigation.state.index === 0
-              ? navigation.navigate("DrawerOpen")
-              : navigation.navigate("DrawerClose");
-          }}
           onChangeText={text => console.log(text)}
         />
       )
     };
   };
+
   render() {
-    let { dispatch } = this.props;
+    let { navigation } = this.props;
     return (
       <MyApp
-        onNavigationStateChange={(prev, current) => {
-          let { routes, index } = current;
-          const newRoute = routes[index];
-          let tabBarVisible = newRoute.params && newRoute.params.tabBarVisible;
-          this.setState({ tabBarVisible });
-          //  dispatch(onSearchStateChange(false));
+        screenProps={{
+          rootNavigation: navigation
         }}
-        screenProps={{ tabBarVisible: this.state.tabBarVisible }}
       />
     );
   }

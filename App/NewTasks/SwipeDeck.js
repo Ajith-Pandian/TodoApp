@@ -1,9 +1,13 @@
 import React, { Component } from "react";
 import Swiper from "./Swiper";
 import { StyleSheet, View, Text, Button, Dimensions } from "react-native";
+import { connect } from "react-redux";
+
 import RoundButton from "../Components/RoundButton";
 import TaskItem from "./TaskItem";
-export default class SwipeDeck extends Component {
+import { acceptTodo, rejectTodo } from "../Store/Actions/TodoActions";
+
+class SwipeDeck extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -50,9 +54,10 @@ export default class SwipeDeck extends Component {
   };
 
   render() {
+    const { container, bottomLayout, bottomInnerLayout } = styles;
     return (
       <View
-        style={styles.container}
+        style={container}
         onLayout={event => {
           let { y, height } = event.nativeEvent.layout;
           height = height - y;
@@ -75,24 +80,8 @@ export default class SwipeDeck extends Component {
           animateOverlayLabelsOpacity
           animateCardOpacity
         >
-          <View
-            style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: 100,
-              alignItems: "center"
-            }}
-          >
-            <View
-              style={{
-                width: "80%",
-                alignItems: "center",
-                justifyContent: "space-around",
-                flexDirection: "row"
-              }}
-            >
+          <View style={bottomLayout}>
+            <View style={bottomInnerLayout}>
               <RoundButton
                 size={40}
                 padding={15}
@@ -144,5 +133,38 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: "white",
     backgroundColor: "transparent"
+  },
+  bottomLayout: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 100,
+    alignItems: "center"
+  },
+  bottomInnerLayout: {
+    width: "80%",
+    alignItems: "center",
+    justifyContent: "space-around",
+    flexDirection: "row"
   }
 });
+const mapStateToProps = ({ TodoReducer }) => {
+  let { isLoading, isError, isSuccess } = TodoReducer;
+  return {
+    isLoading,
+    isError,
+    isSuccess
+  };
+};
+
+const mapDispatchToProps = (dispatch, props) => ({
+  _acceptTodo: user => {
+    dispatch(acceptTodo(user));
+  },
+  _rejectTodo: todoId => {
+    dispatch(rejectTodo(user));
+  }
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SwipeDeck);

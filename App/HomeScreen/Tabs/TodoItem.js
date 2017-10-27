@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { View, Dimensions, StyleSheet, TouchableOpacity } from "react-native";
+import { NavigationActions } from "react-navigation";
 import { getTimeString } from "../../Utils";
 import { TextComponent } from "../../Components/TextComponents";
 const SCREEN_WIDTH = Dimensions.get("window").width;
@@ -11,7 +12,7 @@ class TodoItem extends Component {
   state = { descriptionWidth: SCREEN_WIDTH * 0.7 };
 
   render() {
-    let { index, todo } = this.props;
+    let { index, todo, onClick } = this.props;
     let {
       container,
       dateLayout,
@@ -26,7 +27,7 @@ class TodoItem extends Component {
     let { assignor, description, completionTime, id, title } = todo;
     let color = "white";
     return (
-      <TouchableOpacity activeOpacity={0.8}>
+      <TouchableOpacity activeOpacity={0.8} onPress={() => onClick()}>
         <View style={container}>
           <View
             style={dateLayout}

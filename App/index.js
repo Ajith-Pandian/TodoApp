@@ -9,6 +9,7 @@ import HomeScreen from "./HomeScreen";
 import CreateTask from "./CreateTask";
 import NewTasks from "./NewTasks";
 import ContactsScreen from "./Contacts";
+import DetailsScreen from "./TaskDetails";
 
 import getStore from "./Store";
 import { APP_COLOR } from "./Constants";
@@ -28,6 +29,10 @@ class StackApp extends Component {
         NewTasks: { screen: NewTasks, navigationOptions: { header: null } },
         Contacts: {
           screen: ContactsScreen,
+          navigationOptions: { header: null }
+        },
+        TaskDetails: {
+          screen: DetailsScreen,
           navigationOptions: { header: null }
         }
       },
