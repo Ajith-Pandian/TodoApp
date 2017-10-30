@@ -1,29 +1,47 @@
 import {
-  UPDATE_USER,
+  USER_LOGIN,
+  USER_LOGOUT,
   UPDATE_USER_NUMBER,
+  UPDATE_USER_DETAILS,
   UPDATE_USER_AUTH_TOKEN
 } from "../StoreConstants";
 
 const initialState = {
-  user: {}
+  id: -1,
+  isLoggedIn: false,
+  phoneNum: "",
+  otp: "",
+  authToken: ""
 };
 
 export default function UserReducer(state = initialState, action) {
   switch (action.type) {
-    case UPDATE_USER:
+    case USER_LOGIN:
       return {
         ...state,
-        user: true
+        isLoggedIn: true
+      };
+    case USER_LOGOUT:
+      return {
+        ...state,
+        isLoggedIn: false
       };
     case UPDATE_USER_NUMBER:
       return {
         ...state,
-        user: { phoneNum: action.phoneNum, otp: action.otp }
+        phoneNum: action.phoneNum,
+        otp: action.otp
+      };
+    case UPDATE_USER_DETAILS:
+      return {
+        ...state,
+        phoneNum: action.phoneNum,
+        id: action.id
       };
     case UPDATE_USER_AUTH_TOKEN:
       return {
         ...state,
-        user: { authToken: action.authToken }
+        authToken: action.authToken
       };
 
     default:

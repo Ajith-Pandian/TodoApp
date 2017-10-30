@@ -28,7 +28,6 @@ class TodoList extends Component {
   }
   render() {
     let { todos, searchTerm, searchState, screenProps } = this.props;
-    console.log(screenProps);
     if (searchState && searchTerm && searchTerm.length > 0) {
       searchTerm = searchTerm.toLowerCase();
       todos = todos.filter(

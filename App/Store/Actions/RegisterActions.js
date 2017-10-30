@@ -4,14 +4,21 @@ import {
   REGISTER_REQUEST_FAILURE
 } from "../StoreConstants";
 import ApiHelper from "../../ApiHelper";
-import { updateUserAuthToken } from "./UserActions";
+import {
+  updateUserDetails,
+  updateUserAuthToken,
+  loginUser
+} from "./UserActions";
 export function registerUser(user) {
   return dispatch => {
     dispatch(_registerUser());
     ApiHelper.register(user).then(res => {
       if (res && res.success) {
+        let { token, phone, user_id } = res;
         dispatch(_registerUserSuccess());
-        dispatch(updateUserAuthToken(res.auth_token));
+        dispatch(updateUserDetails(user_id, phone));
+        dispatch(updateUserAuthToken(token));
+        dispatch(loginUser());
       } else dispatch(_registerUserFailure());
     });
   };

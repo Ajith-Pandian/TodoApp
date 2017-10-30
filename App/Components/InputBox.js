@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { TextComponent, TextInputComponent } from "./TextComponents";
 import { GRAY, RED } from "../Constants";
-import { isDigitsOnly } from "../Utils";
+import { isDigitsOnly as _isDigitsOnly } from "../Utils";
 
 export default class InputBox extends Component {
   static MOBILE = "mobile";
@@ -34,18 +34,19 @@ export default class InputBox extends Component {
     switch (type) {
       case InputBox.MOBILE:
         {
-          let isDigitsOnly = /^\d+$/.test(text);
+          let isDigitsOnly = _isDigitsOnly(text);
           let hasMaxDigits = text.length === maxLength;
           let isValid = hasMaxDigits && isDigitsOnly;
           isError = !isValid;
-          if (!hasMaxDigits) errorMessage = "Enter 10 digits";
-          if (!isDigitsOnly) errorMessage = "Enter only numbers";
-          if (text.length === 0) errorMessage = "Enter phone number";
+          //if (!hasMaxDigits) errorMessage = "Enter 10 digits";
+          //  if (!isDigitsOnly) errorMessage = "Enter only numbers";
+          //  if (text.length === 0) errorMessage = "Enter phone number";
+          errorMessage = "Enter valid phone number";
         }
         break;
       case InputBox.OTP:
         {
-          let isDigitsOnly = isDigitsOnly(text);
+          let isDigitsOnly = _isDigitsOnly(text);
           let hasMaxDigits = text.length === maxLength;
           let isValid = hasMaxDigits && isDigitsOnly;
           isError = !isValid;
@@ -142,7 +143,7 @@ export default class InputBox extends Component {
         textAlign: "center",
         textAlignVertical: "center",
         backgroundColor: "transparent",
-        color: GRAY
+        color: "black"
       },
       inputErrorText: {
         marginTop: ERROR_MARGIN,
@@ -160,7 +161,7 @@ export default class InputBox extends Component {
 
 function getExtraStyle(isError) {
   return {
-    borderBottomWidth: 1,
+    borderBottomWidth: 0.5,
     borderBottomColor: isError ? RED : GRAY
   };
 }

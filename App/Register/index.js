@@ -41,9 +41,13 @@ class ProfileInput extends Component {
   static USER_NAME = "user_name";
   static PHONE = "phone";
   static EMAIL = "mail";
-  constructor() {
-    super();
-    this.state = { text: "", isError: false, errorMessage: "" };
+  constructor(props) {
+    super(props);
+    this.state = {
+      text: props.text ? props.text : "",
+      isError: false,
+      errorMessage: ""
+    };
   }
   setError = errorMessage => {
     this.setState({ isError: true, errorMessage });
@@ -73,8 +77,9 @@ class ProfileInput extends Component {
     }
   };
   render() {
-    let { isError, errorMessage } = this.state;
+    let { isError, errorMessage, text } = this.state;
     let { placeholder, type, onSuccess } = this.props;
+    const editable = type === ProfileInput.PHONE ? !text : true;
     let {
       profileInputContainer,
       iconContainer,
@@ -124,6 +129,8 @@ class ProfileInput extends Component {
           <View style={iconContainer}>{icon}</View>
           <TextInputComponent
             inputStyle={input}
+            value={text}
+            editable={editable}
             maxLength={maxLength}
             keyboardType={keyboardType}
             autoCapitalize={autoCapitalize}
@@ -164,7 +171,7 @@ class Register extends Component {
       clickableImageContainer,
       inputContainer
     } = styles;
-    let { isLoading } = this.props;
+    let { isLoading, phoneNum } = this.props;
     return (
       <BackgroundContainer style={container}>
         <KeyboardAwareScrollView
@@ -193,6 +200,7 @@ class Register extends Component {
             />
             <ProfileInput
               type={ProfileInput.PHONE}
+              text={phoneNum}
               ref={ref => (this.phoneNumRef = ref)}
               placeholder={"Number"}
               onSuccess={number => this.setState({ number })}
@@ -282,9 +290,11 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent"
   }
 });
-const mapStateToProps = ({ RegisterReducer }) => {
+const mapStateToProps = ({ RegisterReducer, UserReducer }) => {
   let { isLoading, isError, isSuccess } = RegisterReducer;
+  let { phoneNum } = UserReducer;
   return {
+    phoneNum,
     isLoading,
     isError,
     isSuccess

@@ -16,7 +16,7 @@ import { APP_COLOR } from "./Constants";
 import Swipe from "./Swipe";
 import Register from "./Register";
 class StackApp extends Component {
-  state = { isLoggedIn: true };
+  state = { isLoggedIn: false };
   render() {
     let { isLoggedIn } = this.state;
     let AppNavigator = StackNavigator(

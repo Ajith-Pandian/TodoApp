@@ -11,7 +11,7 @@ export function onLogin(phoneNum) {
     ApiHelper.authenticate(phoneNum).then(res => {
       if (res && res.success) {
         dispatch(_onLoginSuccess());
-        dispatch(updateUserNumber(phoneNum, res.otp));
+        dispatch(updateUserNumber(res.phone, res.otp));
       } else dispatch(_onLoginFailure());
     });
   };

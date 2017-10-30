@@ -32,7 +32,6 @@ class LoginScreen extends Component {
       <BackgroundContainer style={container}>
         <KeyboardAvoidingView
           behavior="padding"
-          stlye={{ flex: 1 }}
           contentContainerStyle={container}
         >
           <View style={itemContainer}>
@@ -49,7 +48,7 @@ class LoginScreen extends Component {
             <View style={{ alignItems: "center" }}>
               <InputBox
                 ref={ref => (this.InputRef = ref)}
-                placeholder={"Mobile Number"}
+                placeholder={"Enter Mobile Number"}
                 maxLength={10}
                 type={InputBox.MOBILE}
                 onSuccess={text => {
@@ -60,17 +59,19 @@ class LoginScreen extends Component {
                 <Spinner
                   style={{ margin: 5 }}
                   isVisible={true}
-                  size={40}
+                  size={45}
                   type={"Bounce"}
                   color={"#ff2a68"}
                 />
               ) : (
                 <RoundButton
-                  size={35}
+                  size={45}
+                  padding={15}
                   icon={RoundButton.RIGHT}
                   onPress={() => {
                     this.InputRef.validateInput(InputBox.MOBILE);
                   }}
+                  style={{ marginTop: 30 }}
                 />
               )}
             </View>

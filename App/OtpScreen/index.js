@@ -9,11 +9,26 @@ import DisplayMessage from "../Components/DisplayMessage";
 import { withBackExit, resetNavigationToFirst } from "../Utils";
 import BackgroundContainer from "../Components/BackgroundContainer";
 import { verifyOtp } from "../Store/Actions/OtpActions";
+import { onLogin } from "../Store/Actions/LoginActions";
+
 class OtpScreen extends Component {
   componentWillReceiveProps(nextProps) {
-    let { isSuccess, isError, navigation } = nextProps;
-    if (isSuccess) resetNavigationToFirst("Home", navigation);
-    else if (isError) DisplayMessage("Failed. Retry");
+    let {
+      isSuccess,
+      isError,
+      isFailed,
+      navigation,
+      isRegisteredUser
+    } = nextProps;
+
+    if (isSuccess) {
+      if (isRegisteredUser) {
+        resetNavigationToFirst("Home", navigation);
+      } else {
+        resetNavigationToFirst("Register", navigation);
+      }
+    } else if (isError) DisplayMessage("OTP is not valid");
+    else if (isFailed) DisplayMessage("Failed. Retry");
   }
   render() {
     let {
@@ -27,7 +42,10 @@ class OtpScreen extends Component {
     let {
       phoneNum,
       otp, //FIXME: REMOVE ME ON PRODUCTION
-      _verifyOtp
+      isLoading,
+      _verifyOtp,
+      _onLogin,
+      navigation
     } = this.props;
     return (
       <BackgroundContainer style={container}>
@@ -62,13 +80,15 @@ class OtpScreen extends Component {
               <Spinner
                 style={{ margin: 5 }}
                 isVisible={true}
-                size={40}
+                size={45}
                 type={"Bounce"}
                 color={"#ff2a68"}
               />
             ) : (
               <RoundButton
-                size={35}
+                size={45}
+                padding={15}
+                style={{ marginTop: 30 }}
                 icon={RoundButton.RIGHT}
                 onPress={() => {
                   this.InputRef.validateInput(InputBox.OTP);
@@ -80,7 +100,7 @@ class OtpScreen extends Component {
             <TextComponent textStyle={centerText}>
               {"Didn't get OTP?"}
             </TextComponent>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => _onLogin(phoneNum)}>
               <TextComponent isBold textStyle={centerText}>
                 Request again
               </TextComponent>
@@ -100,6 +120,8 @@ const styles = StyleSheet.create({
     paddingTop: StatusBar.currentHeight
   },
   itemsContainer: {
+    marginTop: 20,
+    marginBottom: 20,
     height: 400,
     position: "absolute",
     width: "80%",
@@ -121,20 +143,31 @@ OtpScreen.navigationOptions = {
 };
 
 const mapStateToProps = ({ UserReducer, OtpReducer }) => {
-  let { user, otp } = UserReducer;
-  let { isLoading, isError, isSuccess } = OtpReducer;
-  return {
-    phoneNum: user.phoneNum,
-    otp: user.otp,
+  let { phoneNum, otp } = UserReducer;
+  let {
     isLoading,
     isError,
-    isSuccess
+    isSuccess,
+    isFailed,
+    isRegisteredUser
+  } = OtpReducer;
+  return {
+    phoneNum,
+    isRegisteredUser,
+    otp,
+    isLoading,
+    isError,
+    isSuccess,
+    isFailed
   };
 };
 
 const mapDispatchToProps = (dispatch, props) => ({
   _verifyOtp: (phoneNum, otp) => {
     dispatch(verifyOtp(phoneNum, otp));
+  },
+  _onLogin: phoneNum => {
+    dispatch(onLogin(phoneNum));
   }
 });
 
