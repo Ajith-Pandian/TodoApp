@@ -235,7 +235,6 @@ class CreateTask extends Component {
   render() {
     let { goBack } = this.props.navigation;
     let { pickerVisible, mode, contact, date, time } = this.state;
-    console.log(this.state);
     let visibleDateOrtime =
       mode === ClickableComponent.DATE && date
         ? date

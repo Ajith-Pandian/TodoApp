@@ -17,3 +17,5 @@ export const Person = props => <Icon name="md-person" {...props} />;
 export const Email = props => <Icon name="md-mail" {...props} />;
 export const Phone = props => <Icon name="md-phone-portrait" {...props} />;
 export const CheckMark = props => <Icon name="md-checkmark" {...props} />;
+export const Back = props => <Icon name="md-arrow-back" {...props} />;
+export const Alarm = props => <Icon name="md-alarm" {...props} />;

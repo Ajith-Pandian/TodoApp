@@ -1,6 +1,6 @@
 import Api from "./Api";
 
-const BASE_URL = "http://192.168.31.2:8000";
+const BASE_URL = "http://192.168.31.113:8000";
 const authUrl = phoneNum => `${BASE_URL}/phone/?phone=${phoneNum}`;
 const otpCheckUrl = (phoneNum, otp) =>
   `${BASE_URL}/otpverify/?phone=${phoneNum}&otp=${otp}`;

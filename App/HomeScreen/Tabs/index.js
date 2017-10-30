@@ -34,7 +34,7 @@ class Tab extends Component {
     super(props);
   }
   static navigationOptions = props => {
-    let { navigation, screenProps } = props;
+    let { navigation } = props;
     let tabBarVisible =
       navigation.state.params && navigation.state.params.tabBarVisible;
     return {
