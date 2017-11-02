@@ -62,3 +62,6 @@ export function getTimeString(date) {
 export function getSortedList(array) {
   return array.sort((a, b) => a.completionTime - b.completionTime);
 }
+export function firstToLower(string) {
+  return string.charAt(0).toLowerCase() + string.slice(1);
+}

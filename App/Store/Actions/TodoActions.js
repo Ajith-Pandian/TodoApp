@@ -1,6 +1,7 @@
 import {
   FETCH_TODO,
   FETCH_TODO_SUCCESS,
+  FETCH_LATER_TODO_SUCCESS,
   FETCH_TODO_FAILURE,
   CREATE_TODO,
   CREATE_TODO_SUCCESS,
@@ -20,12 +21,27 @@ import {
 } from "../StoreConstants";
 
 import ApiHelper from "../../ApiHelper";
+import Todo from "../../Model/Todo";
+import { LATER } from "../../Constants";
 
-export function fetchTodo(type, page) {
+export function fetchTodo() {
   return dispatch => {
     dispatch(_fetchTodo());
-    ApiHelper.getDashboard(type, page).then(res => {
-      if (res && res.success) dispatch(_fetchTodoSuccess());
+    ApiHelper.getWeeklyTasks().then(res => {
+      if (res && res.success) dispatch(_fetchTodoSuccess(getTodos(res.data)));
+      else dispatch(_fetchTodoFailure());
+    });
+  };
+}
+
+export function fetchLaterTodo(page) {
+  return dispatch => {
+    dispatch(_fetchTodo());
+    ApiHelper.getLaterTasks(page).then(res => {
+      if (res && res.success)
+        dispatch(
+          _fetchLaterTodoSuccess(page, res.total_pages, getTodos(res.data))
+        );
       else dispatch(_fetchTodoFailure());
     });
   };
@@ -36,9 +52,18 @@ function _fetchTodo() {
     type: FETCH_TODO
   };
 }
-function _fetchTodoSuccess() {
+function _fetchTodoSuccess(todos) {
   return {
-    type: FETCH_TODO_SUCCESS
+    type: FETCH_TODO_SUCCESS,
+    todos
+  };
+}
+function _fetchLaterTodoSuccess(page, totalPages, laterTodos) {
+  return {
+    type: FETCH_LATER_TODO_SUCCESS,
+    page,
+    totalPages,
+    laterTodos
   };
 }
 function _fetchTodoFailure() {
@@ -159,4 +184,39 @@ function _incompleteTodoFailure() {
   return {
     type: INCOMPLETE_TODO_FAILURE
   };
+}
+
+function getTodos(todos) {
+  return todos.map(todo => {
+    let {
+      id,
+      title,
+      description,
+      created_by,
+      assigned_to,
+      isaccepted,
+      iscompleted,
+      isdeleted,
+      due_date,
+      created_date,
+      assigned_date,
+      completed_date,
+      attachment
+    } = todo;
+    return new Todo(
+      id,
+      title,
+      description,
+      created_by,
+      assigned_to,
+      isaccepted,
+      iscompleted,
+      isdeleted,
+      due_date,
+      created_date,
+      assigned_date,
+      completed_date,
+      attachment
+    );
+  });
 }

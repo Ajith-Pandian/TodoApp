@@ -1,33 +1,86 @@
 import React, { Component } from "react";
-import { FlatList, ToastAndroid } from "react-native";
+import { FlatList, ToastAndroid, View } from "react-native";
 import { NavigationActions } from "react-navigation";
 import TodoItem from "./TodoItem";
+import LoadingItem from "./LoadingItem";
 import {
   onSearchTermChange,
   onSearchStateChange
 } from "../../Store/Actions/SearchActions";
 import { connect } from "react-redux";
 import SwipeList from "../../Components/SwipeActionView";
+import { TextComponent } from "../../Components/TextComponents";
+import { fetchTodo, fetchLaterTodo } from "../../Store/Actions/TodoActions";
+import { TODAY, WEEK, LATER } from "../../Constants";
+import { firstToLower } from "../../Utils";
 class TodoList extends Component {
-  state = { offset: 0 };
+  constructor() {
+    super();
+    this.state = { offset: 0, isCloseToBottom: false };
+  }
   onScrollList = event => {
-    let { offset } = this.state;
+    let { offset, isCloseToBottom } = this.state;
     let { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
     const scrollOffsetY = contentOffset.y;
     const isScrollingUp = scrollOffsetY < offset;
-    const isReachedBottom =
+    const isGonnaReachBottom =
       layoutMeasurement.height + contentOffset.y >= contentSize.height - 200;
-    const shouldShowTabBar = isScrollingUp || isReachedBottom;
+    const shouldShowTabBar = isScrollingUp || isGonnaReachBottom;
     this.props.onTabBarVisibilityChange(shouldShowTabBar);
     offset = scrollOffsetY;
-    this.setState({ offset });
+    let isLater = this.props.navigation.state.key === LATER;
+    if (isLater)
+      isCloseToBottom =
+        layoutMeasurement.height + contentOffset.y >= contentSize.height - 50;
+    this.setState({ offset, isCloseToBottom });
   };
-  shouldComponentUpdate(nextState, nextProps) {
-    if (nextState.offset != this.state.offset) return false;
-    else return true;
+
+  componentDidMount() {
+    let { _fetchTodo, navigation } = this.props;
+    let type = navigation.state.key;
+    if (type === TODAY) {
+      //download Week tasks once for Today and Week
+      type = firstToLower(WEEK);
+      _fetchTodo(type, this.page);
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    let {
+      navigation,
+      isLoading,
+      totalPages,
+      page,
+      _fetchLaterTodo
+    } = nextProps;
+    let isLater = navigation.state.key === LATER;
+    let { isCloseToBottom } = this.state;
+    if (isLater && isCloseToBottom && !isLoading) {
+      page++;
+      if (page <= totalPages) _fetchLaterTodo(page);
+    }
   }
   render() {
-    let { todos, searchTerm, searchState, screenProps } = this.props;
+    let {
+      todos,
+      laterTodos,
+      page,
+      totalPages,
+      isLoading,
+      searchTerm,
+      searchState,
+      _fetchLaterTodo,
+      screenProps,
+      navigation
+    } = this.props;
+    let { isCloseToBottom } = this.state;
+
+    let isLater = navigation.state.key === LATER;
+    todos = isLater ? laterTodos : todos;
+    let isLoadingItemAdded = false;
+    if (isLater && isLoading) {
+      todos = [...todos, "Loading Item"];
+      isLoadingItemAdded = true;
+    }
     if (searchState && searchTerm && searchTerm.length > 0) {
       searchTerm = searchTerm.toLowerCase();
       todos = todos.filter(
@@ -38,7 +91,8 @@ class TodoList extends Component {
     } else {
       searchTerm = "";
     }
-    return (
+
+    return todos && todos.length > 0 ? (
       <SwipeList
         data={todos}
         style={{ margin: 1 }}
@@ -48,7 +102,7 @@ class TodoList extends Component {
         keyExtractor={item => item.id}
         showsVerticalScrollIndicator={false}
         renderItem={(item, index) => {
-          isLast = todos.length - 1 === index;
+          let isLast = todos.length - 1 === index;
           return (
             <TodoItem
               key={index}
@@ -65,21 +119,31 @@ class TodoList extends Component {
         onSwipeRight={() => console.log("Rejected")}
         onSwipeLeft={() => console.log("Accepted")}
       />
+    ) : (
+      <View style={{ alignItems: "center", justifyContent: "center" }}>
+        <TextComponent>No tasks</TextComponent>
+      </View>
     );
   }
 }
 
 const mapStateToProps = ({ TodoReducer, SearchReducer }) => {
-  let { todos } = TodoReducer;
+  let { todos, laterTodos, totalPages, page, isLoading } = TodoReducer;
   let { searchTerm, searchState } = SearchReducer;
 
   return {
     todos,
+    page,
+    totalPages,
+    laterTodos,
     searchTerm,
     searchState
   };
 };
 
-const mapDispatchToProps = (dispatch, props) => ({});
+const mapDispatchToProps = (dispatch, props) => ({
+  _fetchTodo: (type, page) => dispatch(fetchTodo(type, page)),
+  _fetchLaterTodo: page => dispatch(fetchLaterTodo(page))
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodoList);

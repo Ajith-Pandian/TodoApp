@@ -1,15 +1,22 @@
 import React, { Component } from "react";
 import { View, Image, Button, StyleSheet, Platform } from "react-native";
-import { TabNavigator, TabBarBottom } from "react-navigation";
+import {
+  TabNavigator,
+  TabBarBottom,
+  NavigationActions
+} from "react-navigation";
 import TodoList from "./TodoList";
 import { onSearchStateChange } from "../../Store/Actions/SearchActions";
+import { fetchLaterTodo } from "../../Store/Actions/TodoActions";
 import { connect } from "react-redux";
 import Activity from "./Activity";
-import { ACCENT_COLOR_1, APP_COLOR } from "../../Constants";
+import { ACCENT_COLOR_1, APP_COLOR, TODAY, WEEK, LATER } from "../../Constants";
 import TabBar from "../../Components/TabBar";
+
 let IC_TODAY = require("../../Resources/today.png");
 let IC_WEEK = require("../../Resources/week.png");
 let IC_ALL = require("../../Resources/all.png");
+
 const styles = StyleSheet.create({
   icon: {
     width: 26,
@@ -65,9 +72,9 @@ class Tab extends Component {
 const isIos = Platform.OS === "ios";
 const MyApp = TabNavigator(
   {
-    Today: { screen: Tab },
-    Week: { screen: Tab },
-    All: { screen: Tab },
+    [TODAY]: { screen: Tab },
+    [WEEK]: { screen: Tab },
+    [LATER]: { screen: Tab },
     Activity: { screen: Activity }
   },
   {
@@ -100,9 +107,13 @@ class Tabs extends Component {
   };
 
   render() {
-    let { navigation } = this.props;
+    let { navigation, _fetchLaterTodo, laterTodos } = this.props;
     return (
       <MyApp
+        onNavigationStateChange={(prevState, newState) => {
+          let { routes, index } = newState;
+          if (index == 2 && laterTodos.length === 0) _fetchLaterTodo(1);
+        }}
         screenProps={{
           rootNavigation: navigation
         }}
@@ -110,4 +121,14 @@ class Tabs extends Component {
     );
   }
 }
-export default Tabs;
+const mapStateToProps = ({ TodoReducer }) => {
+  let { laterTodos } = TodoReducer;
+  return {
+    laterTodos
+  };
+};
+
+const mapDispatchToProps = (dispatch, props) => ({
+  _fetchLaterTodo: page => dispatch(fetchLaterTodo(page))
+});
+export default connect(mapStateToProps, mapDispatchToProps)(Tabs);

@@ -74,14 +74,15 @@ class Activity extends Component {
           keyExtractor={(item, index) => index}
           ListHeaderComponent={() => <Profile />}
           ItemSeparatorComponent={() => <View style={seperator} />}
-          renderItem={(item, index) => (
+          renderItem={(item, index) => {
+            let isLast = todos.length - 1 === index;
             <ActivityItem
               key={index}
               index={index}
               isLast={isLast}
               todo={item}
-            />
-          )}
+            />;
+          }}
         />
       </View>
     );

@@ -3,19 +3,29 @@ export default class Todo {
     id,
     title,
     description,
-    assignor,
-     completionTime,
-    // alarmTime,
-    // isCompleted
+    created_by,
+    assigned_to,
+    isaccepted,
+    iscompleted,
+    isdeleted,
+    due_date,
+    created_date,
+    assigned_date,
+    completed_date,
+    attachment
   ) {
     this.id = id;
     this.title = title;
     this.description = description;
-    this.assignor = assignor;
-     this.completionTime = completionTime;
-    // this.alarmTime = alarmTime || new Date();
-    // this.isCompleted = isCompleted || false;
-    // this.createdAt = new Date();
-    // this.updatedAt = new Date();
+    this.createdBy = created_by;
+    this.assignedTo = assigned_to;
+    this.isAccepted = isaccepted;
+    this.isCompleted = iscompleted;
+    this.isDeleted = isdeleted;
+    this.dueDate = due_date;
+    this.createdDate = created_date;
+    this.assignedDate = assigned_date;
+    this.completedDate = completed_date;
+    this.attachment = attachment;
   }
 }

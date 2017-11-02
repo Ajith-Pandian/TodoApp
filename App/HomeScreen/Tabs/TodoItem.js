@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { View, Dimensions, StyleSheet, TouchableOpacity } from "react-native";
 import { NavigationActions } from "react-navigation";
+import moment from "moment";
 import { getTimeString } from "../../Utils";
 import { TextComponent } from "../../Components/TextComponents";
 const SCREEN_WIDTH = Dimensions.get("window").width;
@@ -10,7 +11,13 @@ const DIVIDER_WIDTH = 1,
 
 class TodoItem extends Component {
   state = { descriptionWidth: SCREEN_WIDTH * 0.7 };
-
+  getTimeAndDate = date => {
+    date = moment(date);
+    let visibleDate = date.format("MMM DD");
+    let visibleTime = date.format("hh:mm");
+    let meridiem = date.format("A");
+    return { visibleDate, visibleTime, meridiem };
+  };
   render() {
     let { index, todo, onClick } = this.props;
     let {
@@ -24,7 +31,9 @@ class TodoItem extends Component {
       smallFont,
       descriptionText
     } = styles;
-    let { assignor, description, completionTime, id, title } = todo;
+    let { description, dueDate, id, title, createdBy } = todo;
+    creatorName = createdBy || "Creator";
+    let { visibleDate, visibleTime, meridiem } = this.getTimeAndDate(dueDate);
     let color = "white";
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={() => onClick()}>
@@ -39,14 +48,14 @@ class TodoItem extends Component {
               this.setState({ descriptionWidth });
             }}
           >
-            <TextComponent textStyle={time}>9:25</TextComponent>
-            <TextComponent textStyle={timeSuffix}>AM</TextComponent>
-            <TextComponent>Aug 07</TextComponent>
+            <TextComponent textStyle={time}>{visibleTime}</TextComponent>
+            <TextComponent textStyle={timeSuffix}>{meridiem}</TextComponent>
+            <TextComponent>{visibleDate}</TextComponent>
           </View>
           <View style={divider} />
           <View style={descriptionLayout}>
             <View style={nameAndTime}>
-              <TextComponent textStyle={smallFont}>John</TextComponent>
+              <TextComponent textStyle={smallFont}>{creatorName}</TextComponent>
               <TextComponent textStyle={smallFont}>15 mins</TextComponent>
             </View>
             <TextComponent
@@ -58,10 +67,7 @@ class TodoItem extends Component {
                 }
               ]}
             >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
+              {title}
             </TextComponent>
           </View>
         </View>
@@ -89,7 +95,6 @@ const styles = StyleSheet.create({
     marginBottom: 2,
     padding: CONTAINER_PADDING,
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "white"
   },

@@ -1,6 +1,7 @@
 import {
   FETCH_TODO,
   FETCH_TODO_SUCCESS,
+  FETCH_LATER_TODO_SUCCESS,
   FETCH_TODO_FAILURE,
   CREATE_TODO,
   CREATE_TODO_SUCCESS,
@@ -17,36 +18,12 @@ import {
 } from "../StoreConstants";
 import Todo from "../../Model/Todo";
 import { getSortedList } from "../../Utils";
-var moment = require("moment");
-let names = [
-  "Waylon Dalton",
-  "Justine Henderson",
-  "Abdullah Lang",
-  "Marcus Cruz",
-  "Thalia Cobb",
-  "Mathias Little",
-  "Eddie Randolph",
-  "Angela Walker",
-  "Lia Shelton",
-  "Hadassah Hartman",
-  "Joanna Shaffer",
-  "Jonathon Sheppard"
-];
-let title = [
-  "Book Flight",
-  "Complete Assignment",
-  "Buy Veggies",
-  "Buy Coffee",
-  "Meeting",
-  "Call Friend",
-  "Attend Marriage",
-  "Goto Bar",
-  "Drink Whisky",
-  "Cook food",
-  "Sleep"
-];
+
 const initialState = {
-  todos: createTodos(),
+  todos: [],
+  laterTodos: [],
+  page: 1,
+  totalPages: 1,
   isLoading: false,
   isSuccess: false,
   isError: false
@@ -65,6 +42,18 @@ export default function TodoReducer(state = initialState, action) {
     case FETCH_TODO_SUCCESS: {
       return {
         ...state,
+        todos: state.todos.concat(action.todos),
+        isLoading: false,
+        isSuccess: true,
+        isError: false
+      };
+    }
+    case FETCH_LATER_TODO_SUCCESS: {
+      return {
+        ...state,
+        laterTodos: state.laterTodos.concat(action.laterTodos),
+        page: action.page,
+        totalPages: action.totalPages,
         isLoading: false,
         isSuccess: true,
         isError: false
@@ -199,29 +188,4 @@ export default function TodoReducer(state = initialState, action) {
     default:
       return state;
   }
-}
-
-function getRandom(array) {
-  return array[Math.floor(Math.random() * array.length)];
-}
-function getRandomInteger(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min;
-}
-
-function createTodos() {
-  let data = [];
-
-  for (var i = 0; i < 20; i++) {
-    let randomName = getRandom(names);
-    let randomTitle = getRandom(title);
-    let randomDescription = getRandom(title);
-    let date = moment().add(i, "h");
-    //date.setHours(date.getHours() + i);
-    //if (i >= 10) date.setDate(date.getDate() + i - 10);
-    data.push(new Todo(i, randomTitle, randomDescription, randomName, date));
-  }
-  getSortedList(data);
-  return data;
 }

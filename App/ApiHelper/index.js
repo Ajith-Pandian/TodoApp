@@ -4,7 +4,8 @@ const BASE_URL = "http://192.168.31.113:8000";
 const authUrl = phoneNum => `${BASE_URL}/phone/?phone=${phoneNum}`;
 const otpCheckUrl = (phoneNum, otp) =>
   `${BASE_URL}/otpverify/?phone=${phoneNum}&otp=${otp}`;
-const dashboardUrl = (type, page) =>
+const dashboardUrl = type => `${BASE_URL}/dashboard/?type=${type}`;
+const dashboardUrlWithPage = (type, page) =>
   `${BASE_URL}/dashboard/?type=${type}&page=${page}`;
 const getProfileUrl = `${BASE_URL}/profile/`;
 const registerUrl = `${BASE_URL}/register/`;
@@ -31,8 +32,14 @@ export default class ApiHelper {
       return res;
     });
   }
-  static getDashboard(type = "all", page = 1) {
-    return Api.get(dashboardUrl(type, page), token).then(res => {
+  static getWeeklyTasks() {
+    return Api.get(dashboardUrl("week"), token).then(res => {
+      console.log(res);
+      return res;
+    });
+  }
+  static getLaterTasks(page = 1) {
+    return Api.get(dashboardUrlWithPage("all", page), token).then(res => {
       console.log(res);
       return res;
     });
