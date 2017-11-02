@@ -62,6 +62,12 @@ export function getTimeString(date) {
 export function getSortedList(array) {
   return array.sort((a, b) => a.completionTime - b.completionTime);
 }
+
+export function removeDuplicates(array) {
+  return array.filter(
+    (thing, index, self) => self.findIndex(t => t.id === thing.id) === index
+  );
+}
 export function firstToLower(string) {
   return string.charAt(0).toLowerCase() + string.slice(1);
 }

@@ -17,7 +17,7 @@ import {
   INCOMPLETE_TODO_FAILURE
 } from "../StoreConstants";
 import Todo from "../../Model/Todo";
-import { getSortedList } from "../../Utils";
+import { getSortedList, removeDuplicates } from "../../Utils";
 
 const initialState = {
   todos: [],
@@ -42,7 +42,7 @@ export default function TodoReducer(state = initialState, action) {
     case FETCH_TODO_SUCCESS: {
       return {
         ...state,
-        todos: state.todos.concat(action.todos),
+        todos: removeDuplicates([...state.todos, ...action.todos]),
         isLoading: false,
         isSuccess: true,
         isError: false
@@ -51,7 +51,10 @@ export default function TodoReducer(state = initialState, action) {
     case FETCH_LATER_TODO_SUCCESS: {
       return {
         ...state,
-        laterTodos: state.laterTodos.concat(action.laterTodos),
+        laterTodos: removeDuplicates([
+          ...state.laterTodos,
+          ...action.laterTodos
+        ]),
         page: action.page,
         totalPages: action.totalPages,
         isLoading: false,

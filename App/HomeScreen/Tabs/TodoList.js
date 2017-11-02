@@ -13,13 +13,15 @@ import { TextComponent } from "../../Components/TextComponents";
 import { fetchTodo, fetchLaterTodo } from "../../Store/Actions/TodoActions";
 import { TODAY, WEEK, LATER } from "../../Constants";
 import { firstToLower } from "../../Utils";
+
 class TodoList extends Component {
   constructor() {
     super();
-    this.state = { offset: 0, isCloseToBottom: false };
+    this.state = { offset: 0 };
+    this.isCloseToBottom = false;
   }
   onScrollList = event => {
-    let { offset, isCloseToBottom } = this.state;
+    let { offset } = this.state;
     let { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
     const scrollOffsetY = contentOffset.y;
     const isScrollingUp = scrollOffsetY < offset;
@@ -28,11 +30,14 @@ class TodoList extends Component {
     const shouldShowTabBar = isScrollingUp || isGonnaReachBottom;
     this.props.onTabBarVisibilityChange(shouldShowTabBar);
     offset = scrollOffsetY;
+    let isCloseToBottom = this.isCloseToBottom;
     let isLater = this.props.navigation.state.key === LATER;
-    if (isLater)
+    if (isLater) {
       isCloseToBottom =
         layoutMeasurement.height + contentOffset.y >= contentSize.height - 50;
-    this.setState({ offset, isCloseToBottom });
+      this.isCloseToBottom = isCloseToBottom;
+    }
+    this.setState({ offset });
   };
 
   componentDidMount() {
@@ -53,7 +58,7 @@ class TodoList extends Component {
       _fetchLaterTodo
     } = nextProps;
     let isLater = navigation.state.key === LATER;
-    let { isCloseToBottom } = this.state;
+    let isCloseToBottom = this.isCloseToBottom;
     if (isLater && isCloseToBottom && !isLoading) {
       page++;
       if (page <= totalPages) _fetchLaterTodo(page);
@@ -72,15 +77,10 @@ class TodoList extends Component {
       screenProps,
       navigation
     } = this.props;
-    let { isCloseToBottom } = this.state;
 
     let isLater = navigation.state.key === LATER;
     todos = isLater ? laterTodos : todos;
-    let isLoadingItemAdded = false;
-    if (isLater && isLoading) {
-      todos = [...todos, "Loading Item"];
-      isLoadingItemAdded = true;
-    }
+
     if (searchState && searchTerm && searchTerm.length > 0) {
       searchTerm = searchTerm.toLowerCase();
       todos = todos.filter(
@@ -93,7 +93,7 @@ class TodoList extends Component {
     }
 
     return todos && todos.length > 0 ? (
-      <SwipeList
+      <FlatList
         data={todos}
         style={{ margin: 1 }}
         removeClippedSubviews={false}
@@ -101,7 +101,7 @@ class TodoList extends Component {
         scrollEventThrottle={16}
         keyExtractor={item => item.id}
         showsVerticalScrollIndicator={false}
-        renderItem={(item, index) => {
+        renderItem={({ item, index }) => {
           let isLast = todos.length - 1 === index;
           return (
             <TodoItem
@@ -115,6 +115,9 @@ class TodoList extends Component {
               }}
             />
           );
+        }}
+        ListFooterComponent={() => {
+          return isLoading ? <LoadingItem /> : null;
         }}
         onSwipeRight={() => console.log("Rejected")}
         onSwipeLeft={() => console.log("Accepted")}
@@ -134,6 +137,7 @@ const mapStateToProps = ({ TodoReducer, SearchReducer }) => {
   return {
     todos,
     page,
+    isLoading,
     totalPages,
     laterTodos,
     searchTerm,

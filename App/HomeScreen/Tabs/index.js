@@ -1,5 +1,14 @@
 import React, { Component } from "react";
-import { View, Image, Button, StyleSheet, Platform } from "react-native";
+import {
+  View,
+  Image,
+  Button,
+  StyleSheet,
+  Dimensions,
+  Platform,
+  TouchableOpacity,
+  Text
+} from "react-native";
 import {
   TabNavigator,
   TabBarBottom,
@@ -10,31 +19,64 @@ import { onSearchStateChange } from "../../Store/Actions/SearchActions";
 import { fetchLaterTodo } from "../../Store/Actions/TodoActions";
 import { connect } from "react-redux";
 import Activity from "./Activity";
-import { ACCENT_COLOR_1, APP_COLOR, TODAY, WEEK, LATER } from "../../Constants";
+import {
+  ACCENT_COLOR_1,
+  APP_COLOR,
+  TODAY,
+  WEEK,
+  LATER,
+  GRAY
+} from "../../Constants";
 import TabBar from "../../Components/TabBar";
+import { TextComponent } from "../../Components/TextComponents";
 
-let IC_TODAY = require("../../Resources/today.png");
-let IC_WEEK = require("../../Resources/week.png");
-let IC_ALL = require("../../Resources/all.png");
-
-const styles = StyleSheet.create({
-  icon: {
-    width: 26,
-    height: 26
-  }
-});
-
-getIcon = name => {
-  switch (name) {
-    case "Today":
-      return IC_TODAY;
-    case "Week":
-      return IC_WEEK;
-    case "All":
-      return IC_ALL;
-    default:
-      return IC_TODAY;
-  }
+const TabBarComponent = props => {
+  let {
+    navigation,
+    navigationState,
+    jumpToIndex,
+    activeTintColor,
+    inactiveTintColor
+  } = props;
+  let routes = navigation.state.routes;
+  let numberOfTabs = routes.length;
+  let tabWidth = Dimensions.get("window").width / numberOfTabs;
+  let currentTabIndex = navigationState.index;
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        backgroundColor: "white",
+        height: 50
+      }}
+    >
+      {routes.map((route, index) => {
+        let isCurrentTab = currentTabIndex === index;
+        return (
+          <TouchableOpacity
+            key={index}
+            onPress={() => jumpToIndex(index)}
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              width: tabWidth
+            }}
+            activeOpacity={1}
+          >
+            <TextComponent
+              isBold={isCurrentTab}
+              textStyle={{
+                fontSize: 16,
+                color: isCurrentTab ? activeTintColor : inactiveTintColor
+              }}
+            >
+              {route.routeName}
+            </TextComponent>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
 };
 class Tab extends Component {
   constructor(props) {
@@ -45,16 +87,6 @@ class Tab extends Component {
     let tabBarVisible =
       navigation.state.params && navigation.state.params.tabBarVisible;
     return {
-      tabBarIcon: ({ tintColor }) => (
-        <Image
-          source={getIcon(navigation.state.key)}
-          style={{
-            width: 26,
-            height: 26,
-            tintColor
-          }}
-        />
-      ),
       tabBarVisible
     };
   };
@@ -81,15 +113,19 @@ const MyApp = TabNavigator(
     animationEnabled: true,
     tabBarPosition: "bottom",
     swipeEnabled: false,
-    tabBarComponent: TabBarBottom,
+    tabBarComponent: props => <TabBarComponent {...props} />,
     tabBarOptions: {
       style: {
         backgroundColor: isIos ? "black" : "white",
         overflow: "hidden"
       },
       activeTintColor: isIos ? "white" : ACCENT_COLOR_1,
-      inactiveTintColor: isIos ? "#9d9d9d" : "black",
-      showLabel: !isIos
+      inactiveTintColor: isIos ? "#9d9d9d" : GRAY,
+      showLabel: true,
+      showIcon: false,
+      labelStyle: {
+        fontSize: 16
+      }
     }
   }
 );

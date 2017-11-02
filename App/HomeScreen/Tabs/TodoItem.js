@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, PureComponent } from "react";
 import { View, Dimensions, StyleSheet, TouchableOpacity } from "react-native";
 import { NavigationActions } from "react-navigation";
 import moment from "moment";
@@ -9,7 +9,7 @@ const DIVIDER_WIDTH = 1,
   MARGIN = 10,
   CONTAINER_PADDING = 10;
 
-class TodoItem extends Component {
+class TodoItem extends PureComponent {
   state = { descriptionWidth: SCREEN_WIDTH * 0.7 };
   getTimeAndDate = date => {
     date = moment(date);
