@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import {
   View,
+  Image,
   Dimensions,
   TouchableOpacity,
   ScrollView,
@@ -9,6 +10,7 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { connect } from "react-redux";
 import Spinner from "react-native-spinkit";
+import ImagePicker from "react-native-image-picker";
 import RoundButton from "../Components/RoundButton";
 import DisplayMessage from "../Components/DisplayMessage";
 import BackgroundContainer from "../Components/BackgroundContainer";
@@ -155,7 +157,7 @@ class ProfileInput extends Component {
 }
 // FIXME: configure me with Back To Exit
 class Register extends Component {
-  state = { name: "", number: "", email: "" };
+  state = { name: "", number: "", email: "", image: undefined };
   register = user => {
     this.props._registerUser(user);
   };
@@ -164,6 +166,34 @@ class Register extends Component {
     isSuccess ? resetNavigationToFirst("Home", navigation) : "";
     isError ? DisplayMessage("Connection failed. Retry") : "";
   }
+
+  getImage = () => {
+    let options = {
+      title: "Select Avatar",
+      storageOptions: {
+        skipBackup: true,
+        path: "images"
+      }
+    };
+    ImagePicker.showImagePicker(options, response => {
+      console.log("Response = ", response);
+
+      if (response.didCancel) {
+        console.log("User cancelled image picker");
+      } else if (response.error) {
+        console.log("ImagePicker Error: ", response.error);
+      } else if (response.customButton) {
+        console.log("User tapped custom button: ", response.customButton);
+      } else {
+        let { uri, fileName: name } = response;
+        let image = {
+          name,
+          uri
+        };
+        this.setState({ image }, () => console.log(this.state));
+      }
+    });
+  };
   render() {
     let {
       container,
@@ -172,6 +202,7 @@ class Register extends Component {
       inputContainer
     } = styles;
     let { isLoading, phoneNum } = this.props;
+    let { image } = this.state;
     return (
       <BackgroundContainer style={container}>
         <KeyboardAwareScrollView
@@ -182,8 +213,19 @@ class Register extends Component {
           <View style={imageContainer}>
             <TouchableOpacity
               pointerEvents="none"
-              style={clickableImageContainer}
-            />
+              style={[
+                clickableImageContainer,
+                { margin: 30, backgroundColor: "powderblue" }
+              ]}
+              onPress={() => this.getImage()}
+            >
+              {image ? (
+                <Image
+                  source={{ uri: image.uri }}
+                  style={styles.clickableImageContainer}
+                />
+              ) : null}
+            </TouchableOpacity>
           </View>
           <View style={inputContainer}>
             <ProfileInput
@@ -219,12 +261,23 @@ class Register extends Component {
                 size={40}
                 icon={RoundButton.RIGHT}
                 onPress={() => {
-                  this.nameRef.validateInput(ProfileInput.USER_NAME);
-                  this.emailRef.validateInput(ProfileInput.EMAIL);
-                  this.phoneNumRef.validateInput(ProfileInput.PHONE);
-                  let { name, number, email } = this.state;
-                  if (name && number && email)
-                    this.register({ name, phone: number, email });
+                  let { name, number, email, image } = this.state;
+                  if (name && number && email) {
+                    let user = { name, phone: number, email };
+                    if (image) {
+                      let { uri, name } = image;
+                      user.image = {
+                        uri,
+                        type: "image/jpeg",
+                        name
+                      };
+                    }
+                    this.register(user);
+                  } else {
+                    this.nameRef.validateInput(ProfileInput.USER_NAME);
+                    this.emailRef.validateInput(ProfileInput.EMAIL);
+                    this.phoneNumRef.validateInput(ProfileInput.PHONE);
+                  }
                 }}
               />
             )}
@@ -238,6 +291,7 @@ const IMAGE_CONTAINER_FLEX = 40;
 const INPUT_CONTAINER_FLEX = 100 - IMAGE_CONTAINER_FLEX;
 const ICON_FLEX = 15;
 const INPUT_FLEX = 100 - ICON_FLEX;
+const IMAGE_SIZE = 150;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -251,11 +305,9 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   clickableImageContainer: {
-    margin: 30,
-    height: 150,
-    width: 150,
-    borderRadius: 75,
-    backgroundColor: "powderblue"
+    height: IMAGE_SIZE,
+    width: IMAGE_SIZE,
+    borderRadius: IMAGE_SIZE / 2
   },
   inputContainer: {
     flex: INPUT_CONTAINER_FLEX,

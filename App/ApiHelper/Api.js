@@ -2,7 +2,7 @@ export default class Api {
   static headers() {
     return {
       Accept: "application/json",
-    //  "Content-Type": "multipart/form-data"
+      "Content-Type": "multipart/form-data"
     };
   }
 
