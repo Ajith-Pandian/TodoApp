@@ -2,25 +2,30 @@ import React, { Component } from "react";
 import { View, Dimensions, StyleSheet, TouchableOpacity } from "react-native";
 import { firstToLower } from "../../../Utils";
 import { TextComponent } from "../../../Components/TextComponents";
-import { GRAY } from "../../../Constants";
+import { GRAY, ACCENT_COLOR_1 } from "../../../Constants";
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const DIVIDER_WIDTH = 1,
   MARGIN = 10,
   CONTAINER_PADDING = 10;
 
+const getTypeAndColor = type => {
+  let color =
+    type === "Accepted" || type === "Completed" ? "green" : ACCENT_COLOR_1;
+  type = firstToLower(type);
+  return { type, color };
+};
 const Message = ({ sender, type, title }) => {
+  let typeAndColor = getTypeAndColor(type);
+  type = typeAndColor.type;
+  let color = typeAndColor.color;
   return (
     <TextComponent textStyle={{ color: GRAY }} numberOfLines={3}>
       <TextComponent textStyle={{ color: GRAY }}>{sender + " "}</TextComponent>
-      <TextComponent textStyle={{ color: "green" }}>
+      <TextComponent textStyle={{ color }}>
         {firstToLower(type) + " "}
       </TextComponent>
       <TextComponent textStyle={{ color: "black" }} numberOfLines={3}>
-        Lorem ipsum dolor sit amet, quo velit graece impetus cu. Vim ea iudico
-        ridens omnium, numquam dissentias te vel. Movet labore albucius has no,
-        sea agam aliquam referrentur te, an eum gloriatur tincidunt. Eu duo
-        impetus assueverit repudiandae, dicam fierent dignissim sed te. Omnis
-        dicta eos te.
+        {title}
       </TextComponent>
     </TextComponent>
   );
@@ -43,7 +48,7 @@ class TodoItem extends Component {
       descriptionText
     } = styles;
     let { sender_name, task_title, choice, message, id } = activity.item;
-    console.log(activity.item);
+
     let { descriptionWidth } = this.state;
     let color = "white";
     return (
@@ -94,7 +99,6 @@ const styles = StyleSheet.create({
   },
   descriptionLayout: {
     height: 70,
-    alignItems: "center",
     justifyContent: "center"
   }
 });

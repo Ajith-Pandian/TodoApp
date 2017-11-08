@@ -11,10 +11,9 @@ const getProfileUrl = `${BASE_URL}/profile/`;
 const registerUrl = `${BASE_URL}/register/`;
 const createTaskUrl = `${BASE_URL}/createtask/`;
 const acceptTaskUrl = `${BASE_URL}/accepttask/`;
-const activitiesUrl = `${BASE_URL}/activity/`;
+const activitiesUrlWithPage = page => `${BASE_URL}/activity?page=${page}`;
 const deviceIdUpdateUrl = `${BASE_URL}/device_id/`;
-const token =
-  "eyJwaG9uZSI6ICIxMjM0NTY3ODkwIiwgInNhbHQiOiAiMWE2ZDU2IiwgImV4cGlyZXMiOiAxNTEwMDU0MTc4LjAyMjQyMn1OBInf6rPhsi3LHiPou_bF9ckgaQs2D6S4MpPVyYNS8A=="; //accessToken
+
 export default class ApiHelper {
   static authenticate(phoneNum) {
     return Api.get(authUrl(phoneNum)).then(res => {
@@ -28,19 +27,19 @@ export default class ApiHelper {
       return res;
     });
   }
-  static getProfile() {
+  static getProfile(token) {
     return Api.get(getProfileUrl, token).then(res => {
       console.log(res);
       return res;
     });
   }
-  static getWeeklyTasks() {
+  static getWeeklyTasks(token) {
     return Api.get(dashboardUrl("week"), token).then(res => {
       console.log(res);
       return res;
     });
   }
-  static getLaterTasks(page = 1) {
+  static getLaterTasks(page = 1, token) {
     return Api.get(dashboardUrlWithPage("all", page), token).then(res => {
       console.log(res);
       return res;
@@ -52,25 +51,25 @@ export default class ApiHelper {
       return res;
     });
   }
-  static createTask(task) {
+  static createTask(task, token) {
     return Api.post(createTaskUrl, token, task).then(res => {
       console.log(res);
       return res;
     });
   }
-  static acceptTask(task) {
+  static acceptTask(task, token) {
     return Api.post(acceptTaskUrl, token, task).then(res => {
       console.log(res);
       return res;
     });
   }
-  static getActivities() {
-    return Api.get(activitiesUrl, token).then(res => {
+  static getActivities(page = 1, token) {
+    return Api.get(activitiesUrlWithPage(page), token).then(res => {
       console.log(res);
       return res;
     });
   }
-  static updateDeviceId(device_id) {
+  static updateDeviceId(device_id, token) {
     return Api.post(deviceIdUpdateUrl, token, { device_id }).then(res => {
       console.log(res);
       return res;

@@ -27,7 +27,12 @@ export default function ActivityReducer(state = initialState, action) {
     case FETCH_ACTIVITIES_SUCCESS: {
       return {
         ...state,
-        activities: removeDuplicates([...state.activities, ...action.activities]),
+        activities: removeDuplicates([
+          ...state.activities,
+          ...action.activities
+        ]),
+        page: action.page,
+        totalPages: action.totalPages,
         isLoading: false,
         isSuccess: true,
         isError: false

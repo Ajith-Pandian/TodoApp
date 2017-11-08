@@ -6,11 +6,14 @@ import {
   FlatList,
   StyleSheet
 } from "react-native";
+import { connect } from "react-redux";
+
 import { TextComponent as Text } from "../../../Components/TextComponents";
 import { Activity as ActivityIcon } from "../../../Components/Icons";
 import { GRAY } from "../../../Constants";
 import ActivityItem from "./ActivityItem";
-import { connect } from "react-redux";
+import { fetchActivities } from "../../../Store/Actions/ActivityActions";
+import LoadingItem from "../LoadingItem";
 
 const ProfilePic = ({ source }) => {
   let { imageContainer, image } = styles;
@@ -62,18 +65,50 @@ const Profile = ({ phoneNum }) => {
 class Activity extends Component {
   constructor() {
     super();
+    this.state = { offset: 0 };
+    this.isCloseToBottom = false;
+  }
+  onScrollList = event => {
+    let { offset } = this.state;
+    let { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+    const scrollOffsetY = contentOffset.y;
+    const isScrollingUp = scrollOffsetY < offset;
+    const isGonnaReachBottom =
+      layoutMeasurement.height + contentOffset.y >= contentSize.height - 200;
+    const shouldShowTabBar = isScrollingUp || isGonnaReachBottom;
+    this.props.onTabBarVisibilityChange(shouldShowTabBar);
+    offset = scrollOffsetY;
+    let isCloseToBottom = this.isCloseToBottom;
+
+    isCloseToBottom =
+      layoutMeasurement.height + contentOffset.y >= contentSize.height - 50;
+    this.isCloseToBottom = isCloseToBottom;
+    this.setState({ offset });
+  };
+  componentWillReceiveProps(nextProps) {
+    let { isLoading, totalPages, page, _fetchActivities } = nextProps;
+    let isCloseToBottom = this.isCloseToBottom;
+    if (isCloseToBottom && !isLoading) {
+      page++;
+      if (page <= totalPages) _fetchActivities(page);
+    }
   }
   render() {
-    let { activities, phoneNum } = this.props;
+    let { activities, isLoading, phoneNum } = this.props;
     let { container, seperator } = styles;
     return (
       <View style={container}>
         {activities && activities.length > 0 ? (
           <FlatList
             data={activities}
+            onScroll={e => this.onScrollList(e)}
+            scrollEventThrottle={16}
             keyExtractor={(item, index) => index}
             ListHeaderComponent={() => <Profile phoneNum={phoneNum} />}
             ItemSeparatorComponent={() => <View style={seperator} />}
+            ListFooterComponent={() => {
+              return isLoading ? <LoadingItem /> : null;
+            }}
             renderItem={(item, index) => {
               let isLast = activities.length - 1 === index;
               return (
@@ -166,16 +201,29 @@ Activity.navigationOptions = props => {
 };
 
 const mapStateToProps = ({ ActivityReducer, UserReducer }) => {
-  let { activities, isLoading, isSuccess, isError } = ActivityReducer;
+  let {
+    activities,
+    page,
+    totalPages,
+    isLoading,
+    isSuccess,
+    isError
+  } = ActivityReducer;
   let { phoneNum } = UserReducer;
 
   return {
     phoneNum,
     activities,
+    page,
+    totalPages,
     isLoading,
     isSuccess,
     isError
   };
 };
 
-export default connect(mapStateToProps)(Activity);
+const mapDispatchToProps = (dispatch, props) => ({
+  _fetchActivities: page => dispatch(fetchActivities(page))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Activity);

@@ -81,6 +81,7 @@ class InputComponent extends Component {
             { borderBottomColor: isError ? RED : GRAY }
           ]}
           multiline={false}
+          maxLength={140}
           placeholder={type.charAt(0).toUpperCase() + type.slice(1)}
           underlineColorAndroid={"transparent"}
           returnKeyType={"done"}

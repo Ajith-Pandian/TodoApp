@@ -102,13 +102,36 @@ class Tab extends Component {
     );
   }
 }
+class AllActivities extends Component {
+  constructor(props) {
+    super(props);
+  }
+  static navigationOptions = props => {
+    let { navigation } = props;
+    let tabBarVisible =
+      navigation.state.params && navigation.state.params.tabBarVisible;
+    return {
+      tabBarVisible
+    };
+  };
+
+  render() {
+    return (
+      <Activity
+        {...this.props}
+        onTabBarVisibilityChange={tabBarVisible =>
+          this.props.navigation.setParams({ tabBarVisible })}
+      />
+    );
+  }
+}
 const isIos = Platform.OS === "ios";
 const MyApp = TabNavigator(
   {
     [TODAY]: { screen: Tab },
     [WEEK]: { screen: Tab },
     [LATER]: { screen: Tab },
-    Activity: { screen: Activity }
+    Activity: { screen: AllActivities }
   },
   {
     animationEnabled: true,

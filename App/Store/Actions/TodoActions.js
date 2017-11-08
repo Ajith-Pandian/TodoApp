@@ -25,9 +25,10 @@ import Todo from "../../Model/Todo";
 import { LATER } from "../../Constants";
 
 export function fetchTodo() {
-  return dispatch => {
+  return (dispatch, getState) => {
+    let { authToken } = getState().UserReducer;
     dispatch(_fetchTodo());
-    ApiHelper.getWeeklyTasks().then(res => {
+    ApiHelper.getWeeklyTasks(authToken).then(res => {
       if (res && res.success) dispatch(_fetchTodoSuccess(getTodos(res.data)));
       else dispatch(_fetchTodoFailure());
     });
@@ -35,9 +36,10 @@ export function fetchTodo() {
 }
 
 export function fetchLaterTodo(page) {
-  return dispatch => {
+  return (dispatch, getState) => {
+    let { authToken } = getState().UserReducer;
     dispatch(_fetchTodo());
-    ApiHelper.getLaterTasks(page).then(res => {
+    ApiHelper.getLaterTasks(page, authToken).then(res => {
       if (res && res.success)
         dispatch(
           _fetchLaterTodoSuccess(page, res.total_pages, getTodos(res.data))

@@ -94,6 +94,7 @@ class TodoList extends Component {
 
     return todos && todos.length > 0 ? (
       <FlatList
+        ref={ref => (this.flatRef = ref)}
         data={todos}
         style={{ margin: 1 }}
         removeClippedSubviews={false}
@@ -117,6 +118,7 @@ class TodoList extends Component {
           );
         }}
         ListFooterComponent={() => {
+          //if (this.flatRef && isLoading) this.flatRef.scrolltoEnd();
           return isLoading ? <LoadingItem /> : null;
         }}
         onSwipeRight={() => console.log("Rejected")}
@@ -146,8 +148,14 @@ const mapStateToProps = ({ TodoReducer, SearchReducer }) => {
 };
 
 const mapDispatchToProps = (dispatch, props) => ({
-  _fetchTodo: (type, page) => dispatch(fetchTodo(type, page)),
-  _fetchLaterTodo: page => dispatch(fetchLaterTodo(page))
+  _fetchTodo: (type, page) => {
+    console.log(props);
+    dispatch(fetchTodo(type, page));
+  },
+  _fetchLaterTodo: page => {
+    console.log(props);
+    dispatch(fetchLaterTodo(page));
+  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodoList);
