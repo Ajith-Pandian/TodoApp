@@ -17,6 +17,7 @@ import {
 import TodoList from "./TodoList";
 import { onSearchStateChange } from "../../Store/Actions/SearchActions";
 import { fetchLaterTodo } from "../../Store/Actions/TodoActions";
+import { fetchActivities } from "../../Store/Actions/ActivityActions";
 import { connect } from "react-redux";
 import Activity from "./Activity";
 import {
@@ -143,12 +144,19 @@ class Tabs extends Component {
   };
 
   render() {
-    let { navigation, _fetchLaterTodo, laterTodos } = this.props;
+    let {
+      navigation,
+      _fetchLaterTodo,
+      laterTodos,
+      _fetchActivities,
+      activities
+    } = this.props;
     return (
       <MyApp
         onNavigationStateChange={(prevState, newState) => {
           let { routes, index } = newState;
           if (index == 2 && laterTodos.length === 0) _fetchLaterTodo(1);
+          if (index == 3 && activities.length === 0) _fetchActivities(1);
         }}
         screenProps={{
           rootNavigation: navigation
@@ -157,14 +165,17 @@ class Tabs extends Component {
     );
   }
 }
-const mapStateToProps = ({ TodoReducer }) => {
+const mapStateToProps = ({ TodoReducer, ActivityReducer }) => {
   let { laterTodos } = TodoReducer;
+  let { activities } = ActivityReducer;
   return {
-    laterTodos
+    laterTodos,
+    activities
   };
 };
 
 const mapDispatchToProps = (dispatch, props) => ({
-  _fetchLaterTodo: page => dispatch(fetchLaterTodo(page))
+  _fetchLaterTodo: page => dispatch(fetchLaterTodo(page)),
+  _fetchActivities: page => dispatch(fetchActivities(page))
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Tabs);

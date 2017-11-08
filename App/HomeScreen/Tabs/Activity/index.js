@@ -34,7 +34,6 @@ const TaskDetails = () => {
         <Text>Tasks</Text>
       </View>
       <View style={taskSeperator} />
-
       <View style={taskDetails}>
         <Text>12</Text>
         <Text>Tasks</Text>
@@ -43,7 +42,7 @@ const TaskDetails = () => {
   );
 };
 
-const Profile = () => {
+const Profile = ({ phoneNum }) => {
   let { profileContainer, profileDetails } = styles;
 
   return (
@@ -51,7 +50,7 @@ const Profile = () => {
       <View style={profileDetails}>
         <ProfilePic source="https://i.pinimg.com/736x/a1/de/0e/a1de0e9906773b64adb8646b0c60aacf--beard-logo-long-beards.jpg" />
         <Text>Natasha</Text>
-        <Text>123456789</Text>
+        <Text>{phoneNum}</Text>
         <TouchableOpacity>
           <Text textStyle={{ fontWeight: "bold" }}>Edit Profile</Text>
         </TouchableOpacity>
@@ -65,25 +64,42 @@ class Activity extends Component {
     super();
   }
   render() {
-    let { todos, searchTerm, searchState } = this.props;
+    let { activities, phoneNum } = this.props;
     let { container, seperator } = styles;
     return (
       <View style={container}>
-        <FlatList
-          data={todos}
-          keyExtractor={(item, index) => index}
-          ListHeaderComponent={() => <Profile />}
-          ItemSeparatorComponent={() => <View style={seperator} />}
-          renderItem={(item, index) => {
-            let isLast = todos.length - 1 === index;
-            <ActivityItem
-              key={index}
-              index={index}
-              isLast={isLast}
-              todo={item}
-            />;
-          }}
-        />
+        {activities && activities.length > 0 ? (
+          <FlatList
+            data={activities}
+            keyExtractor={(item, index) => index}
+            ListHeaderComponent={() => <Profile phoneNum={phoneNum} />}
+            ItemSeparatorComponent={() => <View style={seperator} />}
+            renderItem={(item, index) => {
+              let isLast = activities.length - 1 === index;
+              return (
+                <ActivityItem
+                  key={index}
+                  index={index}
+                  isLast={isLast}
+                  activity={item}
+                />
+              );
+            }}
+          />
+        ) : (
+          <View>
+            <Profile phoneNum={phoneNum} />
+            <View
+              style={{
+                height: 250,
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              <Text>No Activities</Text>
+            </View>
+          </View>
+        )}
       </View>
     );
   }
@@ -149,14 +165,16 @@ Activity.navigationOptions = props => {
   };
 };
 
-const mapStateToProps = ({ TodoReducer, SearchReducer }) => {
-  let { todos } = TodoReducer;
-  let { searchTerm, searchState } = SearchReducer;
+const mapStateToProps = ({ ActivityReducer, UserReducer }) => {
+  let { activities, isLoading, isSuccess, isError } = ActivityReducer;
+  let { phoneNum } = UserReducer;
 
   return {
-    todos,
-    searchTerm,
-    searchState
+    phoneNum,
+    activities,
+    isLoading,
+    isSuccess,
+    isError
   };
 };
 

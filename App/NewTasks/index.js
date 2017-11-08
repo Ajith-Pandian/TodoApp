@@ -14,10 +14,11 @@ import {
   TextInputComponent
 } from "../Components/TextComponents";
 import SwipeDeck from "./SwipeDeck";
+import TinderSwiper from "./TinderSwiper";
 const WIDTH = Dimensions.get("window").width;
 
-//export default SwipeDeck;
-export default class NewTasks extends Component {
+export default TinderSwiper;
+class NewTasks extends Component {
   constructor() {
     super();
   }

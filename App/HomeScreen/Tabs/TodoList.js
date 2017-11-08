@@ -123,7 +123,7 @@ class TodoList extends Component {
         onSwipeLeft={() => console.log("Accepted")}
       />
     ) : (
-      <View style={{ alignItems: "center", justifyContent: "center" }}>
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <TextComponent>No tasks</TextComponent>
       </View>
     );

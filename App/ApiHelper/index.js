@@ -1,6 +1,6 @@
 import Api from "./Api";
 
-const BASE_URL = "http://192.168.31.114:8000";
+const BASE_URL = "http://10.0.2.2:8000";
 const authUrl = phoneNum => `${BASE_URL}/phone/?phone=${phoneNum}`;
 const otpCheckUrl = (phoneNum, otp) =>
   `${BASE_URL}/otpverify/?phone=${phoneNum}&otp=${otp}`;
@@ -14,7 +14,7 @@ const acceptTaskUrl = `${BASE_URL}/accepttask/`;
 const activitiesUrl = `${BASE_URL}/activity/`;
 const deviceIdUpdateUrl = `${BASE_URL}/device_id/`;
 const token =
-  "eyJwaG9uZSI6ICIxMjM0NTEyMzQ1IiwgInNhbHQiOiAiMWYwZTEwIiwgImV4cGlyZXMiOiAxNTA4OTE0Mzg2LjI0MjY3M338DWF5oVRL58N6xd_2z1C2lz9C16D_1QVK9DeVrS1Q-g=="; //accessToken
+  "eyJwaG9uZSI6ICIxMjM0NTY3ODkwIiwgInNhbHQiOiAiMWE2ZDU2IiwgImV4cGlyZXMiOiAxNTEwMDU0MTc4LjAyMjQyMn1OBInf6rPhsi3LHiPou_bF9ckgaQs2D6S4MpPVyYNS8A=="; //accessToken
 export default class ApiHelper {
   static authenticate(phoneNum) {
     return Api.get(authUrl(phoneNum)).then(res => {

@@ -1,17 +1,35 @@
 import React, { Component } from "react";
 import { View, Dimensions, StyleSheet, TouchableOpacity } from "react-native";
-import { getTimeString } from "../../../Utils";
+import { firstToLower } from "../../../Utils";
 import { TextComponent } from "../../../Components/TextComponents";
+import { GRAY } from "../../../Constants";
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const DIVIDER_WIDTH = 1,
   MARGIN = 10,
   CONTAINER_PADDING = 10;
 
+const Message = ({ sender, type, title }) => {
+  return (
+    <TextComponent textStyle={{ color: GRAY }} numberOfLines={3}>
+      <TextComponent textStyle={{ color: GRAY }}>{sender + " "}</TextComponent>
+      <TextComponent textStyle={{ color: "green" }}>
+        {firstToLower(type) + " "}
+      </TextComponent>
+      <TextComponent textStyle={{ color: "black" }} numberOfLines={3}>
+        Lorem ipsum dolor sit amet, quo velit graece impetus cu. Vim ea iudico
+        ridens omnium, numquam dissentias te vel. Movet labore albucius has no,
+        sea agam aliquam referrentur te, an eum gloriatur tincidunt. Eu duo
+        impetus assueverit repudiandae, dicam fierent dignissim sed te. Omnis
+        dicta eos te.
+      </TextComponent>
+    </TextComponent>
+  );
+};
 class TodoItem extends Component {
-  state = { descriptionWidth: SCREEN_WIDTH * 0.7 };
+  state = { descriptionWidth: SCREEN_WIDTH * 0.71 };
 
   render() {
-    let { index, todo } = this.props;
+    let { index, activity } = this.props;
     let {
       container,
       imageLayout,
@@ -24,7 +42,9 @@ class TodoItem extends Component {
       smallFont,
       descriptionText
     } = styles;
-    let { assignor, description, completionTime, id, title } = todo;
+    let { sender_name, task_title, choice, message, id } = activity.item;
+    console.log(activity.item);
+    let { descriptionWidth } = this.state;
     let color = "white";
     return (
       <TouchableOpacity activeOpacity={0.8}>
@@ -41,43 +61,13 @@ class TodoItem extends Component {
           >
             <View style={image} />
           </View>
-
-          <View style={descriptionLayout}>
-            <View style={nameAndTime}>
-              <TextComponent textStyle={smallFont}>John</TextComponent>
-              <TextComponent textStyle={smallFont}>15 mins</TextComponent>
-            </View>
-            <TextComponent
-              numberOfLines={3}
-              textStyle={[
-                descriptionText,
-                {
-                  width: this.state.descriptionWidth
-                }
-              ]}
-            >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </TextComponent>
+          <View style={[descriptionLayout, { width: descriptionWidth }]}>
+            <Message sender={sender_name} title={task_title} type={choice} />
           </View>
         </View>
       </TouchableOpacity>
     );
   }
-}
-
-function getRandomColor() {
-  return (
-    "rgb(" +
-    Math.floor(Math.random() * 256) +
-    "," +
-    Math.floor(Math.random() * 256) +
-    "," +
-    Math.floor(Math.random() * 256) +
-    ")"
-  );
 }
 
 const styles = StyleSheet.create({
@@ -102,21 +92,11 @@ const styles = StyleSheet.create({
     backgroundColor: "powderblue",
     borderRadius: 35
   },
-  time: { fontSize: 20, fontWeight: "500" },
-  timeSuffix: {},
-  divider: {
-    backgroundColor: "#c2c2c2",
-    width: DIVIDER_WIDTH,
-    height: 70
-  },
-  descriptionLayout: { marginRight: MARGIN, marginLeft: MARGIN },
-  nameAndTime: {
-    flexDirection: "row",
+  descriptionLayout: {
+    height: 70,
     alignItems: "center",
-    justifyContent: "space-between"
-  },
-  smallFont: { fontSize: 12 },
-  descriptionText: { fontWeight: "bold" }
+    justifyContent: "center"
+  }
 });
 
 export default TodoItem;
