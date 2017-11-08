@@ -6,6 +6,7 @@ import OtpReducer from "./OtpReducer";
 import UserReducer from "./UserReducer";
 import RegisterReducer from "./RegisterReducer";
 import ActivityReducer from "./ActivityReducer";
+import PersistReducer from "./PersistReducer";
 
 const getRootReducer = () =>
   combineReducers({
@@ -15,7 +16,8 @@ const getRootReducer = () =>
     RegisterReducer,
     SearchReducer,
     TodoReducer,
-    ActivityReducer
+    ActivityReducer,
+    PersistReducer
   });
 
 export default getRootReducer;

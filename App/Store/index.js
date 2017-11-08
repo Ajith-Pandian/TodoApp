@@ -12,11 +12,10 @@ if (process.env.NODE_ENV === `development`) {
   middlewares.push(logger);
 }
 
-const getStore = () =>
-  createStore(
-    getRootReducer(),
-    {},
-    compose(applyMiddleware(...middlewares), autoRehydrate(true))
-  );
-
-export default getStore;
+const store = createStore(
+  getRootReducer(),
+  {},
+  compose(applyMiddleware(...middlewares), autoRehydrate(true))
+);
+persistStore(store, { storage: AsyncStorage, whitelist: ["UserReducer"] });
+export default store;

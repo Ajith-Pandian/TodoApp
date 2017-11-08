@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, StatusBar, Platform } from "react-native";
+import { View, Text, StatusBar, Platform } from "react-native";
 import { StackNavigator } from "react-navigation";
 import { connect, Provider } from "react-redux";
 
@@ -11,14 +11,12 @@ import NewTasks from "./NewTasks";
 import ContactsScreen from "./Contacts";
 import DetailsScreen from "./TaskDetails";
 
-import getStore from "./Store";
+import store from "./Store";
 import { APP_COLOR } from "./Constants";
 import Swipe from "./Swipe";
 import Register from "./Register";
 class StackApp extends Component {
-  state = { isLoggedIn: false };
-  render() {
-    let { isLoggedIn } = this.state;
+  getNavigator = isLoggedIn => {
     let AppNavigator = StackNavigator(
       {
         Register: { screen: Register, navigationOptions: { header: null } },
@@ -43,8 +41,29 @@ class StackApp extends Component {
       }
     );
     return <AppNavigator />;
+  };
+  render() {
+    let { isLoggedIn, rehydrated } = this.props;
+    return rehydrated ? (
+      this.getNavigator(isLoggedIn)
+    ) : (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>loading...</Text>
+      </View>
+    );
   }
 }
+const mapStateToProps = ({ UserReducer, PersistReducer }) => {
+  let { isLoggedIn } = UserReducer;
+  let { rehydrated } = PersistReducer;
+  return {
+    isLoggedIn,
+    rehydrated
+  };
+};
+
+const ConnectedStackApp = connect(mapStateToProps)(StackApp);
+
 const MyStatusBar = ({ backgroundColor, ...props }) => (
   <View
     style={{
@@ -58,12 +77,12 @@ const MyStatusBar = ({ backgroundColor, ...props }) => (
 const App = () => (
   <View style={{ flex: 1 }}>
     <MyStatusBar backgroundColor={APP_COLOR} barStyle="light-content" />
-    <StackApp />
+    <ConnectedStackApp />
   </View>
 );
 
 const ReduxApp = () => (
-  <Provider store={getStore()}>
+  <Provider store={store}>
     <App />
   </Provider>
 );
