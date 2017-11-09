@@ -68,7 +68,14 @@ class InputComponent extends Component {
     let content = this.state[type];
     let isError = !(content && content.length > 0);
     let errorMessage = `Enter ${type}`;
-    this.setState({ isError, errorMessage });
+    isError ? this.setError(errorMessage) : this.clearError(type);
+  };
+  setError = errorMessage => {
+    this.setState({ isError: true, errorMessage });
+  };
+  clearError = type => {
+    this.setState({ isError: false, errorMessage: "" });
+    this.props.onSuccess(this.state[type]);
   };
   render() {
     let { type } = this.props;
@@ -85,8 +92,7 @@ class InputComponent extends Component {
           placeholder={type.charAt(0).toUpperCase() + type.slice(1)}
           underlineColorAndroid={"transparent"}
           returnKeyType={"done"}
-          onChangeText={text =>
-            this.setState({ [type]: text }, () => console.log(this.state))}
+          onChangeText={text => this.setState({ [type]: text })}
           onEndEditing={() => {
             this.validate();
           }}
@@ -218,19 +224,23 @@ class CreateTask extends Component {
         console.log(`Item ${type} clicked`);
     }
   };
+  componentWillReceiveProps(nextProps) {
+    let { isSuccess, navigation } = nextProps;
+    if (isSuccess && this.submitted) navigation.goBack();
+  }
   validateAndCreate = () => {
-    let { contact, date, time } = this.state;
-    if (!contact) this.contactRef.setError(true);
-    else this.contactRef.setError(false);
+    let { contact, title, description, date, time } = this.state;
 
+    this.contactRef.setError(!contact);
     this.titleRef.validate();
     this.descriptionRef.validate();
+    this.dateRef.setError(!date);
+    this.timeRef.setError(!time);
 
-    if (!date) this.dateRef.setError(true);
-    else this.dateRef.setError(false);
-    if (!time) this.timeRef.setError(true);
-    else this.timeRef.setError(false);
-    if (date && time) this.syncDateTimeAndCreate();
+    if (date && time && title && description && contact) {
+      this.submitted = true;
+      this.syncDateTimeAndCreate();
+    }
   };
 
   render() {
@@ -268,10 +278,12 @@ class CreateTask extends Component {
             <InputComponent
               type={InputComponent.TITLE}
               ref={ref => (this.titleRef = ref)}
+              onSuccess={title => this.setState({ title })}
             />
             <InputComponent
               type={InputComponent.DESCRIPTION}
               ref={ref => (this.descriptionRef = ref)}
+              onSuccess={description => this.setState({ description })}
             />
             <ClickableComponent
               text={date ? moment(date).format("ll") : "Date"}
@@ -294,7 +306,6 @@ class CreateTask extends Component {
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              console.log("Done clicked");
               this.validateAndCreate();
             }}
           >
@@ -312,6 +323,7 @@ class CreateTask extends Component {
           date={visibleDateOrtime}
           is24Hour={false}
           titleIOS={"Pick " + mode}
+          minimumDate={new Date()}
         />
       </BackgroundContainer>
     );

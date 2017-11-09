@@ -148,14 +148,8 @@ const mapStateToProps = ({ TodoReducer, SearchReducer }) => {
 };
 
 const mapDispatchToProps = (dispatch, props) => ({
-  _fetchTodo: (type, page) => {
-    console.log(props);
-    dispatch(fetchTodo(type, page));
-  },
-  _fetchLaterTodo: page => {
-    console.log(props);
-    dispatch(fetchLaterTodo(page));
-  }
+  _fetchTodo: (type, page) => dispatch(fetchTodo(type, page)),
+  _fetchLaterTodo: page => dispatch(fetchLaterTodo(page))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodoList);

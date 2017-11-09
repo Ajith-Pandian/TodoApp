@@ -75,9 +75,10 @@ function _fetchTodoFailure() {
 }
 
 export function createTodo(todo) {
-  return dispatch => {
+  return (dispatch, getState) => {
+    let { authToken } = getState().UserReducer;
     dispatch(_createTodo());
-    ApiHelper.createTask(todo).then(res => {
+    ApiHelper.createTask(todo, authToken).then(res => {
       if (res && res.success) dispatch(_createTodoSuccess());
       else dispatch(_createTodoFailure());
     });
@@ -100,12 +101,16 @@ function _createTodoFailure() {
 }
 
 export function acceptTodo(taskId) {
-  return dispatch => {
+  return (dispatch, getState) => {
+    let { authToken } = getState().UserReducer;
     dispatch(_acceptTodo());
-    ApiHelper.acceptTask({
-      todo_id: taskId,
-      is_accepted: true
-    }).then(res => {
+    ApiHelper.acceptTask(
+      {
+        todo_id: taskId,
+        is_accepted: true
+      },
+      authToken
+    ).then(res => {
       if (res && res.success) dispatch(_acceptTodoSuccess());
       else dispatch(_acceptTodoFailure());
     });
@@ -129,12 +134,16 @@ function _acceptTodoFailure() {
 }
 
 export function rejectTodo(taskId) {
-  return dispatch => {
+  return (dispatch, getState) => {
+    let { authToken } = getState().UserReducer;
     dispatch(_rejectTodo());
-    ApiHelper.acceptTask({
-      todo_id: taskId,
-      is_accepted: false
-    }).then(res => {
+    ApiHelper.acceptTask(
+      {
+        todo_id: taskId,
+        is_accepted: false
+      },
+      authToken
+    ).then(res => {
       if (res && res.success) dispatch(_rejectTodoSuccess());
       else dispatch(_rejectTodoFailure());
     });

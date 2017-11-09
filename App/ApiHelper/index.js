@@ -1,6 +1,8 @@
 import Api from "./Api";
+import { Platform } from "react-native";
 
-const BASE_URL = "http://10.0.2.2:8000";
+const BASE_URL =
+  Platform.OS === "ios" ? "http://localhost:8000" : "http://10.0.2.2:8000";
 const authUrl = phoneNum => `${BASE_URL}/phone/?phone=${phoneNum}`;
 const otpCheckUrl = (phoneNum, otp) =>
   `${BASE_URL}/otpverify/?phone=${phoneNum}&otp=${otp}`;
@@ -41,6 +43,12 @@ export default class ApiHelper {
   }
   static getLaterTasks(page = 1, token) {
     return Api.get(dashboardUrlWithPage("all", page), token).then(res => {
+      console.log(res);
+      return res;
+    });
+  }
+  static getNewTaks(page = 1, token) {
+    return Api.get(dashboardUrlWithPage("new", page), token).then(res => {
       console.log(res);
       return res;
     });

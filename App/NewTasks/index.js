@@ -1,61 +1,42 @@
 import React, { Component } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Dimensions
-} from "react-native";
-import { Close } from "../Components/Icons";
-import { GRAY, ACCENT_COLOR_1 } from "../Constants";
-import BackgroundContainer from "../Components/BackgroundContainer";
-import {
-  TextComponent,
-  TextInputComponent
-} from "../Components/TextComponents";
-import SwipeDeck from "./SwipeDeck";
+import { connect } from "react-redux";
+
+import { fetchNewTaks, clearTasks } from "../Store/Actions/NewTasksActions";
+import { acceptTodo, rejectTodo } from "../Store/Actions/TodoActions";
 import TinderSwiper from "./TinderSwiper";
-const WIDTH = Dimensions.get("window").width;
 
-export default TinderSwiper;
 class NewTasks extends Component {
-  constructor() {
-    super();
+  componentDidMount() {
+    this.props._fetchNewTaks();
   }
-
   render() {
-    let { goBack } = this.props.navigation;
+    let { newTasks, _acceptTodo, _rejectTodo } = this.props;
     return (
-      <BackgroundContainer style={{ flex: 1 }} isTop={true}>
-        <View style={{ flex: 1, alignItems: "center" }}>
-          <TouchableOpacity
-            onPress={() => goBack()}
-            style={{ alignSelf: "flex-end", margin: 10, padding: 10 }}
-          >
-            <Close
-              size={30}
-              style={{ backgroundColor: "transparent" }}
-              color={GRAY}
-            />
-          </TouchableOpacity>
-          <View>
-            <TextComponent
-              textStyle={{
-                fontSize: 20,
-                textAlign: "left",
-                margin: 10,
-                marginLeft: 20
-              }}
-            >
-              NewTasks!
-            </TextComponent>
-            <View
-              style={{ width: WIDTH, height: 0.5, backgroundColor: GRAY }}
-            />
-            <SwipeDeck />
-          </View>
-        </View>
-      </BackgroundContainer>
+      <TinderSwiper
+        {...this.props}
+        onSwipeRight={position => _acceptTodo(newTasks[position].id)}
+        onSwipeLeft={position => _rejectTodo(newTasks[position].id)}
+      />
     );
   }
 }
+
+const mapStateToProps = ({ NewTasksReducer }) => {
+  let { isLoading, isError, isSuccess, newTasks } = NewTasksReducer;
+
+  return {
+    isLoading,
+    isError,
+    isSuccess,
+    newTasks
+  };
+};
+
+const mapDispatchToProps = (dispatch, props) => ({
+  _fetchNewTaks: page => dispatch(fetchNewTaks(page)),
+  _clearTasks: () => dispatch(clearTasks()),
+  _acceptTodo: id => dispatch(acceptTodo(id)),
+  _rejectTodo: id => dispatch(rejectTodo(id))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(NewTasks);
