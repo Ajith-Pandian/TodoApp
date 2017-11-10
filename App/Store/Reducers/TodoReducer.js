@@ -6,6 +6,9 @@ import {
   CREATE_TODO,
   CREATE_TODO_SUCCESS,
   CREATE_TODO_FAILURE,
+  SEARCH_TODO,
+  SEARCH_TODO_SUCCESS,
+  SEARCH_TODO_FAILURE,
   REJECT_TODO,
   REJECT_TODO_SUCCESS,
   REJECT_TODO_FAILURE,
@@ -22,6 +25,7 @@ import { getSortedList, removeDuplicates } from "../../Utils";
 const initialState = {
   todos: [],
   laterTodos: [],
+  searchedTodos: [],
   page: 1,
   totalPages: 1,
   isLoading: false,
@@ -70,7 +74,7 @@ export default function TodoReducer(state = initialState, action) {
         isError: true
       };
     }
-    case CREATE_TODO: {
+    case SEARCH_TODO: {
       return {
         ...state,
         isLoading: true,
@@ -78,15 +82,16 @@ export default function TodoReducer(state = initialState, action) {
         isError: false
       };
     }
-    case CREATE_TODO_SUCCESS: {
+    case SEARCH_TODO_SUCCESS: {
       return {
         ...state,
+        searchedTodos: action.searchedTodos,
         isLoading: false,
         isSuccess: true,
         isError: false
       };
     }
-    case CREATE_TODO_FAILURE: {
+    case SEARCH_TODO_FAILURE: {
       return {
         ...state,
         isLoading: false,

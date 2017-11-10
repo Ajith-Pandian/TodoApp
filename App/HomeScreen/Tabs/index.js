@@ -84,15 +84,21 @@ class Tab extends Component {
     super(props);
   }
   static navigationOptions = props => {
-    let { navigation } = props;
+    let { navigation, screenProps } = props;
+    let { searchState } = screenProps;
     let tabBarVisible =
       navigation.state.params && navigation.state.params.tabBarVisible;
+    tabBarVisible = searchState ? false : tabBarVisible;
     return {
       tabBarVisible
     };
   };
-
+  componentWillMount(nextProps) {
+    let { searchState } = this.props;
+    this.props.navigation.setParams({ tabBarVisible: !searchState });
+  }
   render() {
+    let { searchState } = this.props;
     return (
       <TodoList
         {...this.props}
@@ -107,15 +113,18 @@ class AllActivities extends Component {
     super(props);
   }
   static navigationOptions = props => {
-    let { navigation } = props;
+    let { navigation, screenProps } = props;
+    let { searchState } = screenProps;
     let tabBarVisible =
       navigation.state.params && navigation.state.params.tabBarVisible;
+    tabBarVisible = searchState ? false : tabBarVisible;
     return {
       tabBarVisible
     };
   };
 
   render() {
+    let { searchState } = this.props;
     return (
       <Activity
         {...this.props}
@@ -140,11 +149,11 @@ const MyApp = TabNavigator(
     tabBarComponent: props => <TabBarComponent {...props} />,
     tabBarOptions: {
       style: {
-        backgroundColor: isIos ? "black" : "white",
+        backgroundColor: "white",
         overflow: "hidden"
       },
-      activeTintColor: isIos ? "white" : ACCENT_COLOR_1,
-      inactiveTintColor: isIos ? "#9d9d9d" : GRAY,
+      activeTintColor: ACCENT_COLOR_1,
+      inactiveTintColor: GRAY,
       showLabel: true,
       showIcon: false,
       labelStyle: {
@@ -155,24 +164,32 @@ const MyApp = TabNavigator(
 );
 
 class Tabs extends Component {
-  static navigationOptions = ({ navigation }) => {
+  static navigationOptions = props => {
+    let { navigation } = props;
+
     return {
       header: (
         <TabBar
           navigation={navigation}
+          currentIndex={
+            navigation.state.params && navigation.state.params.currentIndex
+          }
           onChangeText={text => console.log(text)}
         />
       )
     };
   };
-
+  componentDidMount() {
+    this.props.navigation.setParams({ currentIndex: 0 });
+  }
   render() {
     let {
       navigation,
       _fetchLaterTodo,
       laterTodos,
       _fetchActivities,
-      activities
+      activities,
+      searchState
     } = this.props;
     return (
       <MyApp
@@ -180,20 +197,24 @@ class Tabs extends Component {
           let { routes, index } = newState;
           if (index == 2 && laterTodos.length === 0) _fetchLaterTodo(1);
           if (index == 3 && activities.length === 0) _fetchActivities(1);
+          navigation.setParams({ currentIndex: index });
         }}
         screenProps={{
-          rootNavigation: navigation
+          rootNavigation: navigation,
+          searchState
         }}
       />
     );
   }
 }
-const mapStateToProps = ({ TodoReducer, ActivityReducer }) => {
+const mapStateToProps = ({ TodoReducer, ActivityReducer, SearchReducer }) => {
   let { laterTodos } = TodoReducer;
   let { activities } = ActivityReducer;
+  let { searchState } = SearchReducer;
   return {
     laterTodos,
-    activities
+    activities,
+    searchState
   };
 };
 

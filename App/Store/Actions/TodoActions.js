@@ -3,6 +3,9 @@ import {
   FETCH_TODO_SUCCESS,
   FETCH_LATER_TODO_SUCCESS,
   FETCH_TODO_FAILURE,
+  SEARCH_TODO,
+  SEARCH_TODO_SUCCESS,
+  SEARCH_TODO_FAILURE,
   CREATE_TODO,
   CREATE_TODO_SUCCESS,
   CREATE_TODO_FAILURE,
@@ -97,6 +100,32 @@ function _createTodoSuccess() {
 function _createTodoFailure() {
   return {
     type: CREATE_TODO_FAILURE
+  };
+}
+export function searchTodo(term) {
+  return (dispatch, getState) => {
+    let { authToken } = getState().UserReducer;
+    dispatch(_searchTodo());
+    ApiHelper.searchTask(term, authToken).then(res => {
+      if (res && res.success) dispatch(_searchTodoSuccess(getTodos(res.data)));
+      else dispatch(_searchTodoFailure());
+    });
+  };
+}
+function _searchTodo() {
+  return {
+    type: SEARCH_TODO
+  };
+}
+function _searchTodoSuccess(searchedTodos) {
+  return {
+    type: SEARCH_TODO_SUCCESS,
+    searchedTodos
+  };
+}
+function _searchTodoFailure() {
+  return {
+    type: SEARCH_TODO_FAILURE
   };
 }
 

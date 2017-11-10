@@ -1,8 +1,10 @@
 import { SEARCH_TERM_CHANGE, SEARCH_STATE_CHANGE } from "../StoreConstants";
-
-export function onSearchTermChange(text) {
+import { searchTodo } from "./TodoActions";
+export function onSearchTermChange(currentIndex, text) {
   return dispatch => {
-    dispatch(_searchTermChange(text));
+    currentIndex === 2
+      ? dispatch(searchTodo(text))
+      : dispatch(_searchTermChange(text));
   };
 }
 export function onSearchStateChange(state) {

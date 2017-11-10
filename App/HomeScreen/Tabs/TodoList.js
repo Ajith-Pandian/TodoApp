@@ -68,6 +68,7 @@ class TodoList extends Component {
     let {
       todos,
       laterTodos,
+      searchedTodos,
       page,
       totalPages,
       isLoading,
@@ -79,7 +80,8 @@ class TodoList extends Component {
     } = this.props;
 
     let isLater = navigation.state.key === LATER;
-    todos = isLater ? laterTodos : todos;
+    todos =
+      isLater && searchState ? searchedTodos : isLater ? laterTodos : todos;
 
     if (searchState && searchTerm && searchTerm.length > 0) {
       searchTerm = searchTerm.toLowerCase();
@@ -133,7 +135,14 @@ class TodoList extends Component {
 }
 
 const mapStateToProps = ({ TodoReducer, SearchReducer }) => {
-  let { todos, laterTodos, totalPages, page, isLoading } = TodoReducer;
+  let {
+    todos,
+    laterTodos,
+    searchedTodos,
+    totalPages,
+    page,
+    isLoading
+  } = TodoReducer;
   let { searchTerm, searchState } = SearchReducer;
 
   return {
@@ -143,7 +152,8 @@ const mapStateToProps = ({ TodoReducer, SearchReducer }) => {
     totalPages,
     laterTodos,
     searchTerm,
-    searchState
+    searchState,
+    searchedTodos
   };
 };
 

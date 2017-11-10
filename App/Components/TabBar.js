@@ -16,7 +16,7 @@ import {
 import { connect } from "react-redux";
 import { TextComponent, TextInputComponent } from "./TextComponents";
 import { Search, Close, NewTasks } from "./Icons";
-import { APP_COLOR, ACCENT_COLOR } from "../Constants";
+import { APP_COLOR, ACCENT_COLOR_1 } from "../Constants";
 import { NavigationActions } from "react-navigation";
 
 const SEARCH_ICON = (
@@ -36,6 +36,7 @@ class TabBar extends Component {
   render() {
     let {
       //onNavPress,
+      currentIndex,
       onChangeText,
       _onSearchStateChange,
       _onSearchTermChange,
@@ -54,7 +55,8 @@ class TabBar extends Component {
         {/*<MenuButton onPress={() => onNavPress()} />*/}
         <TextComponent
           textStyle={{
-            marginLeft: 10,
+            marginLeft: 20,
+            marginRight: 20,
             fontSize: 16,
             color: "white"
           }}
@@ -69,7 +71,14 @@ class TabBar extends Component {
           multiline={false}
           placeholder={"Search"}
           autoFocus={true}
-          style={{ width: WIDTH - 65 }}
+          underlineColorAndroid={ACCENT_COLOR_1}
+          selectionColor={ACCENT_COLOR_1}
+          inputStyle={{
+            width: WIDTH - 65,
+            color: "#FFF",
+            paddingRight: 5,
+            paddingLeft: 5
+          }}
           onBlur={() => {
             /*this.setState({ isSearch: !isSearch })*/
           }}
@@ -77,11 +86,11 @@ class TabBar extends Component {
             if (text && text.length > 0) {
               clearTimeout(this.timeout);
               this.timeout = setTimeout(() => {
-                _onSearchTermChange(text);
-              }, 700);
+                _onSearchTermChange(currentIndex, text);
+              }, 200);
             } else {
               clearTimeout(this.timeout);
-              _onSearchTermChange(text);
+              _onSearchTermChange(currentIndex, text);
             }
 
             //onChangeText(text);
@@ -102,7 +111,10 @@ class TabBar extends Component {
             let newSearchState = !searchState;
             _onSearchStateChange(newSearchState);
           }}
-          style={{ marginLeft: 5, marginRight: 5 }}
+          style={{
+            marginLeft: 10,
+            marginRight: searchState ? 20 : 10
+          }}
         >
           {searchState ? CLOSE_ICON : SEARCH_ICON}
         </TouchableOpacity>
@@ -112,7 +124,7 @@ class TabBar extends Component {
             onPress={() => {
               navigation.navigate("NewTasks");
             }}
-            style={{ marginLeft: 5, marginRight: 5 }}
+            style={{ marginLeft: 10, marginRight: 10 }}
           >
             <NewTasks
               size={25}
@@ -127,6 +139,7 @@ class TabBar extends Component {
           <RoundButton
             size={30}
             icon={RoundButton.ADD}
+            style={{ marginLeft: 10, marginRight: 10 }}
             onPress={() => {
               navigation.navigate("CreateTask");
             }}
@@ -135,7 +148,14 @@ class TabBar extends Component {
       </View>
     );
     return (
-      <View style={container}>
+      <View
+        style={[
+          container,
+          {
+            justifyContent: searchState ? null : "space-between"
+          }
+        ]}
+      >
         {searchState ? searchComp : titleComp}
         {optionsComp}
       </View>
@@ -162,8 +182,8 @@ const mapDispatchToProps = (dispatch, props) => ({
   _onSearchStateChange: state => {
     dispatch(onSearchStateChange(state));
   },
-  _onSearchTermChange: term => {
-    dispatch(onSearchTermChange(term));
+  _onSearchTermChange: (currentIndex, term) => {
+    dispatch(onSearchTermChange(currentIndex, term));
   }
 });
 export default connect(mapStateToProps, mapDispatchToProps)(TabBar);
