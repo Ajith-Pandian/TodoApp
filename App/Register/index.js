@@ -27,6 +27,7 @@ import {
   resetNavigationToFirst
 } from "../Utils";
 import { registerUser } from "../Store/Actions/RegisterActions";
+import { updateProfile } from "../Store/Actions/UserActions";
 
 const WIDTH = Dimensions.get("window").width;
 const UserIcon = ({ color = GRAY }) => (
@@ -157,14 +158,55 @@ class ProfileInput extends Component {
 }
 // FIXME: configure me with Back To Exit
 class Register extends Component {
-  state = { name: "", number: "", email: "", image: undefined };
+  constructor(props) {
+    super(props);
+    let { phoneNum, email, name, image, navigation } = props;
+    let isEdit = navigation.state.params && navigation.state.params.isEdit;
+    let emptyState = {
+      name: "",
+      number: "",
+      email: "",
+      image: "",
+      isEdit,
+      isImageChanged: false
+    };
+    let editState = {
+      name,
+      number: phoneNum.toString(),
+      email,
+      image: { uri: image, name: Math.round(new Date().getTime() / 1000) },
+      isEdit,
+      isImageChanged: false
+    };
+    this.state = isEdit ? editState : emptyState;
+  }
+
   register = user => {
-    this.props._registerUser(user);
+    let { isEdit, isImageChanged } = this.state;
+    let { _updateProfile, _registerUser } = this.props;
+    if (isEdit) {
+      user.image = isImageChanged ? user.image : undefined;
+      _updateProfile(user);
+    } else {
+      _registerUser(user);
+    }
   };
   componentWillReceiveProps(nextProps) {
-    let { isSuccess, isError, navigation } = nextProps;
-    isSuccess ? resetNavigationToFirst("Home", navigation) : "";
-    isError ? DisplayMessage("Connection failed. Retry") : "";
+    let {
+      isSuccess,
+      isError,
+      updateIsError,
+      updateIsSuccess,
+      navigation
+    } = nextProps;
+    let { isEdit } = this.state;
+    if (isEdit) {
+      updateIsSuccess ? navigation.goBack() : "";
+      updateIsError ? DisplayMessage("Connection failed. Retry") : "";
+    } else {
+      isSuccess ? resetNavigationToFirst("Home", navigation) : "";
+      isError ? DisplayMessage("Connection failed. Retry") : "";
+    }
   }
 
   getImage = () => {
@@ -190,7 +232,8 @@ class Register extends Component {
           name,
           uri
         };
-        this.setState({ image }, () => console.log(this.state));
+        isImageChanged = true;
+        this.setState({ image, isImageChanged });
       }
     });
   };
@@ -201,8 +244,9 @@ class Register extends Component {
       clickableImageContainer,
       inputContainer
     } = styles;
-    let { isLoading, phoneNum } = this.props;
-    let { image } = this.state;
+    let { isLoading, updateIsLoading, navigation } = this.props;
+    let { image, number, name, email, isEdit } = this.state;
+    let shouldShowLoader = isEdit ? updateIsLoading : isLoading;
     return (
       <BackgroundContainer style={container}>
         <KeyboardAwareScrollView
@@ -221,7 +265,9 @@ class Register extends Component {
             >
               {image ? (
                 <Image
-                  source={{ uri: image.uri }}
+                  source={{
+                    uri: image.uri
+                  }}
                   style={styles.clickableImageContainer}
                 />
               ) : null}
@@ -230,24 +276,26 @@ class Register extends Component {
           <View style={inputContainer}>
             <ProfileInput
               ref={ref => (this.nameRef = ref)}
+              text={name}
               type={ProfileInput.USER_NAME}
               placeholder={"Fullname"}
               onSuccess={name => this.setState({ name })}
             />
             <ProfileInput
               ref={ref => (this.emailRef = ref)}
+              text={email}
               type={ProfileInput.EMAIL}
               placeholder={"Email"}
               onSuccess={email => this.setState({ email })}
             />
             <ProfileInput
               type={ProfileInput.PHONE}
-              text={phoneNum}
+              text={number}
               ref={ref => (this.phoneNumRef = ref)}
               placeholder={"Number"}
               onSuccess={number => this.setState({ number })}
             />
-            {isLoading ? (
+            {shouldShowLoader ? (
               <Spinner
                 style={{ margin: 20 }}
                 isVisible={true}
@@ -344,18 +392,35 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = ({ RegisterReducer, UserReducer }) => {
   let { isLoading, isError, isSuccess } = RegisterReducer;
-  let { phoneNum } = UserReducer;
+  let {
+    phoneNum,
+    email,
+    name,
+    image,
+    isLoading: updateIsLoading,
+    isError: updateIsError,
+    isSuccess: updateIsSuccess
+  } = UserReducer;
   return {
     phoneNum,
+    email,
+    name,
+    image,
     isLoading,
     isError,
-    isSuccess
+    isSuccess,
+    updateIsLoading,
+    updateIsError,
+    updateIsSuccess
   };
 };
 
 const mapDispatchToProps = (dispatch, props) => ({
   _registerUser: user => {
     dispatch(registerUser(user));
+  },
+  _updateProfile: user => {
+    dispatch(updateProfile(user));
   }
 });
 

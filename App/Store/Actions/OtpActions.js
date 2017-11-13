@@ -19,8 +19,9 @@ export function verifyOtp(phoneNum, otp) {
         if (res.success) {
           let { is_registered, token, phone, user_id } = res;
           if (is_registered) {
-            dispatch(updateUserDetails(user_id, phoneNum));
-            dispatch(updateUserAuthToken(token));
+            dispatch(
+              updateUserDetails({ id: user_id, phoneNum, authToken: token })
+            );
             dispatch(loginUser());
             dispatch(_onVerifyOtpSuccess(true));
           } else {

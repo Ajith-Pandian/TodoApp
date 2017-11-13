@@ -16,8 +16,9 @@ export function registerUser(user) {
       if (res && res.success) {
         let { token, phone, user_id } = res;
         dispatch(_registerUserSuccess());
-        dispatch(updateUserDetails(user_id, phone));
-        dispatch(updateUserAuthToken(token));
+        dispatch(
+          updateUserDetails({ id: user_id, phoneNum, authToken: token })
+        );
         dispatch(loginUser());
       } else dispatch(_registerUserFailure());
     });

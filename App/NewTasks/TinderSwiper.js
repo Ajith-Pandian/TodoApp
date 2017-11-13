@@ -99,7 +99,9 @@ export default class TinderSwiper extends Component {
       toValue: { x: panlength, y: 0 }
     }).start(() => this.onSwipeAnimationEnd(isRight));
   };
-
+  componentWillUnmount() {
+    this.props._clearTasks();
+  }
   render() {
     let { pan, currentPosition } = this.state;
     let cards = this.props.newTasks;
@@ -247,7 +249,6 @@ export default class TinderSwiper extends Component {
             <TouchableOpacity
               onPress={() => {
                 this.props.navigation.goBack();
-                this.props._clearTasks();
               }}
               style={{ position: "absolute", top: 25, right: 25 }}
             >

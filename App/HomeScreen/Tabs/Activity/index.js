@@ -17,6 +17,9 @@ import LoadingItem from "../LoadingItem";
 
 const ProfilePic = ({ source }) => {
   let { imageContainer, image } = styles;
+  image = image
+    ? image
+    : "https://i.pinimg.com/736x/a1/de/0e/a1de0e9906773b64adb8646b0c60aacf--beard-logo-long-beards.jpg";
   return (
     <View style={imageContainer}>
       <Image style={image} source={{ uri: source }} />
@@ -45,16 +48,21 @@ const TaskDetails = () => {
   );
 };
 
-const Profile = ({ phoneNum }) => {
+const Profile = ({ phoneNum, image, name, navigation }) => {
   let { profileContainer, profileDetails } = styles;
 
   return (
     <View style={profileContainer}>
       <View style={profileDetails}>
-        <ProfilePic source="https://i.pinimg.com/736x/a1/de/0e/a1de0e9906773b64adb8646b0c60aacf--beard-logo-long-beards.jpg" />
-        <Text>Natasha</Text>
+        <ProfilePic source={image} />
+        <Text>{name}</Text>
         <Text>{phoneNum}</Text>
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("Register", {
+              isEdit: true
+            })}
+        >
           <Text textStyle={{ fontWeight: "bold" }}>Edit Profile</Text>
         </TouchableOpacity>
       </View>
@@ -94,8 +102,24 @@ class Activity extends Component {
     }
   }
   render() {
-    let { activities, isLoading, phoneNum } = this.props;
+    let {
+      activities,
+      isLoading,
+      phoneNum,
+      name,
+      image,
+      screenProps
+    } = this.props;
+
     let { container, seperator } = styles;
+    const ProfileItem = (
+      <Profile
+        phoneNum={phoneNum}
+        name={name}
+        image={image}
+        navigation={screenProps.rootNavigation}
+      />
+    );
     return (
       <View style={container}>
         {activities && activities.length > 0 ? (
@@ -104,7 +128,7 @@ class Activity extends Component {
             onScroll={e => this.onScrollList(e)}
             scrollEventThrottle={16}
             keyExtractor={(item, index) => index}
-            ListHeaderComponent={() => <Profile phoneNum={phoneNum} />}
+            ListHeaderComponent={() => ProfileItem}
             ItemSeparatorComponent={() => <View style={seperator} />}
             ListFooterComponent={() => {
               return isLoading ? <LoadingItem /> : null;
@@ -123,7 +147,7 @@ class Activity extends Component {
           />
         ) : (
           <View>
-            <Profile phoneNum={phoneNum} />
+            {ProfileItem}
             <View
               style={{
                 height: 250,
@@ -209,10 +233,12 @@ const mapStateToProps = ({ ActivityReducer, UserReducer }) => {
     isSuccess,
     isError
   } = ActivityReducer;
-  let { phoneNum } = UserReducer;
+  let { phoneNum, name, image } = UserReducer;
 
   return {
     phoneNum,
+    name,
+    image,
     activities,
     page,
     totalPages,
