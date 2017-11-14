@@ -114,7 +114,7 @@ class TodoList extends Component {
               todo={item}
               onClick={() => {
                 let { navigate } = screenProps.rootNavigation;
-                navigate("TaskDetails");
+                navigate("TaskDetails", { item });
               }}
             />
           );

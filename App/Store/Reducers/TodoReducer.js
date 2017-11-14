@@ -173,6 +173,7 @@ export default function TodoReducer(state = initialState, action) {
     }
     case INCOMPLETE_TODO: {
       return {
+        ...state,
         isLoading: true,
         isSuccess: false,
         isError: false
@@ -180,6 +181,7 @@ export default function TodoReducer(state = initialState, action) {
     }
     case INCOMPLETE_TODO_SUCCESS: {
       return {
+        ...state,
         isLoading: false,
         isSuccess: true,
         isError: false

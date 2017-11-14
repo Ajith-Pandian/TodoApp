@@ -15,7 +15,7 @@ import {
 } from "../Store/Actions/SearchActions";
 import { connect } from "react-redux";
 import { TextComponent, TextInputComponent } from "./TextComponents";
-import { Search, Close, NewTasks } from "./Icons";
+import { Search, Close, Bell } from "./Icons";
 import { APP_COLOR, ACCENT_COLOR_1 } from "../Constants";
 import { NavigationActions } from "react-navigation";
 
@@ -126,7 +126,7 @@ class TabBar extends Component {
             }}
             style={{ marginLeft: 10, marginRight: 10 }}
           >
-            <NewTasks
+            <Bell
               size={25}
               style={{
                 backgroundColor: "transparent"

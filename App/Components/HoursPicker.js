@@ -225,6 +225,8 @@ const styles = StyleSheet.create({
   },
   headerText: {
     padding: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
     fontSize: 20,
     backgroundColor: APP_COLOR,
     borderTopLeftRadius: 10,

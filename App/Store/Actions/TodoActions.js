@@ -195,6 +195,22 @@ function _rejectTodoFailure() {
   };
 }
 
+export function completeTodo(taskId) {
+  return (dispatch, getState) => {
+    let { authToken } = getState().UserReducer;
+    dispatch(_completeTodo());
+    ApiHelper.completeTask(
+      {
+        todo_id: taskId,
+        is_completed: true
+      },
+      authToken
+    ).then(res => {
+      if (res && res.success) dispatch(_completeTodoSuccess());
+      else dispatch(_completeTodoFailure());
+    });
+  };
+}
 function _completeTodo() {
   return {
     type: COMPLETE_TODO
@@ -210,6 +226,24 @@ function _completeTodoFailure() {
     type: COMPLETE_TODO_FAILURE
   };
 }
+
+export function incompleteTodo(taskId) {
+  return (dispatch, getState) => {
+    let { authToken } = getState().UserReducer;
+    dispatch(_incompleteTodo());
+    ApiHelper.completeTask(
+      {
+        todo_id: taskId,
+        is_completed: false
+      },
+      authToken
+    ).then(res => {
+      if (res && res.success) dispatch(_incompleteTodoSuccess());
+      else dispatch(_incompleteTodoFailure());
+    });
+  };
+}
+
 function _incompleteTodo() {
   return {
     type: INCOMPLETE_TODO

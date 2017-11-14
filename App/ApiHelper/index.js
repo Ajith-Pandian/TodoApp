@@ -15,6 +15,7 @@ const profileUrl = `${BASE_URL}/profile/`;
 const registerUrl = `${BASE_URL}/register/`;
 const createTaskUrl = `${BASE_URL}/createtask/`;
 const acceptTaskUrl = `${BASE_URL}/accepttask/`;
+const completeTaskUrl = `${BASE_URL}/completetask/`;
 const activitiesUrlWithPage = page => `${BASE_URL}/activity?page=${page}`;
 const deviceIdUpdateUrl = `${BASE_URL}/device_id/`;
 
@@ -81,6 +82,12 @@ export default class ApiHelper {
   }
   static acceptTask(task, token) {
     return Api.post(acceptTaskUrl, token, task).then(res => {
+      console.log(res);
+      return res;
+    });
+  }
+  static completeTask(task, token) {
+    return Api.post(completeTaskUrl, token, task).then(res => {
       console.log(res);
       return res;
     });

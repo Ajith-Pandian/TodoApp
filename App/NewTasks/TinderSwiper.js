@@ -19,7 +19,7 @@ import RoundButton from "../Components/RoundButton";
 import { TextComponent } from "../Components/TextComponents";
 import { Close } from "../Components/Icons";
 import BackgroundContainer from "../Components/BackgroundContainer";
-import { GRAY } from "../Constants";
+import { GRAY, GREEN } from "../Constants";
 
 // How far the swipe need to go for a yes/ no to fire
 var SWIPE_THRESHOLD = 120;
@@ -238,7 +238,7 @@ export default class TinderSwiper extends Component {
                   <RoundButton
                     size={45}
                     padding={15}
-                    style={{ backgroundColor: "green" }}
+                    style={{ backgroundColor: GREEN }}
                     icon={RoundButton.CHECKMARK}
                     onPress={() => this.handleButtonPress(true)}
                   />
