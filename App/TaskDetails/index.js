@@ -5,59 +5,34 @@ import DateTimePicker from "react-native-modal-datetime-picker";
 import SimpleTabBar from "../Components/SimpleTabBar";
 import { Alarm } from "../Components/Icons";
 import { TextComponent } from "../Components/TextComponents";
+import HoursPicker from "../Components/HoursPicker";
 
 class DropDownMenu extends Component {
   constructor() {
     super();
     this.state = {
-      options: [
-        { text: "15 mins", value: 15 },
-        { text: "30 mins", value: 30 },
-        { text: "45 mins", value: 45 },
-        { text: "60 mins", value: 60 }
-      ],
-      selectedIndex: 0
+      pickerVisible: false
     };
   }
   render() {
-    let { options, selectedIndex } = this.state;
+    let { pickerVisible } = this.state;
     return (
-      <ModalDropdown
-        options={options.map(option => option.text)}
-        dropdownStyle={{ height: 100, width: 80 }}
-        renderRow={option => {
-          return (
-            <View
-              style={{
-                marginTop: 5,
-                marginBottom: 5,
-                marginLeft: 2,
-                marginRight: 2,
-                alignItems: "center",
-                justifyContent: "center"
-              }}
-            >
-              <TextComponent
-                textStyle={{ textAlign: "center", textAlignVertical: "center" }}
-              >
-                {option}
-              </TextComponent>
-            </View>
-          );
-        }}
-        onSelect={selectedIndex => this.setState({ selectedIndex })}
-      >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Alarm
-            size={20}
-            style={{ backgroundColor: "transparent" }}
-            color={"black"}
-          />
-          <TextComponent textStyle={{ color: "black" }}>
-            {options[selectedIndex].text}
-          </TextComponent>
-        </View>
-      </ModalDropdown>
+      <View>
+        <TouchableOpacity
+          onPress={() => this.setState({ pickerVisible: true })}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Alarm
+              size={20}
+              style={{ backgroundColor: "transparent" }}
+              color={"black"}
+            />
+            <TextComponent textStyle={{ color: "black" }}>
+              {options[selectedIndex].text}
+            </TextComponent>
+          </View>
+        </TouchableOpacity>
+      </View>
     );
   }
 }
@@ -128,16 +103,17 @@ export default class TaskDetails extends Component {
               ad justo mediocritatem.
             </TextComponent>
           </View>
-          <DateTimePicker
-            isVisible={pickerVisible}
-            onConfirm={selectedDate => {
-              this.setState({ pickerVisible: false, time: selectedDate });
+          <HoursPicker
+            isPickerVisible={pickerVisible}
+            onVisibilityChange={pickerVisible =>
+              this.setState({ pickerVisible })
+            }
+            initialTime={time}
+            onSelect={value => {
+              this.setState({ time: value.text }, () =>
+                console.log(this.state)
+              );
             }}
-            onCancel={() => this.setState({ pickerVisible: false })}
-            mode={"time"}
-            date={new Date()}
-            is24Hour={true}
-            titleIOS={"Pick hours"}
           />
         </ScrollView>
       </View>

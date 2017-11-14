@@ -38,7 +38,7 @@ export default class ApiHelper {
     });
   }
   static updateProfile(token, user) {
-    return Api.post(profileUrl + "re", token, { ...user }).then(res => {
+    return Api.post(profileUrl, token, { ...user }).then(res => {
       console.log(res);
       return res;
     });

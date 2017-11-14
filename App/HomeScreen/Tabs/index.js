@@ -196,7 +196,7 @@ class Tabs extends Component {
         onNavigationStateChange={(prevState, newState) => {
           let { routes, index } = newState;
           if (index == 2 && laterTodos.length === 0) _fetchLaterTodo(1);
-          if (index == 3 && activities.length === 0) _fetchActivities(1);
+          if (index == 3 ) _fetchActivities(1);
           navigation.setParams({ currentIndex: index });
         }}
         screenProps={{
