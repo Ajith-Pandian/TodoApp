@@ -3,6 +3,9 @@ package com.todoapp;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.RNFetchBlob.RNFetchBlobPackage;
+import org.wonday.pdf.RCTPdfView;
+import com.filepicker.FilePickerPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.react.rnspinkit.RNSpinkitPackage;
 import com.rt2zz.reactnativecontacts.ReactNativeContacts;
@@ -27,6 +30,9 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNFetchBlobPackage(),
+            new RCTPdfView(),
+            new FilePickerPackage(),
             new ImagePickerPackage(),
             new RNSpinkitPackage(),
             new ReactNativeContacts(),

@@ -1,16 +1,23 @@
 import React, { Component } from "react";
-import { View, ScrollView, TouchableOpacity, Dimensions } from "react-native";
+import {
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Dimensions,
+  Image
+} from "react-native";
 import ModalDropdown from "react-native-modal-dropdown";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import moment from "moment";
 import { connect } from "react-redux";
-
+import * as Mime from "react-native-mime-types";
 import SimpleTabBar from "../Components/SimpleTabBar";
 import { Alarm, Bell } from "../Components/Icons";
 import { TextComponent } from "../Components/TextComponents";
 import DisplayMessage from "../Components/DisplayMessage";
 import HoursPicker from "../Components/HoursPicker";
 import { GRAY, ACCENT_COLOR_1, GREEN } from "../Constants";
+import { getFileNameFromPath } from "../Utils";
 import { completeTodo, incompleteTodo } from "../Store/Actions/TodoActions";
 
 class DropDownMenu extends Component {
@@ -67,6 +74,62 @@ class ActionButton extends Component {
     );
   }
 }
+const PDFComponent = ({ uri, navigation }) => {
+  return (
+    <TouchableOpacity
+      style={{
+        margin: 10,
+        height: 50,
+        backgroundColor: "#FFF",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 5,
+        borderWidth: 0.8,
+        borderColor: "blue"
+      }}
+      onPress={() => navigation.navigate("PdfViewer", { uri })}
+      activeOpacity={0.8}
+    >
+      <TextComponent
+        textStyle={{
+          fontSize: 18
+        }}
+      >
+        {getFileNameFromPath(uri)}
+      </TextComponent>
+      <View
+        style={{
+          position: "absolute",
+          borderTopLeftRadius: 5,
+          borderBottomLeftRadius: 5,
+          left: 0,
+          top: 0,
+          bottom: 0,
+          width: 30,
+          backgroundColor: "blue"
+        }}
+      />
+    </TouchableOpacity>
+  );
+};
+const ImageComponent = ({ uri }) => {
+  uri = uri ? "http://10.0.2.2:8000/" + uri : undefined;
+  return (
+    <View style={{ margin: 10 }}>
+      <Image style={{ width: 200, height: 200 }} source={{ uri }} />
+    </View>
+  );
+};
+const InvalidComponent = () => {
+  return (
+    <View>
+      <TextComponent>Invalid Attachment</TextComponent>
+    </View>
+  );
+};
+const PDF = "pdf";
+const IMAGE = "image";
+const INVALID = "invalid";
 class TaskDetails extends Component {
   state = { pickerVisible: false, time: "15 mins" };
   getTimeAndDate = date => {
@@ -98,10 +161,29 @@ class TaskDetails extends Component {
     }
     isError ? DisplayMessage("Connection failed. Retry") : "";
   }
+  getType = file => {
+    let fileName = getFileNameFromPath(file);
+    let fileType = Mime.lookup(fileName);
+    return fileType.includes("pdf")
+      ? PDF
+      : fileType.includes("image") ? IMAGE : INVALID;
+  };
+  renderAttachment = attachment => {
+    let { navigation } = this.props;
+    const type = this.getType(attachment);
+    return type === PDF ? (
+      <PDFComponent uri={attachment} navigation={navigation} />
+    ) : type === IMAGE ? (
+      <ImageComponent uri={attachment} />
+    ) : (
+      <InvalidComponent />
+    );
+  };
   render() {
     let { navigation, _compeleteTodo, _incompleteTodo } = this.props;
     let item = navigation.state.params.item;
-    let { title, description, createdBy, dueDate } = item;
+    let { title, description, createdBy, dueDate, attachment } = item;
+    console.log(item);
     let { visibleDate, visibleTime, meridiem } = this.getTimeAndDate(dueDate);
     const { height: heightOfDeviceScreen } = Dimensions.get("window");
     let { pickerVisible, time } = this.state;
@@ -175,6 +257,12 @@ class TaskDetails extends Component {
               {description}
             </TextComponent>
           </View>
+          {attachment ? (
+            <View style={{ margin: 10 }}>
+              <TextComponent>Attachment</TextComponent>
+              {this.renderAttachment(attachment)}
+            </View>
+          ) : null}
           <HoursPicker
             isPickerVisible={pickerVisible}
             onVisibilityChange={pickerVisible =>

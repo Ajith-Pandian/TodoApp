@@ -11,10 +11,13 @@ import {
 import DateTimePicker from "react-native-modal-datetime-picker";
 import moment from "moment";
 import { connect } from "react-redux";
+import * as Mime from "react-native-mime-types";
+const FilePickerManager = require("NativeModules").FilePickerManager;
 
 import { Close, Calendar, Time, Attach } from "../Components/Icons";
 import { GRAY, RED, ACCENT_COLOR_1 } from "../Constants";
 import BackgroundContainer from "../Components/BackgroundContainer";
+import { getFileNameFromPath } from "../Utils";
 import {
   TextComponent,
   TextInputComponent
@@ -144,7 +147,7 @@ class ClickableComponent extends Component {
   render() {
     let { type, text, onClick } = this.props;
     let { isError, errorMessage } = this.state;
-
+    const maxlimit = 30;
     return (
       <View style={{ height: isError ? 70 : 50 }}>
         <TouchableOpacity
@@ -163,8 +166,11 @@ class ClickableComponent extends Component {
               textAlign: "left",
               textAlignVertical: "center"
             }}
+            numberOfLines={1}
           >
-            {text}
+            {text.length > maxlimit
+              ? text.substring(0, maxlimit - 3) + "..."
+              : text}
           </TextComponent>
         </TouchableOpacity>
         {isError ? (
@@ -189,7 +195,7 @@ class CreateTask extends Component {
   }
 
   syncDateTimeAndCreate = () => {
-    let { date, time, title, description, contact } = this.state;
+    let { date, time, title, description, contact, attachment } = this.state;
     let { _createTodo } = this.props;
     let dateString = date.toString();
     let momentDate = moment(dateString, "ddd MMM D YYYY HH:mm:ss ZZ");
@@ -201,7 +207,24 @@ class CreateTask extends Component {
       title,
       description,
       receiver: contact.number,
-      due_date: formattedDate
+      due_date: formattedDate,
+      attachment
+    });
+  };
+  openFilePicker = () => {
+    FilePickerManager.showFilePicker(null, response => {
+      console.log("Response = ", response);
+      if (response.didCancel) {
+        console.log("User cancelled file picker");
+      } else if (response.error) {
+        console.log("FilePickerManager Error: ", response.error);
+      } else {
+        let { uri, path } = response;
+        let name = getFileNameFromPath(path);
+        let type = Mime.lookup(name);
+        let attachment = { uri, name, type };
+        this.setState({ attachment });
+      }
     });
   };
   handleClick = type => {
@@ -218,7 +241,7 @@ class CreateTask extends Component {
         this.setState({ pickerVisible: true, mode: type });
         break;
       case ClickableComponent.ATTACH:
-        console.log("Attach clicked");
+        this.openFilePicker();
         break;
       default:
         console.log(`Item ${type} clicked`);
@@ -245,7 +268,7 @@ class CreateTask extends Component {
 
   render() {
     let { goBack } = this.props.navigation;
-    let { pickerVisible, mode, contact, date, time } = this.state;
+    let { pickerVisible, mode, contact, date, time, attachment } = this.state;
     let visibleDateOrtime =
       mode === ClickableComponent.DATE && date
         ? date
@@ -298,7 +321,7 @@ class CreateTask extends Component {
               onClick={() => this.handleClick(ClickableComponent.TIME)}
             />
             <ClickableComponent
-              text={"Attachment"}
+              text={attachment ? attachment.name : "Attachment"}
               type={ClickableComponent.ATTACH}
               onClick={() => this.handleClick(ClickableComponent.ATTACH)}
             />

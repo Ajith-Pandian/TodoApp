@@ -133,6 +133,9 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-fetch-blob')
+    compile project(':react-native-pdf')
+    compile project(':react-native-file-picker')
     compile project(':react-native-image-picker')
     compile project(':react-native-spinkit')
     compile project(':react-native-contacts')

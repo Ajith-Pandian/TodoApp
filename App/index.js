@@ -10,6 +10,7 @@ import CreateTask from "./CreateTask";
 import NewTasks from "./NewTasks";
 import ContactsScreen from "./Contacts";
 import DetailsScreen from "./TaskDetails";
+import PdfViewer from "./PdfViewer";
 
 import store from "./Store";
 import { APP_COLOR } from "./Constants";
@@ -31,6 +32,10 @@ class StackApp extends Component {
         },
         TaskDetails: {
           screen: DetailsScreen,
+          navigationOptions: { header: null }
+        },
+        PdfViewer: {
+          screen: PdfViewer,
           navigationOptions: { header: null }
         }
       },

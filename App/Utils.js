@@ -71,3 +71,6 @@ export function removeDuplicates(array) {
 export function firstToLower(string) {
   return string.charAt(0).toLowerCase() + string.slice(1);
 }
+export function getFileNameFromPath(path) {
+  return path.substring(path.lastIndexOf("/") + 1);
+}
