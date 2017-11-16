@@ -14,11 +14,11 @@ import {
   TabBarBottom,
   NavigationActions
 } from "react-navigation";
-import TodoList from "./TodoList";
-import { onSearchStateChange } from "../../Store/Actions/SearchActions";
-import { fetchLaterTodo } from "../../Store/Actions/TodoActions";
-import { fetchActivities } from "../../Store/Actions/ActivityActions";
 import { connect } from "react-redux";
+
+import TabBar from "../../Components/TabBar";
+import { TextComponent } from "../../Components/TextComponents";
+import TodoList from "./TodoList";
 import Activity from "./Activity";
 import {
   ACCENT_COLOR_1,
@@ -28,8 +28,9 @@ import {
   LATER,
   GRAY
 } from "../../Constants";
-import TabBar from "../../Components/TabBar";
-import { TextComponent } from "../../Components/TextComponents";
+import { onSearchStateChange } from "../../Store/Actions/SearchActions";
+import { fetchLaterTodo } from "../../Store/Actions/TodoActions";
+import { fetchActivities } from "../../Store/Actions/ActivityActions";
 
 const TabBarComponent = props => {
   let {
@@ -103,7 +104,8 @@ class Tab extends Component {
       <TodoList
         {...this.props}
         onTabBarVisibilityChange={tabBarVisible =>
-          this.props.navigation.setParams({ tabBarVisible })}
+          this.props.navigation.setParams({ tabBarVisible })
+        }
       />
     );
   }
@@ -129,7 +131,8 @@ class AllActivities extends Component {
       <Activity
         {...this.props}
         onTabBarVisibilityChange={tabBarVisible =>
-          this.props.navigation.setParams({ tabBarVisible })}
+          this.props.navigation.setParams({ tabBarVisible })
+        }
       />
     );
   }
@@ -196,7 +199,7 @@ class Tabs extends Component {
         onNavigationStateChange={(prevState, newState) => {
           let { routes, index } = newState;
           if (index == 2 && laterTodos.length === 0) _fetchLaterTodo(1);
-          if (index == 3 ) _fetchActivities(1);
+          if (index == 3) _fetchActivities(1);
           navigation.setParams({ currentIndex: index });
         }}
         screenProps={{

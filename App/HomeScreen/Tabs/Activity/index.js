@@ -61,7 +61,8 @@ const Profile = ({ phoneNum, image, name, navigation }) => {
           onPress={() =>
             navigation.navigate("Register", {
               isEdit: true
-            })}
+            })
+          }
         >
           <Text textStyle={{ fontWeight: "bold" }}>Edit Profile</Text>
         </TouchableOpacity>

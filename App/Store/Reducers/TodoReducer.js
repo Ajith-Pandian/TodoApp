@@ -17,10 +17,13 @@ import {
   COMPLETE_TODO_FAILURE,
   INCOMPLETE_TODO,
   INCOMPLETE_TODO_SUCCESS,
-  INCOMPLETE_TODO_FAILURE
+  INCOMPLETE_TODO_FAILURE,
+  UPDATE_REMINDER_TIME
 } from "../StoreConstants";
 import Todo from "../../Model/Todo";
 import { getSortedList, removeDuplicates } from "../../Utils";
+
+import update from "immutability-helper";
 
 const initialState = {
   todos: [],
@@ -194,6 +197,17 @@ export default function TodoReducer(state = initialState, action) {
         isSuccess: false,
         isError: true
       };
+    }
+    case UPDATE_REMINDER_TIME: {
+      let { todoId, reminderTime } = action;
+      let index = state.todos.findIndex(item => item.id === todoId);
+      return update(state, {
+        todos: {
+          [index]: {
+            reminderTime: { $set: reminderTime }
+          }
+        }
+      });
     }
     default:
       return state;

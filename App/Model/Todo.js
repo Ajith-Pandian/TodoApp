@@ -27,5 +27,6 @@ export default class Todo {
     this.assignedDate = assigned_date;
     this.completedDate = completed_date;
     this.attachment = attachment;
+    this.reminderTime = "10 mins";
   }
 }

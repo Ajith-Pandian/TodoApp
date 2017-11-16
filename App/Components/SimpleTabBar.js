@@ -44,10 +44,11 @@ export default class SimpleTabBar extends Component {
     let { container } = styles;
     return (
       <View style={container}>
-        <BackButton onPress={() => onBackPress()} />
+        {onBackPress ? <BackButton onPress={() => onBackPress()} /> : null}
         <TextComponent
           textStyle={{
-            marginLeft: 10,
+            marginLeft: onBackPress ? 10 : 20,
+            marginRight: onBackPress ? 10 : 20,
             fontSize: 16,
             color: "white"
           }}
@@ -61,6 +62,7 @@ export default class SimpleTabBar extends Component {
 const styles = StyleSheet.create({
   container: {
     height: Platform.OS !== "ios" ? 56 : 48,
+    width: Dimensions.get("window").width,
     backgroundColor: APP_COLOR,
     flexDirection: "row",
     alignItems: "center"

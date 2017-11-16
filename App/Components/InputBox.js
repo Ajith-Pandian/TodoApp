@@ -8,7 +8,7 @@ import {
   Platform
 } from "react-native";
 import { TextComponent, TextInputComponent } from "./TextComponents";
-import { GRAY, RED } from "../Constants";
+import { GRAY, TUNA, RED } from "../Constants";
 import { isDigitsOnly as _isDigitsOnly } from "../Utils";
 
 export default class InputBox extends Component {
@@ -103,6 +103,7 @@ export default class InputBox extends Component {
           autoFocus={autoFocus}
           multiline={false}
           placeholder={placeholder}
+          placeholderTextColor={GRAY}
           keyboardType={"numeric"}
           underlineColorAndroid={"transparent"}
           returnKeyType={"done"}
@@ -162,6 +163,6 @@ export default class InputBox extends Component {
 function getExtraStyle(isError) {
   return {
     borderBottomWidth: 0.5,
-    borderBottomColor: isError ? RED : GRAY
+    borderBottomColor: isError ? RED : TUNA
   };
 }

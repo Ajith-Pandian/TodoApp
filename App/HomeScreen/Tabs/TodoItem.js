@@ -1,9 +1,12 @@
 import React, { Component, PureComponent } from "react";
 import { View, Dimensions, StyleSheet, TouchableOpacity } from "react-native";
 import { NavigationActions } from "react-navigation";
+import { connect } from "react-redux";
 import moment from "moment";
+
 import { getTimeString } from "../../Utils";
 import { TextComponent } from "../../Components/TextComponents";
+import { GRAY } from "../../Constants";
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const DIVIDER_WIDTH = 1,
   MARGIN = 10,
@@ -19,8 +22,9 @@ class TodoItem extends PureComponent {
     return { visibleDate, visibleTime, meridiem };
   };
   render() {
-    let { index, todo, onClick } = this.props;
+    let { index, todo, onClick, name } = this.props;
     let {
+      clickableContainer,
       container,
       dateLayout,
       time,
@@ -29,14 +33,21 @@ class TodoItem extends PureComponent {
       descriptionLayout,
       nameAndTime,
       smallFont,
+      ownBadge,
+      blackFont,
       descriptionText
     } = styles;
-    let { description, dueDate, id, title, createdBy } = todo;
-    creatorName = createdBy || "Creator";
+    let { description, dueDate, id, title, createdBy, reminderTime } = todo;
+    const isOwn = createdBy === name;
+    creatorName = isOwn ? "Myself" : createdBy;
     let { visibleDate, visibleTime, meridiem } = this.getTimeAndDate(dueDate);
     let color = "white";
     return (
-      <TouchableOpacity activeOpacity={0.8} onPress={() => onClick()}>
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={() => onClick()}
+        style={clickableContainer}
+      >
         <View style={container}>
           <View
             style={dateLayout}
@@ -45,18 +56,29 @@ class TodoItem extends PureComponent {
               let descriptionWidth =
                 SCREEN_WIDTH -
                 (4 * MARGIN + 2 * CONTAINER_PADDING + DIVIDER_WIDTH + width);
-              this.setState({ descriptionWidth });
+              //  this.setState({ descriptionWidth });
             }}
           >
             <TextComponent textStyle={time}>{visibleTime}</TextComponent>
-            <TextComponent textStyle={timeSuffix}>{meridiem}</TextComponent>
-            <TextComponent>{visibleDate}</TextComponent>
+            <TextComponent isExtraLight textStyle={blackFont}>
+              {meridiem}
+            </TextComponent>
+            <TextComponent isExtraLight textStyle={blackFont}>
+              {visibleDate}
+            </TextComponent>
           </View>
           <View style={divider} />
           <View style={descriptionLayout}>
             <View style={nameAndTime}>
-              <TextComponent textStyle={smallFont}>{creatorName}</TextComponent>
-              <TextComponent textStyle={smallFont}>15 mins</TextComponent>
+              <TextComponent
+                isExtraLight
+                textStyle={isOwn ? ownBadge : smallFont}
+              >
+                {creatorName}
+              </TextComponent>
+              <TextComponent isExtraLight textStyle={smallFont}>
+                {reminderTime}
+              </TextComponent>
             </View>
             <TextComponent
               numberOfLines={3}
@@ -76,48 +98,68 @@ class TodoItem extends PureComponent {
   }
 }
 
-function getRandomColor() {
-  return (
-    "rgb(" +
-    Math.floor(Math.random() * 256) +
-    "," +
-    Math.floor(Math.random() * 256) +
-    "," +
-    Math.floor(Math.random() * 256) +
-    ")"
-  );
-}
-
 const styles = StyleSheet.create({
-  container: {
+  clickableContainer: {
     height: 100,
     width: SCREEN_WIDTH,
-    marginBottom: 2,
-    padding: CONTAINER_PADDING,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    backgroundColor: "white"
+    borderBottomColor: "#cccccc",
+    borderBottomWidth: 1,
+    justifyContent: "center"
+  },
+  container: {
+    margin: CONTAINER_PADDING,
+    flexDirection: "row"
   },
   dateLayout: {
     alignItems: "flex-end",
     marginRight: MARGIN,
     marginLeft: MARGIN
   },
-  time: { fontSize: 20, fontWeight: "500" },
-  timeSuffix: {},
-  divider: {
-    backgroundColor: "#c2c2c2",
-    width: DIVIDER_WIDTH,
-    height: 70
+  time: {
+    fontSize: 18,
+    color: "black"
   },
-  descriptionLayout: { marginRight: MARGIN, marginLeft: MARGIN },
+  blackFont: {
+    color: "black"
+  },
+  divider: {
+    backgroundColor: "#cccccc",
+    width: DIVIDER_WIDTH,
+    height: "100%"
+  },
+  descriptionLayout: {
+    marginRight: MARGIN,
+    marginLeft: MARGIN
+  },
   nameAndTime: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between"
   },
-  smallFont: { fontSize: 12 },
-  descriptionText: { fontWeight: "bold" }
+  smallFont: {
+    fontSize: 12,
+    color: GRAY
+  },
+  ownBadge: {
+    fontSize: 12,
+    color: "black",
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 2,
+    paddingBottom: 2,
+    backgroundColor: "#d0d0d0",
+    borderRadius: 5
+  },
+  descriptionText: {
+    color: "black"
+  }
 });
 
-export default TodoItem;
+const mapStateToProps = ({ UserReducer }) => {
+  let { name } = UserReducer;
+  return {
+    name
+  };
+};
+
+export default connect(mapStateToProps)(TodoItem);

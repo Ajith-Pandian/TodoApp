@@ -16,6 +16,9 @@ import { TextComponent } from "../Components/TextComponents";
 import { withBackExit, resetNavigationToFirst } from "../Utils";
 import BackgroundContainer from "../Components/BackgroundContainer";
 import { onLogin } from "../Store/Actions/LoginActions";
+
+import { CHARADE, GRAY } from "../Constants";
+
 class LoginScreen extends Component {
   static navigationOptions = { header: null };
 
@@ -32,14 +35,19 @@ class LoginScreen extends Component {
       <BackgroundContainer style={container}>
         <KeyboardAvoidingView
           behavior="padding"
-          contentContainerStyle={container}
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center"
+          }}
         >
           <View style={itemContainer}>
             <View>
               <TextComponent
                 textStyle={{
                   fontSize: 20,
-                  backgroundColor: "transparent"
+                  backgroundColor: "transparent",
+                  color: CHARADE
                 }}
               >
                 Todo App
@@ -57,31 +65,39 @@ class LoginScreen extends Component {
               />
               {isLoading ? (
                 <Spinner
-                  style={{ margin: 5 }}
+                  style={{ marginTop: 30 }}
                   isVisible={true}
-                  size={45}
+                  size={50}
                   type={"Bounce"}
                   color={"#ff2a68"}
                 />
               ) : (
                 <RoundButton
-                  size={45}
-                  padding={15}
+                  size={50}
+                  padding={20}
+                  style={{ marginTop: 30 }}
                   icon={RoundButton.RIGHT}
                   onPress={() => {
                     this.InputRef.validateInput(InputBox.MOBILE);
                   }}
-                  style={{ marginTop: 30 }}
                 />
               )}
             </View>
           </View>
-          <Text
-            style={{ margin: 10, backgroundColor: "transparent" }}
-            onPress={() => this.props.navigation.navigate("Register")}
+          <TextComponent
+            textStyle={{
+              margin: 10,
+              fontSize: 18,
+              backgroundColor: "transparent",
+              textAlign: "center",
+              textAlignVertical: "center",
+              position: "absolute",
+              bottom: 40,
+              color: GRAY
+            }}
           >
-            Register
-          </Text>
+            Login / Sign up
+          </TextComponent>
         </KeyboardAvoidingView>
       </BackgroundContainer>
     );
@@ -91,12 +107,11 @@ class LoginScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: StatusBar.currentHeight,
     alignItems: "center",
     justifyContent: "center"
   },
   itemContainer: {
-    height: 200,
+    height: 250,
     alignItems: "center",
     justifyContent: "space-between"
   }

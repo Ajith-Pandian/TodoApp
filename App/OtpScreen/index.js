@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { View, StyleSheet, StatusBar, TouchableOpacity } from "react-native";
 import { connect } from "react-redux";
 import Spinner from "react-native-spinkit";
+
 import InputBox from "../Components/InputBox";
 import RoundButton from "../Components/RoundButton";
 import { TextComponent } from "../Components/TextComponents";
@@ -10,6 +11,7 @@ import { withBackExit, resetNavigationToFirst } from "../Utils";
 import BackgroundContainer from "../Components/BackgroundContainer";
 import { verifyOtp } from "../Store/Actions/OtpActions";
 import { onLogin } from "../Store/Actions/LoginActions";
+import { GRAY } from "../Constants";
 
 class OtpScreen extends Component {
   componentWillReceiveProps(nextProps) {
@@ -78,16 +80,16 @@ class OtpScreen extends Component {
             />
             {isLoading ? (
               <Spinner
-                style={{ margin: 5 }}
+                style={{ marginTop: 30 }}
                 isVisible={true}
-                size={45}
+                size={50}
                 type={"Bounce"}
                 color={"#ff2a68"}
               />
             ) : (
               <RoundButton
-                size={45}
-                padding={15}
+                size={50}
+                padding={20}
                 style={{ marginTop: 30 }}
                 icon={RoundButton.RIGHT}
                 onPress={() => {
@@ -130,10 +132,16 @@ const styles = StyleSheet.create({
   },
   titleText: {
     textAlign: "center",
-    fontSize: 25
+    fontSize: 25,
+    color: GRAY
   },
-  phoneText: { textAlign: "center", fontSize: 16 },
-  centerText: { textAlign: "center" },
+  phoneText: {
+    margin: 10,
+    textAlign: "center",
+    fontSize: 16,
+    color: GRAY
+  },
+  centerText: { textAlign: "center", color: GRAY },
   inputContainer: {
     alignItems: "center"
   }

@@ -20,7 +20,8 @@ import {
   COMPLETE_TODO_FAILURE,
   INCOMPLETE_TODO,
   INCOMPLETE_TODO_SUCCESS,
-  INCOMPLETE_TODO_FAILURE
+  INCOMPLETE_TODO_FAILURE,
+  UPDATE_REMINDER_TIME
 } from "../StoreConstants";
 
 import ApiHelper from "../../ApiHelper";
@@ -257,6 +258,20 @@ function _incompleteTodoSuccess() {
 function _incompleteTodoFailure() {
   return {
     type: INCOMPLETE_TODO_FAILURE
+  };
+}
+
+export function updateReminderTime(todoId, reminderTime) {
+  return dispatch => {
+    dispatch(_updateReminderTime(todoId, reminderTime));
+  };
+}
+
+function _updateReminderTime(todoId, reminderTime) {
+  return {
+    type: UPDATE_REMINDER_TIME,
+    todoId,
+    reminderTime
   };
 }
 

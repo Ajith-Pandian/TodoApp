@@ -11,6 +11,8 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { connect } from "react-redux";
 import Spinner from "react-native-spinkit";
 import ImagePicker from "react-native-image-picker";
+
+import SimpleTabBar from "../Components/SimpleTabBar";
 import RoundButton from "../Components/RoundButton";
 import DisplayMessage from "../Components/DisplayMessage";
 import BackgroundContainer from "../Components/BackgroundContainer";
@@ -164,7 +166,7 @@ class Register extends Component {
     let isEdit = navigation.state.params && navigation.state.params.isEdit;
     let emptyState = {
       name: "",
-      number: "",
+      number: phoneNum,
       email: "",
       image: "",
       isEdit,
@@ -237,6 +239,27 @@ class Register extends Component {
       }
     });
   };
+
+  validateAndRegister = () => {
+    let { name, number, email, image } = this.state;
+    if (name && number && email) {
+      let user = { name, phone: number, email };
+      if (image) {
+        let { uri, name } = image;
+        user.image = {
+          uri,
+          type: "image/jpeg",
+          name
+        };
+      }
+      this.register(user);
+    } else {
+      this.nameRef.validateInput(ProfileInput.USER_NAME);
+      this.emailRef.validateInput(ProfileInput.EMAIL);
+      this.phoneNumRef.validateInput(ProfileInput.PHONE);
+    }
+  };
+
   render() {
     let {
       container,
@@ -250,10 +273,12 @@ class Register extends Component {
     return (
       <BackgroundContainer style={container}>
         <KeyboardAwareScrollView
-          resetScrollToCoords={{ x: 0, y: 0 }}
-          contentContainerStyle={{ flex: 1 }}
-          scrollEnabled={false}
+          extraHeight={50}
+          enableResetScrollToCoords={false}
+          contentContainerStyle={{ flexGrow: 1 }}
+          scrollEnabled={true}
         >
+          <SimpleTabBar />
           <View style={imageContainer}>
             <TouchableOpacity
               pointerEvents="none"
@@ -306,27 +331,10 @@ class Register extends Component {
             ) : (
               <RoundButton
                 style={{ margin: 20 }}
-                size={40}
+                size={50}
+                padding={20}
                 icon={RoundButton.RIGHT}
-                onPress={() => {
-                  let { name, number, email, image } = this.state;
-                  if (name && number && email) {
-                    let user = { name, phone: number, email };
-                    if (image) {
-                      let { uri, name } = image;
-                      user.image = {
-                        uri,
-                        type: "image/jpeg",
-                        name
-                      };
-                    }
-                    this.register(user);
-                  } else {
-                    this.nameRef.validateInput(ProfileInput.USER_NAME);
-                    this.emailRef.validateInput(ProfileInput.EMAIL);
-                    this.phoneNumRef.validateInput(ProfileInput.PHONE);
-                  }
-                }}
+                onPress={() => this.validateAndRegister()}
               />
             )}
           </View>
@@ -348,7 +356,7 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     flex: IMAGE_CONTAINER_FLEX,
-    height: 200,
+    height: 150,
     alignItems: "center",
     justifyContent: "center"
   },
@@ -360,11 +368,12 @@ const styles = StyleSheet.create({
   inputContainer: {
     flex: INPUT_CONTAINER_FLEX,
     alignItems: "center",
-    padding: 30,
     height: 230
   },
   profileInputContainer: {
     flexDirection: "row",
+    marginTop: 5,
+    marginBottom: 5,
     height: 40,
     borderBottomColor: GRAY,
     borderBottomWidth: 0.5,

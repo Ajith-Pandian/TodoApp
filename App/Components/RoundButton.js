@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet
 } from "react-native";
-import { ACCENT_COLOR_1 } from "../Constants";
+import { RADICAL_RED } from "../Constants";
 import { Right, Question, Add, Close, CheckMark } from "./Icons";
 class RoundButton extends Component {
   static RIGHT = "right";
@@ -85,7 +85,7 @@ const styles = {
     padding: 5,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: ACCENT_COLOR_1,
+    backgroundColor: RADICAL_RED,
     borderRadius: 100
   }
 };

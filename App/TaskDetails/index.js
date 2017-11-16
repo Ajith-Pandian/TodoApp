@@ -16,39 +16,14 @@ import { Alarm, Bell } from "../Components/Icons";
 import { TextComponent } from "../Components/TextComponents";
 import DisplayMessage from "../Components/DisplayMessage";
 import HoursPicker from "../Components/HoursPicker";
-import { GRAY, ACCENT_COLOR_1, GREEN } from "../Constants";
+import { GRAY, RADICAL_RED, GREEN, WILD_SAND } from "../Constants";
 import { getFileNameFromPath } from "../Utils";
-import { completeTodo, incompleteTodo } from "../Store/Actions/TodoActions";
+import {
+  completeTodo,
+  incompleteTodo,
+  updateReminderTime
+} from "../Store/Actions/TodoActions";
 
-class DropDownMenu extends Component {
-  constructor() {
-    super();
-    this.state = {
-      pickerVisible: false
-    };
-  }
-  render() {
-    let { pickerVisible } = this.state;
-    return (
-      <View>
-        <TouchableOpacity
-          onPress={() => this.setState({ pickerVisible: true })}
-        >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Alarm
-              size={20}
-              style={{ backgroundColor: "transparent" }}
-              color={"black"}
-            />
-            <TextComponent textStyle={{ color: "black" }}>
-              {options[selectedIndex].text}
-            </TextComponent>
-          </View>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-}
 class ActionButton extends Component {
   constructor() {
     super();
@@ -130,8 +105,12 @@ const InvalidComponent = () => {
 const PDF = "pdf";
 const IMAGE = "image";
 const INVALID = "invalid";
+
 class TaskDetails extends Component {
-  state = { pickerVisible: false, time: "15 mins" };
+  constructor(props) {
+    super(props);
+    this.state = { pickerVisible: false, submitted: false };
+  }
   getTimeAndDate = date => {
     date = moment(date);
     let visibleDate = date.format("MMM DD");
@@ -152,14 +131,18 @@ class TaskDetails extends Component {
     let id = navigation.state.params.item.id;
 
     id ? (isCompleted ? _completeTodo(id) : _incompleteTodo(id)) : "";
+    this.setState({ submitted: true });
   };
   componentWillReceiveProps(nextProps) {
-    let { isSuccess, isError, navigation } = nextProps;
-    if (isSuccess) {
-      DisplayMessage("Submitted");
-      navigation.goBack();
+    let { submitted } = this.state;
+    if (submitted) {
+      let { isSuccess, isError, navigation } = nextProps;
+      if (isSuccess) {
+        DisplayMessage("Submitted");
+        navigation.goBack();
+      }
+      isError ? DisplayMessage("Connection failed. Retry") : "";
     }
-    isError ? DisplayMessage("Connection failed. Retry") : "";
   }
   getType = file => {
     let fileName = getFileNameFromPath(file);
@@ -180,15 +163,29 @@ class TaskDetails extends Component {
     );
   };
   render() {
-    let { navigation, _compeleteTodo, _incompleteTodo } = this.props;
-    let item = navigation.state.params.item;
-    let { title, description, createdBy, dueDate, attachment } = item;
-    console.log(item);
+    let {
+      todos,
+      navigation,
+      _compeleteTodo,
+      _incompleteTodo,
+      _updateReminderTime
+    } = this.props;
+    const todoId = navigation.state.params.id;
+    const itemIndex = todos.findIndex(item => item.id === todoId);
+    let item = todos[itemIndex];
+    let {
+      title,
+      description,
+      createdBy,
+      dueDate,
+      attachment,
+      reminderTime
+    } = item;
     let { visibleDate, visibleTime, meridiem } = this.getTimeAndDate(dueDate);
     const { height: heightOfDeviceScreen } = Dimensions.get("window");
-    let { pickerVisible, time } = this.state;
+    let { pickerVisible } = this.state;
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: WILD_SAND }}>
         <SimpleTabBar onBackPress={() => navigation.goBack(null)} />
         <ScrollView
           contentContainerStyle={{
@@ -237,7 +234,7 @@ class TaskDetails extends Component {
                   borderBottomColor: GRAY
                 }}
               >
-                <Bell
+                <Alarm
                   size={20}
                   style={{ margin: 5 }}
                   style={{
@@ -246,7 +243,7 @@ class TaskDetails extends Component {
                   color="black"
                 />
                 <TextComponent textStyle={{ color: "black", margin: 5 }}>
-                  {time}
+                  {reminderTime}
                 </TextComponent>
               </TouchableOpacity>
             </View>
@@ -268,18 +265,16 @@ class TaskDetails extends Component {
             onVisibilityChange={pickerVisible =>
               this.setState({ pickerVisible })
             }
-            initialTime={time}
+            initialTime={reminderTime}
             onSelect={value => {
-              this.setState({ time: value.text }, () =>
-                console.log(this.state)
-              );
+              _updateReminderTime(item.id, value.text);
             }}
           />
         </ScrollView>
         <View style={{ flexDirection: "row" }}>
           <ActionButton
             text={"Not done"}
-            color={ACCENT_COLOR_1}
+            color={RADICAL_RED}
             onPress={() => this.completeTask(false)}
           />
           <ActionButton
@@ -294,9 +289,10 @@ class TaskDetails extends Component {
 }
 
 const mapStateToProps = ({ TodoReducer }) => {
-  let { isLoading, isError, isSuccess } = TodoReducer;
+  let { isLoading, isError, isSuccess, todos } = TodoReducer;
 
   return {
+    todos,
     isLoading,
     isError,
     isSuccess
@@ -305,7 +301,9 @@ const mapStateToProps = ({ TodoReducer }) => {
 
 const mapDispatchToProps = (dispatch, props) => ({
   _completeTodo: id => dispatch(completeTodo(id)),
-  _incompleteTodo: id => dispatch(incompleteTodo(id))
+  _incompleteTodo: id => dispatch(incompleteTodo(id)),
+  _updateReminderTime: (todoId, reminderTime) =>
+    dispatch(updateReminderTime(todoId, reminderTime))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskDetails);

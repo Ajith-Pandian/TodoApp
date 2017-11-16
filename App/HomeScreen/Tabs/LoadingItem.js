@@ -32,7 +32,6 @@ const styles = StyleSheet.create({
     padding: CONTAINER_PADDING,
     flexDirection: "row",
     justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white"
+    alignItems: "center"
   }
 });
