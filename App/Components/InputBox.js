@@ -8,7 +8,7 @@ import {
   Platform
 } from "react-native";
 import { TextComponent, TextInputComponent } from "./TextComponents";
-import { GRAY, TUNA, RED } from "../Constants";
+import { GRAY, SILVER, RED } from "../Constants";
 import { isDigitsOnly as _isDigitsOnly } from "../Utils";
 
 export default class InputBox extends Component {
@@ -99,6 +99,7 @@ export default class InputBox extends Component {
       <View style={[inputContainer]}>
         <TextInputComponent
           inputStyle={[input, extraStyle, style]}
+          isLight
           maxLength={maxLength}
           autoFocus={autoFocus}
           multiline={false}
@@ -126,7 +127,7 @@ export default class InputBox extends Component {
     const FONT_SIZE = 16;
     const INPUT_WIDTH_PERCENTAGE = widthPercentage ? widthPercentage : 85;
     const INPUT_CONTAINER_HEIGHT = 40;
-    const INPUT_CONTAINER_WIDTH = WIDTH * (INPUT_WIDTH_PERCENTAGE * 0.01) - 80;
+    const INPUT_CONTAINER_WIDTH = WIDTH * (INPUT_WIDTH_PERCENTAGE * 0.01);
     const ERROR_MARGIN = 2;
     const TOTAL_ERROR_MARGIN = 2 * ERROR_MARGIN;
 
@@ -150,7 +151,8 @@ export default class InputBox extends Component {
         marginTop: ERROR_MARGIN,
         marginBottom: ERROR_MARGIN,
         height: INPUT_CONTAINER_HEIGHT / 2,
-        textAlign: "left",
+        textAlign: "center",
+        textAlignVertical: "center",
         color: RED,
         backgroundColor: "transparent"
       }
@@ -162,7 +164,7 @@ export default class InputBox extends Component {
 
 function getExtraStyle(isError) {
   return {
-    borderBottomWidth: 0.5,
-    borderBottomColor: isError ? RED : TUNA
+    borderBottomWidth: 0.8,
+    borderBottomColor: isError ? RED : SILVER
   };
 }

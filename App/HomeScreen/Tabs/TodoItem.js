@@ -6,7 +6,7 @@ import moment from "moment";
 
 import { getTimeString } from "../../Utils";
 import { TextComponent } from "../../Components/TextComponents";
-import { GRAY } from "../../Constants";
+import { GRAY, SILVER } from "../../Constants";
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const DIVIDER_WIDTH = 1,
   MARGIN = 10,
@@ -82,6 +82,7 @@ class TodoItem extends PureComponent {
             </View>
             <TextComponent
               numberOfLines={3}
+              isLight
               textStyle={[
                 descriptionText,
                 {
@@ -147,7 +148,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingTop: 2,
     paddingBottom: 2,
-    backgroundColor: "#d0d0d0",
+    backgroundColor: SILVER,
     borderRadius: 5
   },
   descriptionText: {

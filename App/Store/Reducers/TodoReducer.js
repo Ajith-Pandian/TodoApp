@@ -18,6 +18,7 @@ import {
   INCOMPLETE_TODO,
   INCOMPLETE_TODO_SUCCESS,
   INCOMPLETE_TODO_FAILURE,
+  REMOVE_TODO,
   UPDATE_REMINDER_TIME
 } from "../StoreConstants";
 import Todo from "../../Model/Todo";
@@ -208,6 +209,11 @@ export default function TodoReducer(state = initialState, action) {
           }
         }
       });
+    }
+    case REMOVE_TODO: {
+      let { todoId } = action;
+      let index = state.todos.findIndex(item => item.id === todoId);
+      return update(state, { todos: { $splice: [[index, 1]] } });
     }
     default:
       return state;

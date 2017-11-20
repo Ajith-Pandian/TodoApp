@@ -44,6 +44,7 @@ class LoginScreen extends Component {
           <View style={itemContainer}>
             <View>
               <TextComponent
+                isLight
                 textStyle={{
                   fontSize: 20,
                   backgroundColor: "transparent",
@@ -55,9 +56,11 @@ class LoginScreen extends Component {
             </View>
             <View style={{ alignItems: "center" }}>
               <InputBox
+                style={{ paddingBottom: 0 }}
                 ref={ref => (this.InputRef = ref)}
                 placeholder={"Enter Mobile Number"}
                 maxLength={10}
+                widthPercentage={80}
                 type={InputBox.MOBILE}
                 onSuccess={text => {
                   _onLogin(text);
@@ -85,6 +88,7 @@ class LoginScreen extends Component {
             </View>
           </View>
           <TextComponent
+            isLight
             textStyle={{
               margin: 10,
               fontSize: 18,

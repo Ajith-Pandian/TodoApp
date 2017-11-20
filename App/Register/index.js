@@ -270,15 +270,21 @@ class Register extends Component {
     let { isLoading, updateIsLoading, navigation } = this.props;
     let { image, number, name, email, isEdit } = this.state;
     let shouldShowLoader = isEdit ? updateIsLoading : isLoading;
+    const tabBar = isEdit ? (
+      <SimpleTabBar onBackPress={() => navigation.goBack()} />
+    ) : (
+      <SimpleTabBar />
+    );
+
     return (
       <BackgroundContainer style={container}>
+        {tabBar}
         <KeyboardAwareScrollView
           extraHeight={50}
           enableResetScrollToCoords={false}
           contentContainerStyle={{ flexGrow: 1 }}
           scrollEnabled={true}
         >
-          <SimpleTabBar />
           <View style={imageContainer}>
             <TouchableOpacity
               pointerEvents="none"

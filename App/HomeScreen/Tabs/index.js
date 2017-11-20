@@ -21,8 +21,9 @@ import { TextComponent } from "../../Components/TextComponents";
 import TodoList from "./TodoList";
 import Activity from "./Activity";
 import {
-  ACCENT_COLOR_1,
+  RADICAL_RED,
   APP_COLOR,
+  WILD_SAND,
   TODAY,
   WEEK,
   LATER,
@@ -31,6 +32,18 @@ import {
 import { onSearchStateChange } from "../../Store/Actions/SearchActions";
 import { fetchLaterTodo } from "../../Store/Actions/TodoActions";
 import { fetchActivities } from "../../Store/Actions/ActivityActions";
+
+const shadowOpt = {
+  height: 50,
+  color: "#000",
+  border: 2,
+  radius: 3,
+  opacity: 0.2,
+  x: 0,
+  y: 3,
+  style: { marginVertical: 5 },
+  side: "top"
+};
 
 const TabBarComponent = props => {
   let {
@@ -42,41 +55,52 @@ const TabBarComponent = props => {
   } = props;
   let routes = navigation.state.routes;
   let numberOfTabs = routes.length;
-  let tabWidth = Dimensions.get("window").width / numberOfTabs;
+  const screenWidth = Dimensions.get("window").width;
+  let tabWidth = screenWidth / numberOfTabs;
   let currentTabIndex = navigationState.index;
   return (
     <View
       style={{
-        flexDirection: "row",
-        backgroundColor: "white",
-        height: 50
+        height: 52,
+        backgroundColor: WILD_SAND,
+        alignItems: "center"
       }}
     >
-      {routes.map((route, index) => {
-        let isCurrentTab = currentTabIndex === index;
-        return (
-          <TouchableOpacity
-            key={index}
-            onPress={() => jumpToIndex(index)}
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-              width: tabWidth
-            }}
-            activeOpacity={1}
-          >
-            <TextComponent
-              isBold={isCurrentTab}
-              textStyle={{
-                fontSize: 16,
-                color: isCurrentTab ? activeTintColor : inactiveTintColor
+      <View
+        style={{
+          marginTop: 2,
+          flexDirection: "row",
+          backgroundColor: "white",
+          height: 50,
+          elevation: 8
+        }}
+      >
+        {routes.map((route, index) => {
+          let isCurrentTab = currentTabIndex === index;
+          return (
+            <TouchableOpacity
+              key={index}
+              onPress={() => jumpToIndex(index)}
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                width: tabWidth
               }}
+              activeOpacity={1}
             >
-              {route.routeName}
-            </TextComponent>
-          </TouchableOpacity>
-        );
-      })}
+              <TextComponent
+                isLight={!isCurrentTab}
+                textStyle={{
+                  fontSize: 18,
+                  color: isCurrentTab ? activeTintColor : inactiveTintColor
+                }}
+              >
+                {route.routeName}
+              </TextComponent>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
     </View>
   );
 };
@@ -155,7 +179,7 @@ const MyApp = TabNavigator(
         backgroundColor: "white",
         overflow: "hidden"
       },
-      activeTintColor: ACCENT_COLOR_1,
+      activeTintColor: RADICAL_RED,
       inactiveTintColor: GRAY,
       showLabel: true,
       showIcon: false,

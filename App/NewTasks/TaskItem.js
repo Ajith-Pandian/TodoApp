@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
   card: {
     position: "relative",
     flex: 1,
+    elevation: 10,
     overflow: "hidden",
     shadowRadius: 2,
     shadowColor: "#BBB",

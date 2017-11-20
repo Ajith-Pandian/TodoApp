@@ -21,6 +21,7 @@ import {
   INCOMPLETE_TODO,
   INCOMPLETE_TODO_SUCCESS,
   INCOMPLETE_TODO_FAILURE,
+  REMOVE_TODO,
   UPDATE_REMINDER_TIME
 } from "../StoreConstants";
 
@@ -207,8 +208,10 @@ export function completeTodo(taskId) {
       },
       authToken
     ).then(res => {
-      if (res && res.success) dispatch(_completeTodoSuccess());
-      else dispatch(_completeTodoFailure());
+      if (res && res.success) {
+        dispatch(_completeTodoSuccess());
+        dispatch(removeTodo(taskId));
+      } else dispatch(_completeTodoFailure());
     });
   };
 }
@@ -239,8 +242,10 @@ export function incompleteTodo(taskId) {
       },
       authToken
     ).then(res => {
-      if (res && res.success) dispatch(_incompleteTodoSuccess());
-      else dispatch(_incompleteTodoFailure());
+      if (res && res.success) {
+        dispatch(_incompleteTodoSuccess());
+        dispatch(removeTodo(taskId));
+      } else dispatch(_incompleteTodoFailure());
     });
   };
 }
@@ -261,6 +266,18 @@ function _incompleteTodoFailure() {
   };
 }
 
+export function removeTodo(todoId) {
+  return dispatch => {
+    dispatch(_removeTodo(todoId));
+  };
+}
+
+function _removeTodo(todoId) {
+  return {
+    type: REMOVE_TODO,
+    todoId
+  };
+}
 export function updateReminderTime(todoId, reminderTime) {
   return dispatch => {
     dispatch(_updateReminderTime(todoId, reminderTime));

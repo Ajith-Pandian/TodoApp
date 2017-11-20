@@ -2,9 +2,12 @@ import React, { Component } from "react";
 import { FlatList, ToastAndroid, View } from "react-native";
 import { NavigationActions } from "react-navigation";
 import { connect } from "react-redux";
+import Spinner from "react-native-spinkit";
 import moment from "moment";
+
 import SwipeList from "../../Components/SwipeActionView";
 import { TextComponent } from "../../Components/TextComponents";
+import EmptyTask from "../../Components/EmptyTask";
 import TodoItem from "./TodoItem";
 import LoadingItem from "./LoadingItem";
 import {
@@ -13,7 +16,7 @@ import {
 } from "../../Store/Actions/SearchActions";
 import { fetchTodo, fetchLaterTodo } from "../../Store/Actions/TodoActions";
 import { firstToLower } from "../../Utils";
-import { TODAY, WEEK, LATER, WILD_SAND } from "../../Constants";
+import { TODAY, WEEK, LATER, WILD_SAND, RADICAL_RED } from "../../Constants";
 
 class TodoList extends Component {
   constructor() {
@@ -79,9 +82,10 @@ class TodoList extends Component {
       screenProps,
       navigation
     } = this.props;
-
+    let { navigate } = screenProps.rootNavigation;
     //Choosing search or later by state
-    let isLater = navigation.state.key === LATER;
+    const type = navigation.state.key;
+    let isLater = type === LATER;
     todos =
       isLater && searchState ? searchedTodos : isLater ? laterTodos : todos;
 
@@ -97,7 +101,7 @@ class TodoList extends Component {
       searchTerm = "";
     }
     //Filtering todos for today
-    let isToday = navigation.state.key === TODAY;
+    let isToday = type === TODAY;
     todos = isToday
       ? todos.filter(({ dueDate }) => moment().isSame(dueDate, "d"))
       : todos;
@@ -106,7 +110,7 @@ class TodoList extends Component {
       <FlatList
         ref={ref => (this.flatRef = ref)}
         data={todos}
-        style={{ margin: 1, backgroundColor: WILD_SAND }}
+        style={{ backgroundColor: WILD_SAND }}
         removeClippedSubviews={false}
         onScroll={e => this.onScrollList(e)}
         scrollEventThrottle={16}
@@ -121,8 +125,10 @@ class TodoList extends Component {
               isLast={isLast}
               todo={item}
               onClick={() => {
-                let { navigate } = screenProps.rootNavigation;
-                navigate("TaskDetails", { id: item.id });
+                navigate("TaskDetails", {
+                  id: item.id,
+                  type
+                });
               }}
             />
           );
@@ -134,17 +140,18 @@ class TodoList extends Component {
         onSwipeRight={() => console.log("Rejected")}
         onSwipeLeft={() => console.log("Accepted")}
       />
-    ) : (
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: WILD_SAND
-        }}
-      >
-        <TextComponent>No tasks</TextComponent>
+    ) : isLoading ? (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Spinner
+          style={{ margin: 5 }}
+          isVisible={true}
+          size={50}
+          type={"Bounce"}
+          color={RADICAL_RED}
+        />
       </View>
+    ) : (
+      <EmptyTask onCreateTaskClick={() => navigate("CreateTask")} />
     );
   }
 }

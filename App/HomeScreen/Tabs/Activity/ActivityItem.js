@@ -5,7 +5,7 @@ import { TextComponent } from "../../../Components/TextComponents";
 import { GRAY, ACCENT_COLOR_1 } from "../../../Constants";
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const DIVIDER_WIDTH = 1,
-  MARGIN = 10,
+  MARGIN = 20,
   CONTAINER_PADDING = 10;
 
 const getTypeAndColor = type => {
@@ -74,7 +74,7 @@ class TodoItem extends Component {
     );
   }
 }
-
+const IMAGE_SIZE = 50;
 const styles = StyleSheet.create({
   container: {
     height: 100,
@@ -82,20 +82,17 @@ const styles = StyleSheet.create({
     marginBottom: 2,
     padding: CONTAINER_PADDING,
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "white"
+    alignItems: "center"
   },
   imageLayout: {
-    alignItems: "flex-end",
     marginRight: MARGIN,
     marginLeft: MARGIN
   },
   image: {
-    width: 70,
-    height: 70,
+    width: IMAGE_SIZE,
+    height: IMAGE_SIZE,
     backgroundColor: "powderblue",
-    borderRadius: 35
+    borderRadius: IMAGE_SIZE / 2
   },
   descriptionLayout: {
     height: 70,

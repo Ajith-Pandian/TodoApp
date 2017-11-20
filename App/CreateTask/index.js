@@ -50,7 +50,11 @@ const Icon = ({ name }) => {
       icon = (
         <Attach
           size={25}
-          style={{ backgroundColor: "transparent" }}
+          style={{
+            backgroundColor: "transparent",
+            marginLeft: 5,
+            marginRight: 5
+          }}
           color={GRAY}
         />
       );
@@ -84,11 +88,20 @@ class InputComponent extends Component {
     let { type } = this.props;
     let { isError, errorMessage } = this.state;
     return (
-      <View style={{ height: isError ? 70 : 50 }}>
+      <View
+        style={{
+          height: isError ? 70 : 50,
+          marginBottom: 5
+        }}
+      >
         <TextInputComponent
+          isLight
           inputStyle={[
             styles.inputComp,
-            { borderBottomColor: isError ? RED : GRAY }
+            {
+              borderBottomColor: isError ? RED : GRAY,
+              fontSize: type === InputComponent.TITLE ? 18 : 16
+            }
           ]}
           multiline={false}
           maxLength={140}
@@ -149,7 +162,12 @@ class ClickableComponent extends Component {
     let { isError, errorMessage } = this.state;
     const maxlimit = 30;
     return (
-      <View style={{ height: isError ? 70 : 50 }}>
+      <View
+        style={{
+          height: isError ? 70 : 50,
+          marginBottom: 5
+        }}
+      >
         <TouchableOpacity
           style={[
             styles.clickableComp,
@@ -161,8 +179,9 @@ class ClickableComponent extends Component {
         >
           {type && type !== ClickableComponent.TO ? <Icon name={type} /> : null}
           <TextComponent
+            isLight
             textStyle={{
-              marginLeft: type ? 10 : 0,
+              marginLeft: type === ClickableComponent.TO ? 2 : 10,
               textAlign: "left",
               textAlignVertical: "center"
             }}
@@ -275,7 +294,7 @@ class CreateTask extends Component {
         : mode === ClickableComponent.TIME && time ? time : new Date();
     return (
       <BackgroundContainer style={{ flex: 1 }} isTop={true}>
-        <ScrollView contentContainerStyle={{ alignItems: "center" }}>
+        <ScrollView contentContainerStyle={{}}>
           <TouchableOpacity
             onPress={() => goBack()}
             style={{ alignSelf: "flex-end", margin: 10, padding: 10 }}
@@ -286,12 +305,32 @@ class CreateTask extends Component {
               color={GRAY}
             />
           </TouchableOpacity>
-          <View>
-            <TextComponent textStyle={{ fontSize: 26, textAlign: "left" }}>
-              New Task!
-            </TextComponent>
-          </View>
-          <View style={{ marginTop: 30 }}>
+
+          <TextComponent
+            isLight
+            textStyle={{
+              marginTop: 20,
+              marginLeft: 25,
+              fontSize: 22,
+              textAlign: "left"
+            }}
+          >
+            New Task !
+          </TextComponent>
+          <View
+            style={{
+              width: "100%",
+              height: 0.5,
+              backgroundColor: GRAY,
+              marginTop: 20,
+              marginBottom: 20
+            }}
+          />
+          <View
+            style={{
+              alignItems: "center"
+            }}
+          >
             <ClickableComponent
               text={contact ? contact.name : ClickableComponent.TO}
               type={ClickableComponent.TO}
@@ -332,7 +371,9 @@ class CreateTask extends Component {
               this.validateAndCreate();
             }}
           >
-            <TextComponent textStyle={{ color: "white" }}>Done</TextComponent>
+            <TextComponent isLight textStyle={{ color: "white" }}>
+              Done
+            </TextComponent>
           </TouchableOpacity>
         </ScrollView>
         <DateTimePicker
@@ -354,7 +395,7 @@ class CreateTask extends Component {
 }
 const WIDTH = Dimensions.get("window").width;
 const V_BUTTON_PADDING = 7;
-const H_BUTTON_PADDING = 3 * V_BUTTON_PADDING;
+const H_BUTTON_PADDING = 5 * V_BUTTON_PADDING;
 const styles = StyleSheet.create({
   clickableComp: {
     flexDirection: "row",
@@ -362,20 +403,22 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     height: 40,
     borderBottomWidth: 0.5,
-    width: WIDTH - 100,
+    width: WIDTH - 50,
     alignItems: "center"
   },
   inputComp: {
     height: 40,
     borderBottomWidth: 0.5,
-    width: WIDTH - 100,
+    width: WIDTH - 50,
     marginTop: 5,
     marginBottom: 5
   },
   button: {
+    alignSelf: "center",
     backgroundColor: ACCENT_COLOR_1,
     borderRadius: 2,
-    margin: 20,
+    margin: 30,
+    marginTop: 60,
     paddingLeft: H_BUTTON_PADDING,
     paddingRight: H_BUTTON_PADDING,
     paddingTop: V_BUTTON_PADDING,

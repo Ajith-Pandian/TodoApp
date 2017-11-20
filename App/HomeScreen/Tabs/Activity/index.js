@@ -7,10 +7,11 @@ import {
   StyleSheet
 } from "react-native";
 import { connect } from "react-redux";
+import Spinner from "react-native-spinkit";
 
-import { TextComponent as Text } from "../../../Components/TextComponents";
+import { TextComponent } from "../../../Components/TextComponents";
 import { Activity as ActivityIcon } from "../../../Components/Icons";
-import { GRAY } from "../../../Constants";
+import { RADICAL_RED, GRAY, BLACK, WILD_SAND } from "../../../Constants";
 import ActivityItem from "./ActivityItem";
 import { fetchActivities } from "../../../Store/Actions/ActivityActions";
 import LoadingItem from "../LoadingItem";
@@ -26,45 +27,68 @@ const ProfilePic = ({ source }) => {
     </View>
   );
 };
+const Task = ({ count, name }) => {
+  let { taskDetails } = styles;
+  return (
+    <View style={taskDetails}>
+      <TextComponent textStyle={{ fontSize: 17 }}>{count}</TextComponent>
+      <TextComponent isLight>{name}</TextComponent>
+    </View>
+  );
+};
 const TaskDetails = () => {
   let { taskDetailsContainer, taskDetails, taskSeperator } = styles;
   return (
     <View style={taskDetailsContainer}>
-      <View style={taskDetails}>
-        <Text>12</Text>
-        <Text>Tasks</Text>
-      </View>
+      <Task count={220} name={"Tasks"} />
       <View style={taskSeperator} />
-      <View style={taskDetails}>
-        <Text>12</Text>
-        <Text>Tasks</Text>
-      </View>
+      <Task count={101} name={"Completed"} />
       <View style={taskSeperator} />
-      <View style={taskDetails}>
-        <Text>12</Text>
-        <Text>Tasks</Text>
-      </View>
+      <Task count={101} name={"Assigned"} />
     </View>
   );
 };
 
 const Profile = ({ phoneNum, image, name, navigation }) => {
   let { profileContainer, profileDetails } = styles;
-
   return (
     <View style={profileContainer}>
       <View style={profileDetails}>
         <ProfilePic source={image} />
-        <Text>{name}</Text>
-        <Text>{phoneNum}</Text>
+        <View
+          style={{
+            margin: 5,
+            alignItems: "center"
+          }}
+        >
+          <TextComponent
+            isLight
+            textStyle={{
+              color: GRAY
+            }}
+          >
+            {name}
+          </TextComponent>
+          <TextComponent
+            isLight
+            textStyle={{
+              color: GRAY
+            }}
+          >
+            {phoneNum}
+          </TextComponent>
+        </View>
         <TouchableOpacity
+          style={{ marginTop: 2, marginBottom: 2 }}
           onPress={() =>
             navigation.navigate("Register", {
               isEdit: true
             })
           }
         >
-          <Text textStyle={{ fontWeight: "bold" }}>Edit Profile</Text>
+          <TextComponent isLight textStyle={{ color: BLACK }}>
+            Edit Profile
+          </TextComponent>
         </TouchableOpacity>
       </View>
       <TaskDetails />
@@ -156,7 +180,17 @@ class Activity extends Component {
                 justifyContent: "center"
               }}
             >
-              <Text>No Activities</Text>
+              {isLoading ? (
+                <Spinner
+                  style={{ margin: 5 }}
+                  isVisible={true}
+                  size={50}
+                  type={"Bounce"}
+                  color={RADICAL_RED}
+                />
+              ) : (
+                <TextComponent>No Activities</TextComponent>
+              )}
             </View>
           </View>
         )}
@@ -166,19 +200,22 @@ class Activity extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "white" },
+  container: {
+    flex: 1,
+    backgroundColor: WILD_SAND
+  },
   seperator: {
     height: 1,
     width: "100%",
     backgroundColor: "#CED0CE"
   },
   profileContainer: {
-    height: 250,
+    height: 270,
     borderBottomWidth: 0.5,
     borderBottomColor: GRAY
   },
   profileDetails: {
-    height: 200,
+    marginTop: 10,
     alignItems: "center",
     justifyContent: "center"
   },
@@ -194,9 +231,11 @@ const styles = StyleSheet.create({
     borderRadius: 50
   },
   taskDetailsContainer: {
-    height: 50,
+    marginTop: 20,
+    marginBottom: 20,
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
+    justifyContent: "center"
   },
   taskDetails: {
     width: "33%",
@@ -204,7 +243,7 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   taskSeperator: {
-    height: 30,
+    height: 45,
     width: 1,
     backgroundColor: GRAY
   }

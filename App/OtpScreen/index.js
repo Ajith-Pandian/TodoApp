@@ -56,11 +56,12 @@ class OtpScreen extends Component {
             <TextComponent textStyle={titleText}>
               One Time Password
             </TextComponent>
-            <TextComponent textStyle={phoneText}>
+            <TextComponent isExtraLight textStyle={phoneText}>
               Please enter the code sent to {phoneNum}
             </TextComponent>
             {/* FIXME: REMOVE it on production*/}
             <TextComponent
+              isLight
               textStyle={{ textAlign: "center", fontSize: 16, color: "red" }}
             >
               Sent otp {otp}
@@ -99,11 +100,11 @@ class OtpScreen extends Component {
             )}
           </View>
           <View>
-            <TextComponent textStyle={centerText}>
+            <TextComponent isLight textStyle={centerText}>
               {"Didn't get OTP?"}
             </TextComponent>
             <TouchableOpacity onPress={() => _onLogin(phoneNum)}>
-              <TextComponent isBold textStyle={centerText}>
+              <TextComponent textStyle={centerText}>
                 Request again
               </TextComponent>
             </TouchableOpacity>
@@ -137,6 +138,8 @@ const styles = StyleSheet.create({
   },
   phoneText: {
     margin: 10,
+    marginLeft: 30,
+    marginRight: 30,
     textAlign: "center",
     fontSize: 16,
     color: GRAY
