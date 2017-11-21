@@ -19,12 +19,14 @@ const Message = ({ sender, type, title }) => {
   type = typeAndColor.type;
   let color = typeAndColor.color;
   return (
-    <TextComponent textStyle={{ color: GRAY }} numberOfLines={3}>
-      <TextComponent textStyle={{ color: GRAY }}>{sender + " "}</TextComponent>
-      <TextComponent textStyle={{ color }}>
+    <TextComponent isLight extStyle={{ color: GRAY }} numberOfLines={3}>
+      <TextComponent isLight textStyle={{ color: GRAY }}>
+        {sender + " "}
+      </TextComponent>
+      <TextComponent isLight textStyle={{ color }}>
         {firstToLower(type) + " "}
       </TextComponent>
-      <TextComponent textStyle={{ color: "black" }} numberOfLines={3}>
+      <TextComponent isLight textStyle={{ color: "black" }} numberOfLines={3}>
         {title}
       </TextComponent>
     </TextComponent>

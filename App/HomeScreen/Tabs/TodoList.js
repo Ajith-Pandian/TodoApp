@@ -104,7 +104,9 @@ class TodoList extends Component {
     let isToday = type === TODAY;
     todos = isToday
       ? todos.filter(({ dueDate }) => moment().isSame(dueDate, "d"))
-      : todos;
+      : todos.filter(({ dueDate }) => !moment().isSame(dueDate, "d"));
+
+    todos = todos.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
 
     return todos && todos.length > 0 ? (
       <FlatList

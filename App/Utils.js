@@ -12,6 +12,10 @@ export function isDigitsOnly(number) {
   return digitsOnlyRegex.test(number);
 }
 
+export function objectEquals(obj1, obj2) {
+  return JSON.stringify(obj1) === JSON.stringify(obj2);
+}
+
 export const resetNavigationToFirst = (targetRoute, navigation) => {
   const resetAction = NavigationActions.reset({
     index: 0,

@@ -260,7 +260,15 @@ class TaskDetails extends Component {
                   Reminder
                 </TextComponent>
                 <TouchableOpacity
-                  onPress={() => this.setState({ pickerVisible: true })}
+                  onPress={() => {
+                    //this.setState({ pickerVisible: true });
+                    navigation.navigate("DurationPicker", {
+                      time: reminderTime,
+                      onTimePick: time => {
+                        _updateReminderTime(item.id, time.text);
+                      }
+                    });
+                  }}
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
