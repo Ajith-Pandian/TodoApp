@@ -1,6 +1,5 @@
 import React from "react";
 import Icon from "react-native-vector-icons/Ionicons";
-import AwesomeIcon from "react-native-vector-icons/FontAwesome";
 
 //Tab Icons
 export const Activity = props => <Icon name="md-clipboard" {...props} />;
@@ -20,5 +19,3 @@ export const Phone = props => <Icon name="md-phone-portrait" {...props} />;
 export const CheckMark = props => <Icon name="md-checkmark" {...props} />;
 export const Back = props => <Icon name="md-arrow-back" {...props} />;
 export const Alarm = props => <Icon name="md-alarm" {...props} />;
-export const CircleOutline = props => <AwesomeIcon name="circle-thin" {...props} />;
-export const CircleFilled = props => <AwesomeIcon name="circle" {...props} />;

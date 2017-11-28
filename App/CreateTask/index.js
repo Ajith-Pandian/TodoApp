@@ -87,6 +87,7 @@ class InputComponent extends Component {
   render() {
     let { type } = this.props;
     let { isError, errorMessage } = this.state;
+    const isTitle = type === InputComponent.TITLE;
     return (
       <View
         style={{
@@ -100,11 +101,11 @@ class InputComponent extends Component {
             styles.inputComp,
             {
               borderBottomColor: isError ? RED : GRAY,
-              fontSize: type === InputComponent.TITLE ? 18 : 16
+              fontSize: isTitle ? 18 : 16
             }
           ]}
           multiline={false}
-          maxLength={140}
+          maxLength={isTitle ? 140 : 512}
           placeholder={type.charAt(0).toUpperCase() + type.slice(1)}
           underlineColorAndroid={"transparent"}
           returnKeyType={"done"}

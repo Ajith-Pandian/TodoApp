@@ -298,31 +298,29 @@ function getTodos(todos) {
       id,
       title,
       description,
-      created_by,
-      assigned_to,
-      isaccepted,
-      iscompleted,
-      isdeleted,
-      due_date,
+      attachment,
+      sender,
       created_date,
+      receiver,
       assigned_date,
-      completed_date,
-      attachment
+      due_date,
+      is_accepted,
+      is_completed,
+      completed_date
     } = todo;
     return new Todo(
       id,
       title,
       description,
-      created_by,
-      assigned_to,
-      isaccepted,
-      iscompleted,
-      isdeleted,
-      due_date,
+      attachment,
+      sender,
       created_date,
+      receiver,
       assigned_date,
-      completed_date,
-      attachment
+      due_date,
+      is_accepted,
+      is_completed,
+      completed_date
     );
   });
 }

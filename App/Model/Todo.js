@@ -1,32 +1,32 @@
+import { PICKER_OPTIONS } from "../Constants";
+let defaultReminderTime = PICKER_OPTIONS[0];
 export default class Todo {
   constructor(
     id,
     title,
     description,
-    created_by,
-    assigned_to,
-    isaccepted,
-    iscompleted,
-    isdeleted,
-    due_date,
+    attachment,
+    sender,
     created_date,
+    receiver,
     assigned_date,
-    completed_date,
-    attachment
+    due_date,
+    is_accepted,
+    is_completed,
+    completed_date
   ) {
     this.id = id;
     this.title = title;
     this.description = description;
-    this.createdBy = created_by;
-    this.assignedTo = assigned_to;
-    this.isAccepted = isaccepted;
-    this.isCompleted = iscompleted;
-    this.isDeleted = isdeleted;
-    this.dueDate = due_date;
-    this.createdDate = created_date;
-    this.assignedDate = assigned_date;
-    this.completedDate = completed_date;
     this.attachment = attachment;
-    this.reminderTime = "10 mins";
+    this.sender = sender;
+    this.createdDate = created_date;
+    this.receiver = receiver;
+    this.assignedDate = assigned_date;
+    this.dueDate = due_date;
+    this.isAccepted = is_accepted;
+    this.isCompleted = is_completed;
+    this.completedDate = completed_date;
+    this.reminderTime = defaultReminderTime;
   }
 }

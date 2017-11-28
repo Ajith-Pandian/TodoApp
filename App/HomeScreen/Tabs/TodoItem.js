@@ -37,9 +37,9 @@ class TodoItem extends PureComponent {
       blackFont,
       descriptionText
     } = styles;
-    let { description, dueDate, id, title, createdBy, reminderTime } = todo;
-    const isOwn = createdBy === name;
-    creatorName = isOwn ? "Myself" : createdBy;
+    let { description, dueDate, id, title, sender, reminderTime } = todo;
+    const isOwn = sender === name;
+    creatorName = isOwn ? "Myself" : sender;
     let { visibleDate, visibleTime, meridiem } = this.getTimeAndDate(dueDate);
     let color = "white";
     return (

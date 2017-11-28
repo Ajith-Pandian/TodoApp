@@ -102,11 +102,13 @@ class ProfileInput extends Component {
         icon = <UserIcon color={iconColor} />;
         keyboardType = "default";
         autoCapitalize = "words";
+        maxLength = 60;
         break;
       case ProfileInput.EMAIL:
         icon = <EmailIcon color={iconColor} />;
         keyboardType = "email-address";
         autoCapitalize = "none";
+        maxLength = 40;
         break;
       case ProfileInput.PHONE:
         icon = <PhoneIcon color={iconColor} />;

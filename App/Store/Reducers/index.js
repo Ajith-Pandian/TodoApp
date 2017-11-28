@@ -8,6 +8,7 @@ import RegisterReducer from "./RegisterReducer";
 import ActivityReducer from "./ActivityReducer";
 import PersistReducer from "./PersistReducer";
 import NewTasksReducer from "./NewTasksReducer";
+import NotificationReducer from "./NotificationReducer";
 
 const getRootReducer = () =>
   combineReducers({
@@ -19,7 +20,8 @@ const getRootReducer = () =>
     TodoReducer,
     ActivityReducer,
     PersistReducer,
-    NewTasksReducer
+    NewTasksReducer,
+    NotificationReducer
   });
 
 export default getRootReducer;

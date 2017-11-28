@@ -12,7 +12,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { connect } from "react-redux";
 import { NavigationActions } from "react-navigation";
 
-import { Close, CircleFilled, CircleOutline } from "../Components/Icons";
+import { Close, RadioOn, RadioOff } from "../Components/Icons";
 import { GRAY, RED, ACCENT_COLOR_1 } from "../Constants";
 import BackgroundContainer from "../Components/BackgroundContainer";
 import DisplayMessage from "../Components/DisplayMessage";
@@ -29,17 +29,19 @@ class Option extends Component {
   }
   render() {
     let { onPress, unit, selectedUnit } = this.props;
-    let { options, icon } = styles;
+    let { options, icon, radioText } = styles;
     let { text } = unit;
     let isSelected = objectEquals(unit, selectedUnit);
     return (
       <TouchableOpacity onPress={() => onPress(unit)} style={options}>
         {isSelected ? (
-          <CircleFilled size={10} style={icon} color="black" />
+          <RadioOn size={18} style={icon} color={GRAY} />
         ) : (
-          <CircleOutline size={10} style={icon} color="black" />
+          <RadioOff size={18} style={icon} color={GRAY} />
         )}
-        <TextComponent isLight={!isSelected}>{text}</TextComponent>
+        <TextComponent isLight={!isSelected} textStyle={radioText}>
+          {text}
+        </TextComponent>
       </TouchableOpacity>
     );
   }
@@ -114,7 +116,9 @@ class DurationPicker extends Component {
               color={GRAY}
             />
           </TouchableOpacity>
-          <TextComponent textStyle={headerText}>Reminder Time</TextComponent>
+          <TextComponent isLight textStyle={headerText}>
+            Reminder Time
+          </TextComponent>
           <View style={horizontalLine} />
           <View style={{ alignItems: "center" }}>
             <TextInputComponent
@@ -128,6 +132,7 @@ class DurationPicker extends Component {
               ]}
               value={value.toString()}
               multiline={false}
+              maxLength={3}
               numberOfLines={1}
               placeholder={"Enter time"}
               keyboardType={"numeric"}
@@ -243,8 +248,13 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginLeft: 5,
-    marginRight: 5,
+    marginRight: 10,
     backgroundColor: "transparent"
+  },
+  radioText: {
+    textAlign: "center",
+    textAlignVertical: "center",
+    fontSize: 16
   }
 });
 

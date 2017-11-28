@@ -4,13 +4,13 @@ import { GRAY } from "../Constants";
 
 const getFontFamily = (isBold, isExtraLight, isLight, isThin) => {
   let isIos = Platform.OS === "ios";
-  let boldFont = isIos ? "Montserrat Bold" : "Montserrat Bold";
-  let thinFont = isIos ? "Montserrat Thin" : "Montserrat Thin";
+  let boldFont = isIos ? "Montserrat-Bold" : "Montserrat Bold";
+  let thinFont = isIos ? "Montserrat-Thin" : "Montserrat Thin";
   let extraLightFont = isIos
-    ? "Montserrat ExtraLight"
+    ? "Montserrat-ExtraLight"
     : "Montserrat ExtraLight";
-  let lightFont = isIos ? "Montserrat Light" : "Montserrat Light";
-  let regularFont = isIos ? "Montserrat Regular" : "Montserrat Regular";
+  let lightFont = isIos ? "Montserrat-Light" : "Montserrat Light";
+  let regularFont = isIos ? "Montserrat-Regular" : "Montserrat Regular";
 
   let fontFamily = isThin
     ? thinFont

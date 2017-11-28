@@ -15,3 +15,5 @@ export const RADICAL_RED = "#FF2A68";
 export const WILD_SAND = "#F4F4F4";
 export const GREEN = "#04B74D";
 export const BLACK = "#000";
+
+export const PICKER_OPTIONS = ["10 mins", "20 mins", "30 mins", "40 mins"];

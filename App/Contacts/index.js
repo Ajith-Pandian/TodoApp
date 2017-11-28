@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import {
   View,
   Text,
+  Image,
   TouchableOpacity,
   StyleSheet,
   Dimensions,
@@ -30,11 +31,19 @@ export default class ContactsScreen extends Component {
         console.log(err);
       } else {
         contacts = contacts.map((contact, index) => {
-          let { recordID, givenName, familyName, phoneNumbers } = contact;
+          console.log(contact);
+          let {
+            recordID,
+            givenName,
+            familyName,
+            phoneNumbers,
+            thumbnailPath
+          } = contact;
           return {
             id: recordID,
             name: familyName ? givenName + " " + familyName : givenName,
-            number: phoneNumbers[0].number
+            number: phoneNumbers[0].number,
+            photo: thumbnailPath
           };
         });
         contacts.sort((a, b) => a.name.localeCompare(b.name));
@@ -117,10 +126,40 @@ export default class ContactsScreen extends Component {
                 renderItem={({ item }) => (
                   <TouchableOpacity
                     onPress={() => this.goBackWithContact(item)}
-                    style={{ margin: 10, width: WIDTH }}
+                    style={{
+                      margin: 10,
+                      width: WIDTH,
+                      flexDirection: "row",
+                      alignItems: "center"
+                    }}
                   >
-                    <TextComponent>{item.name}</TextComponent>
-                    <TextComponent>{item.number}</TextComponent>
+                    {item.photo ? (
+                      <Image
+                        style={{
+                          width: 50,
+                          height: 50,
+                          borderRadius: 25,
+                          margin: 5
+                        }}
+                        source={{
+                          uri: item.photo
+                        }}
+                      />
+                    ) : (
+                      <View
+                        style={{
+                          width: 50,
+                          height: 50,
+                          borderRadius: 25,
+                          margin: 5,
+                          backgroundColor: "black"
+                        }}
+                      />
+                    )}
+                    <View style={{ marginLeft: 10 }}>
+                      <TextComponent>{item.name}</TextComponent>
+                      <TextComponent>{item.number}</TextComponent>
+                    </View>
                   </TouchableOpacity>
                 )}
               />

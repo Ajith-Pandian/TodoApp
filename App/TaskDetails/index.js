@@ -26,7 +26,8 @@ import {
   BLACK,
   TODAY,
   WEEK,
-  LATER
+  LATER,
+  PICKER_OPTIONS
 } from "../Constants";
 import { getFileNameFromPath } from "../Utils";
 import {
@@ -120,7 +121,15 @@ const INVALID = "invalid";
 class TaskDetails extends Component {
   constructor(props) {
     super(props);
-    this.state = { pickerVisible: false, submitted: false, isCompleted: false };
+    let options = PICKER_OPTIONS;
+    let defaultIndex = 0;
+    this.state = {
+      pickerVisible: false,
+      submitted: false,
+      isCompleted: false,
+      options,
+      defaultIndex
+    };
   }
   getTimeAndDate = date => {
     date = moment(date);
@@ -192,7 +201,7 @@ class TaskDetails extends Component {
     let {
       title,
       description,
-      createdBy,
+      sender,
       dueDate,
       attachment,
       reminderTime
@@ -206,7 +215,8 @@ class TaskDetails extends Component {
     } = styles;
     let { visibleDate, visibleTime, meridiem } = this.getTimeAndDate(dueDate);
     const { height: heightOfDeviceScreen } = Dimensions.get("window");
-    let { pickerVisible } = this.state;
+    let { pickerVisible, options } = this.state;
+    const defaultIndex = options.findIndex(item => item === reminderTime);
     return (
       <View style={container}>
         <SimpleTabBar onBackPress={() => navigation.goBack(null)} />
@@ -236,7 +246,7 @@ class TaskDetails extends Component {
               By
             </TextComponent>
             <TextComponent isLight textStyle={contentText}>
-              {createdBy}
+              {sender}
             </TextComponent>
           </View>
           <View
@@ -259,38 +269,51 @@ class TaskDetails extends Component {
                 <TextComponent isExtraLight style={headerText}>
                   Reminder
                 </TextComponent>
-                <TouchableOpacity
-                  onPress={() => {
-                    //this.setState({ pickerVisible: true });
-                    navigation.navigate("DurationPicker", {
-                      time: reminderTime,
-                      onTimePick: time => {
-                        _updateReminderTime(item.id, time.text);
-                      }
-                    });
+                <ModalDropdown
+                  defaultValue={options[defaultIndex]}
+                  defaultIndex={defaultIndex}
+                  showsVerticalScrollIndicator={false}
+                  options={options}
+                  onSelect={(index, value) => {
+                    _updateReminderTime(item.id, value);
                   }}
                   style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    borderBottomWidth: 0.8,
-                    borderBottomColor: GRAY
+                    justifyContent: "center"
                   }}
+                  dropdownTextStyle={{
+                    padding: 10,
+                    fontSize: 16,
+                    textAlign: "center"
+                  }}
+                  dropdownStyle={{ padding: 0, margin: 0, width: 100 }}
                 >
-                  <Alarm
-                    size={20}
-                    style={{ margin: 5 }}
+                  <View
                     style={{
-                      backgroundColor: "transparent"
+                      flexDirection: "row",
+                      alignItems: "center",
+                      borderBottomWidth: 0.8,
+                      borderBottomColor: GRAY
                     }}
-                    color="black"
-                  />
-                  <TextComponent
-                    isLight
-                    textStyle={{ color: "black", margin: 5 }}
                   >
-                    {reminderTime}
-                  </TextComponent>
-                </TouchableOpacity>
+                    <Alarm
+                      size={20}
+                      style={{
+                        backgroundColor: "transparent",
+                        marginRight: 2
+                      }}
+                      color="black"
+                    />
+                    <TextComponent
+                      isLight
+                      textStyle={{
+                        color: "black",
+                        textAlign: "center"
+                      }}
+                    >
+                      {reminderTime}
+                    </TextComponent>
+                  </View>
+                </ModalDropdown>
               </View>
             ) : null}
           </View>
@@ -317,7 +340,7 @@ class TaskDetails extends Component {
             }
             initialTime={reminderTime}
             onSelect={value => {
-              _updateReminderTime(item.id, value.text);
+              _updateReminderTime(item.id, value);
             }}
           />
         </ScrollView>
@@ -339,8 +362,8 @@ class TaskDetails extends Component {
 }
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: WILD_SAND },
-  contentContainer: { margin: 16 },
-  eachRow: { margin: 10 },
+  contentContainer: { margin: 16, paddingBottom: 30 },
+  eachRow: { marginTop: 10, marginBottom: 10 },
   headerText: { color: GRAY, fontSize: 16 },
   contentText: { color: BLACK, fontSize: 16 }
 });

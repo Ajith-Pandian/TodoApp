@@ -17,5 +17,8 @@ const store = createStore(
   {},
   compose(applyMiddleware(...middlewares), autoRehydrate(true))
 );
-persistStore(store, { storage: AsyncStorage, whitelist: ["UserReducer"] });
+persistStore(store, {
+  storage: AsyncStorage,
+  whitelist: ["UserReducer", "NotificationReducer"]
+});
 export default store;

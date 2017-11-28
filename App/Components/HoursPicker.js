@@ -10,7 +10,7 @@ import {
 } from "react-native";
 
 import ModalDropdown from "react-native-modal-dropdown";
-import { APP_COLOR, ACCENT_COLOR_1 } from "../Constants";
+import { APP_COLOR, RADICAL_RED, PICKER_OPTIONS } from "../Constants";
 const getNumStringArray = num => {
   return Array(num)
     .fill(0)
@@ -20,46 +20,52 @@ const getNumStringArray = num => {
 class Section extends Component {
   render() {
     let {
-      section,
       sectionHeaderText,
       sectionModal,
       sectionText,
       sectionDropDown,
       optionsText
     } = styles;
-    let { title, values, defaultIndex } = this.props;
+    let { values, defaultIndex } = this.props;
     defaultIndex = defaultIndex ? defaultIndex : 0;
     return (
-      <View style={section}>
-        <Text style={sectionHeaderText}>{title}</Text>
-        <ModalDropdown
-          defaultValue={values[defaultIndex]}
-          defaultIndex={defaultIndex}
-          showsVerticalScrollIndicator={false}
-          options={values}
-          onSelect={(index, value) => this.props.onSelectValue(value)}
-          style={sectionModal}
-          textStyle={sectionText}
-          dropdownTextStyle={optionsText}
-          dropdownStyle={sectionDropDown}
-        />
-      </View>
+      <ModalDropdown
+        defaultValue={values[defaultIndex]}
+        defaultIndex={defaultIndex}
+        showsVerticalScrollIndicator={false}
+        options={values}
+        onSelect={(index, value) => {
+          this.props.onSelectValue(value);
+        }}
+        style={{
+          height: 40,
+          width: "100%"
+        }}
+        textStyle={{
+          padding: 10,
+          fontSize: 18,
+          textAlign: "center"
+        }}
+        dropdownTextStyle={{
+          padding: 10,
+          fontSize: 18,
+          textAlign: "center"
+        }}
+        dropdownStyle={{ width: "80%" }}
+      />
     );
   }
 }
 export default class HoursPicker extends Component {
   constructor(props) {
     super(props);
-    const hours = getNumStringArray(24);
-    const minutes = getNumStringArray(60);
-
+    const { initialTime } = props;
+    const options = PICKER_OPTIONS;
+    const initialMinsIndex = options.findIndex(item => item === initialTime);
     this.state = {
-      hours,
-      minutes,
-      selectedHours: hours[0],
-      selectedMinutes: minutes[0],
-      initialHoursIndex: 0,
-      initialMinsIndex: 0
+      options,
+      initialMinsIndex,
+      selectedMinutes: ""
     };
   }
   showModal = () => {
@@ -71,48 +77,7 @@ export default class HoursPicker extends Component {
   changeVisibility = isPickerVisible => {
     this.props.onVisibilityChange(isPickerVisible);
   };
-  getReadableHours = () => {
-    let { hours, minutes, selectedHours, selectedMinutes } = this.state;
-    return selectedHours === hours[0] ||
-      selectedHours === undefined ||
-      selectedHours === 0
-      ? `${selectedMinutes} mins`
-      : `${selectedHours} h ${selectedMinutes} m`;
-  };
-  getTimeFromReadableHours = readableHours => {
-    let initialHours, initialMins;
-    let units = readableHours.split(" ");
-    if (units.length === 4) {
-      initialHours = units[0];
-      initialMins = units[2];
-    } else {
-      initialMins = units[0];
-    }
-    return { initialHours, initialMins };
-  };
-  getInitialValueIndexes = initialTime => {
-    let { hours, minutes } = this.state;
-    let { initialHours, initialMins } = this.getTimeFromReadableHours(
-      initialTime
-    );
-    let initialHoursIndex, initialMinsIndex;
-    if (initialHours) initialHoursIndex = hours.indexOf(initialHours);
-    if (initialMins) initialMinsIndex = minutes.indexOf(initialMins);
-    return { initialHoursIndex, initialMinsIndex };
-  };
-  componentWillReceiveProps(nextProps) {
-    let { initialTime } = nextProps;
-    let { hours, minutes } = this.state;
-    let { initialHoursIndex, initialMinsIndex } = this.getInitialValueIndexes(
-      initialTime
-    );
-    this.setState({
-      initialHoursIndex,
-      initialMinsIndex,
-      selectedHours: initialHoursIndex ? hours[initialHoursIndex] : 0,
-      selectedMinutes: initialMinsIndex ? minutes[initialMinsIndex] : 0
-    });
-  }
+
   render() {
     let {
       modalContainer,
@@ -123,7 +88,7 @@ export default class HoursPicker extends Component {
       okButtonText
     } = styles;
     let { isPickerVisible, onSelect } = this.props;
-    let { hours, minutes, initialHoursIndex, initialMinsIndex } = this.state;
+    let { options, initialMinsIndex } = this.state;
     let backgroundColor = isPickerVisible
       ? "rgba(164, 164, 164, 0.5)"
       : "transparent";
@@ -140,16 +105,8 @@ export default class HoursPicker extends Component {
               <Text style={headerText}>Choose Time</Text>
               <View style={sectionsLayout}>
                 <Section
-                  title={"Hours"}
-                  values={hours}
-                  defaultIndex={initialHoursIndex}
-                  onSelectValue={value => {
-                    this.setState({ selectedHours: value });
-                  }}
-                />
-                <Section
                   title={"Minutes"}
-                  values={minutes}
+                  values={options}
                   defaultIndex={initialMinsIndex}
                   onSelectValue={value => {
                     this.setState({ selectedMinutes: value });
@@ -159,12 +116,8 @@ export default class HoursPicker extends Component {
               <TouchableOpacity
                 style={okButton}
                 onPress={() => {
-                  let { selectedHours, selectedMinutes } = this.state;
-                  onSelect({
-                    hours: Number(selectedHours),
-                    minutes: Number(selectedMinutes),
-                    text: this.getReadableHours()
-                  });
+                  let { selectedMinutes } = this.state;
+                  onSelect(selectedMinutes);
                   this.hideModal();
                 }}
               >
@@ -239,14 +192,6 @@ const styles = StyleSheet.create({
   sectionsLayout: {
     flexDirection: "row"
   },
-  section: {
-    paddingTop: 10,
-    width: "50%",
-    alignItems: "center"
-  },
-  sectionHeaderText: {
-    fontSize: 18
-  },
   sectionModal: {
     height: 40,
     width: "100%"
@@ -261,7 +206,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center"
   },
-  sectionDropDown: { width: "40%" },
+  sectionDropDown: { width: "80%" },
   okButtonText: {
     fontSize: 18,
     textAlign: "center",
@@ -269,7 +214,7 @@ const styles = StyleSheet.create({
     fontWeight: "700"
   },
   okButton: {
-    backgroundColor: ACCENT_COLOR_1,
+    backgroundColor: RADICAL_RED,
     padding: 10,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10

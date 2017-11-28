@@ -1,8 +1,11 @@
 import Api from "./Api";
 import { Platform } from "react-native";
 
-const BASE_URL =
-  Platform.OS === "ios" ? "http://localhost:8000" : "http://10.0.2.2:8000";
+//For Device
+const BASE_URL = "http://192.168.31.73:8080";
+//For Simulator & Emulator
+// const BASE_URL =
+//   Platform.OS === "ios" ? "http://localhost:8080" : "http://10.0.2.2:8080";
 const authUrl = phoneNum => `${BASE_URL}/phone/?phone=${phoneNum}`;
 const otpCheckUrl = (phoneNum, otp) =>
   `${BASE_URL}/otpverify/?phone=${phoneNum}&otp=${otp}`;
@@ -17,7 +20,7 @@ const createTaskUrl = `${BASE_URL}/createtask/`;
 const acceptTaskUrl = `${BASE_URL}/accepttask/`;
 const completeTaskUrl = `${BASE_URL}/completetask/`;
 const activitiesUrlWithPage = page => `${BASE_URL}/activity?page=${page}`;
-const deviceIdUpdateUrl = `${BASE_URL}/device_id/`;
+const deviceIdUpdateUrl = `${BASE_URL}/deviceid/`;
 
 export default class ApiHelper {
   static authenticate(phoneNum) {
@@ -99,6 +102,7 @@ export default class ApiHelper {
     });
   }
   static updateDeviceId(device_id, token) {
+    console.log("Update Device ID called");
     return Api.post(deviceIdUpdateUrl, token, { device_id }).then(res => {
       console.log(res);
       return res;

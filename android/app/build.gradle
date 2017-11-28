@@ -133,6 +133,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-fcm')
     compile project(':react-native-fetch-blob')
     compile project(':react-native-pdf')
     compile project(':react-native-file-picker')
@@ -151,3 +152,4 @@ task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
 }
+apply plugin: 'com.google.gms.google-services'
