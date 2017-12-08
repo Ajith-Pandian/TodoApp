@@ -13,8 +13,10 @@ import moment from "moment";
 import { connect } from "react-redux";
 import * as Mime from "react-native-mime-types";
 const FilePickerManager = require("NativeModules").FilePickerManager;
+import { TextInputLayout } from "rn-textinputlayout";
 
 import { Close, Calendar, Time, Attach } from "../Components/Icons";
+import SimpleTabBar from "../Components/SimpleTabBar";
 import { GRAY, RED, ACCENT_COLOR_1 } from "../Constants";
 import BackgroundContainer from "../Components/BackgroundContainer";
 import { getFileNameFromPath } from "../Utils";
@@ -89,32 +91,157 @@ class InputComponent extends Component {
     let { isError, errorMessage } = this.state;
     const isTitle = type === InputComponent.TITLE;
     return (
-      <View
+      <TextInputLayout
         style={{
-          height: isError ? 70 : 50,
+          width: WIDTH - 50,
           marginBottom: 5
         }}
+        labelText={type.charAt(0).toUpperCase() + type.slice(1)}
+        hintColor={GRAY}
+        labelFontSize={14}
+        errorColor={RED}
+        focusColor={GRAY}
       >
         <TextInputComponent
           isLight
-          inputStyle={[
-            styles.inputComp,
-            {
-              borderBottomColor: isError ? RED : GRAY,
-              fontSize: isTitle ? 18 : 16
-            }
-          ]}
-          multiline={false}
-          maxLength={isTitle ? 140 : 512}
-          placeholder={type.charAt(0).toUpperCase() + type.slice(1)}
-          underlineColorAndroid={"transparent"}
-          returnKeyType={"done"}
-          onChangeText={text => this.setState({ [type]: text })}
-          onEndEditing={() => {
-            this.validate();
+          inputStyle={{}}
+          style={{
+            fontSize: isTitle ? 18 : 16,
+            height: 40
           }}
-          onFocus={() => this.setState({ isError: false })}
+          placeholder={type.charAt(0).toUpperCase() + type.slice(1)}
         />
+      </TextInputLayout>
+    );
+  }
+}
+
+class ContactComponent extends Component {
+  constructor(props) {
+    super(props);
+    let { text } = props;
+    let hasContact = text && text.length > 0 ? false : true;
+
+    this.state = {
+      isError: false,
+      errorMessage: "Select contact",
+      isSelf: false,
+      isSelfPressed: false,
+      hasContact: false
+    };
+  }
+  static TO = "To";
+
+  setError = isError => {
+    this.setState({ isError });
+  };
+  componentWillUpdate(nextProps, nextState) {}
+  componentWillReceiveProps(nextProps) {
+    let { text } = nextProps;
+    let { isSelfPressed } = this.state;
+    let hasContact = text && text.length > 0;
+    this.setState({ hasContact, isSelf: isSelfPressed && !hasContact });
+  }
+
+  render() {
+    let { type, text, onClick } = this.props;
+    let {
+      isSelf,
+      isSelfPressed,
+      hasContact,
+      isError,
+      errorMessage
+    } = this.state;
+    let { badge } = styles;
+    const maxlimit = 30;
+    return (
+      <View
+        style={{
+          height: isError ? 70 : 50,
+          marginBottom: 10
+        }}
+      >
+        <TextComponent isLight>To</TextComponent>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            height: 40,
+            borderBottomWidth: 0.5,
+            width: WIDTH - 50,
+            alignItems: "center",
+            borderBottomColor: isError ? RED : GRAY
+          }}
+        >
+          <TouchableOpacity onPress={() => onClick()}>
+            {hasContact ? (
+              <TextComponent
+                isLight
+                textStyle={[
+                  badge,
+                  {
+                    color: "white",
+                    backgroundColor: GRAY
+                  }
+                ]}
+              >
+                {text}
+              </TextComponent>
+            ) : (
+              <TextComponent
+                isLight
+                textStyle={{
+                  marginLeft: 2,
+                  textAlign: "left",
+                  textAlignVertical: "center"
+                }}
+                numberOfLines={1}
+              >
+                Select Contacts
+              </TextComponent>
+            )}
+          </TouchableOpacity>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center"
+            }}
+          >
+            <TextComponent
+              isLight
+              style={{
+                marginLeft: 10,
+                marginRight: 10,
+                fontSize: 16
+              }}
+            >
+              or
+            </TextComponent>
+            <TouchableOpacity
+              onPress={() => {
+                isSelf = !isSelf;
+                this.setState({ isSelf, isSelfPressed: true }, () => {
+                  this.props.onSelectSelf(isSelf);
+                });
+              }}
+            >
+              <TextComponent
+                isLight
+                textStyle={[
+                  badge,
+                  {
+                    color: isSelf ? "white" : GRAY,
+                    backgroundColor: isSelf ? GRAY : "transparent"
+                  }
+                ]}
+                numberOfLines={1}
+              >
+                Self
+              </TextComponent>
+            </TouchableOpacity>
+          </View>
+        </View>
         {isError ? (
           <View
             style={{
@@ -166,6 +293,7 @@ class ClickableComponent extends Component {
       <View
         style={{
           height: isError ? 70 : 50,
+          marginTop: 10,
           marginBottom: 5
         }}
       >
@@ -211,25 +339,35 @@ class ClickableComponent extends Component {
 class CreateTask extends Component {
   constructor() {
     super();
-    this.state = { pickerVisible: false, mode: "date" };
+    this.state = { pickerVisible: false, mode: "date", isSelf: false };
   }
 
   syncDateTimeAndCreate = () => {
-    let { date, time, title, description, contact, attachment } = this.state;
-    let { _createTodo } = this.props;
+    let {
+      date,
+      time,
+      title,
+      description,
+      contact,
+      attachment,
+      isSelf
+    } = this.state;
+    let { _createTodo, ownNumber } = this.props;
     let dateString = date.toString();
     let momentDate = moment(dateString, "ddd MMM D YYYY HH:mm:ss ZZ");
     momentDate.set({ h: time.getHours(), m: time.getMinutes() });
     let formattedDate = momentDate.format("YYYY-MM-DD HH:MM:ssZ");
     date = momentDate.toDate();
     this.setState({ date });
-    _createTodo({
+    let todoToBeCreated = {
       title,
       description,
-      receiver: contact.number,
+      receiver: isSelf ? ownNumber : contact.number,
       due_date: formattedDate,
       attachment
-    });
+    };
+    console.log(todoToBeCreated);
+    _createTodo(todoToBeCreated);
   };
   openFilePicker = () => {
     FilePickerManager.showFilePicker(null, response => {
@@ -272,9 +410,9 @@ class CreateTask extends Component {
     if (isSuccess && this.submitted) navigation.goBack();
   }
   validateAndCreate = () => {
-    let { contact, title, description, date, time } = this.state;
+    let { contact, title, description, date, time, isSelf } = this.state;
 
-    this.contactRef.setError(!contact);
+    this.contactRef.setError(!isSelf && !contact);
     this.titleRef.validate();
     this.descriptionRef.validate();
     this.dateRef.setError(!date);
@@ -296,47 +434,19 @@ class CreateTask extends Component {
     return (
       <BackgroundContainer style={{ flex: 1 }} isTop={true}>
         <ScrollView contentContainerStyle={{}}>
-          <TouchableOpacity
-            onPress={() => goBack()}
-            style={{ alignSelf: "flex-end", margin: 10, padding: 10 }}
-          >
-            <Close
-              size={30}
-              style={{ backgroundColor: "transparent" }}
-              color={GRAY}
-            />
-          </TouchableOpacity>
-
-          <TextComponent
-            isLight
-            textStyle={{
-              marginTop: 20,
-              marginLeft: 25,
-              fontSize: 22,
-              textAlign: "left"
-            }}
-          >
-            New Task !
-          </TextComponent>
+          <SimpleTabBar text={"New Task"} onBackPress={() => goBack(null)} />
           <View
             style={{
-              width: "100%",
-              height: 0.5,
-              backgroundColor: GRAY,
-              marginTop: 20,
-              marginBottom: 20
-            }}
-          />
-          <View
-            style={{
-              alignItems: "center"
+              alignItems: "center",
+              marginVertical: 25
             }}
           >
-            <ClickableComponent
-              text={contact ? contact.name : ClickableComponent.TO}
-              type={ClickableComponent.TO}
+            <ContactComponent
+              text={contact ? contact.name : null}
+              type={ContactComponent.TO}
               ref={ref => (this.contactRef = ref)}
-              onClick={() => this.handleClick(ClickableComponent.TO)}
+              onClick={() => this.handleClick(ContactComponent.TO)}
+              onSelectSelf={isSelf => this.setState({ contact: null, isSelf })}
             />
             <InputComponent
               type={InputComponent.TITLE}
@@ -424,15 +534,33 @@ const styles = StyleSheet.create({
     paddingRight: H_BUTTON_PADDING,
     paddingTop: V_BUTTON_PADDING,
     paddingBottom: V_BUTTON_PADDING
+  },
+  badge: {
+    margin: 2,
+    textAlign: "center",
+    textAlignVertical: "center",
+    borderRadius: 20,
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 3,
+    paddingBottom: 3,
+    borderWidth: 2,
+    borderColor: "#808080",
+    textAlign: "center",
+    textAlignVertical: "center",
+    fontSize: 16
   }
 });
 
-const mapStateToProps = ({ TodoReducer }) => {
+const mapStateToProps = ({ TodoReducer, UserReducer }) => {
   let { isLoading, isError, isSuccess } = TodoReducer;
+  let { name: ownName, phoneNum: ownNumber } = UserReducer;
   return {
     isLoading,
     isError,
-    isSuccess
+    isSuccess,
+    ownName,
+    ownNumber
   };
 };
 

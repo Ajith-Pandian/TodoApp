@@ -40,7 +40,7 @@ export default class SimpleTabBar extends Component {
   }
 
   render() {
-    let { onBackPress } = this.props;
+    let { onBackPress, text } = this.props;
     let { container } = styles;
     return (
       <View style={container}>
@@ -53,7 +53,7 @@ export default class SimpleTabBar extends Component {
             color: "white"
           }}
         >
-          Todo App
+          {text ? text : "Todo App"}
         </TextComponent>
       </View>
     );
