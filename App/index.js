@@ -22,20 +22,30 @@ import Feedback from "./Feedback";
 import DurationPicker from "./DurationPicker";
 
 import store from "./Store";
-import { APP_COLOR, RADICAL_RED, WILD_SAND } from "./Constants";
+import { APP_COLOR, RADICAL_RED, WILD_SAND, WEEK } from "./Constants";
 import Swipe from "./Swipe";
 import Register from "./Register";
 import DisplayMessage from "./Components/DisplayMessage";
-import { modifyFcm, updateFcmToken } from "./Store/Actions/NotificationActions";
+import {
+  modifyFcm,
+  updateFcmToken,
+  presentNotification
+} from "./Store/Actions/NotificationActions";
+import { setOpenedByNotification } from "./Store/Actions/AppStateActions";
+import { addTodo } from "./Store/Actions/TodoActions";
 
 class StackApp extends Component {
+  state = { opened_from_tray: false, taskId: "" };
   componentWillReceiveProps(nextProps) {
     let {
       isLoggedIn,
       hasPermission,
       fcmToken,
       _modifyFcm,
-      _updateFcmToken
+      _updateFcmToken,
+      _presentNotification,
+      _setOpenedByNotification,
+      _addTodo
     } = nextProps;
     //If don't have notification permission request for permissions
     if (!hasPermission)
@@ -65,10 +75,14 @@ class StackApp extends Component {
     this.notificationListener = FCM.on(FCMEvent.Notification, async notif => {
       console.log("notificationListener");
       console.log(notif);
+      let { title, description } = notif;
       if (notif.local_notification) {
         //this is a local notification
+        console.log("local Notification");
+      } else {
+        _presentNotification({ title, description });
       }
-      if (notif.opened_from_tray) {
+      if (notif.opened_from_tray && notif.opened_from_tray === 1) {
         //iOS: app is open/resumed because user clicked banner
         //Android: app is open/resumed because user clicked banner or tapped app icon
       }
@@ -93,6 +107,8 @@ class StackApp extends Component {
     FCM.getInitialNotification().then(notif => {
       console.log("Initial Notification");
       console.log(notif);
+      _setOpenedByNotification(true);
+      this.setState({ opened_from_tray: true });
     });
   }
 
@@ -102,6 +118,7 @@ class StackApp extends Component {
   }
 
   getNavigator = isLoggedIn => {
+    let { opened_from_tray, taskId } = this.state;
     let AppNavigator = StackNavigator(
       {
         Register: { screen: Register, navigationOptions: { header: null } },
@@ -134,7 +151,9 @@ class StackApp extends Component {
       {
         headerMode: "screen",
         title: "App",
-        initialRouteName: isLoggedIn ? "Home" : "Login"
+        initialRouteName: opened_from_tray
+          ? "NewTasks"
+          : isLoggedIn ? "Home" : "Login"
       }
     );
     return <AppNavigator />;
@@ -185,6 +204,15 @@ const mapDispatchToProps = (dispatch, props) => ({
   },
   _updateFcmToken: fcmToken => {
     dispatch(updateFcmToken(fcmToken));
+  },
+  _presentNotification: fcmToken => {
+    dispatch(presentNotification(fcmToken));
+  },
+  _setOpenedByNotification: fcmToken => {
+    dispatch(setOpenedByNotification(fcmToken));
+  },
+  _addTodo: todo => {
+    dispatch(addTodo(todo));
   }
 });
 

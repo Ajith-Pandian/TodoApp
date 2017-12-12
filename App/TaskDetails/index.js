@@ -217,147 +217,167 @@ class TaskDetails extends Component {
     const { height: heightOfDeviceScreen } = Dimensions.get("window");
     let { pickerVisible, options } = this.state;
     const defaultIndex = options.findIndex(item => item === reminderTime);
-    return (
-      <View style={container}>
-        <SimpleTabBar onBackPress={() => navigation.goBack(null)} />
-        <ScrollView
-          contentContainerStyle={[
-            contentContainer,
-            {
-              minHeight: this.height || heightOfDeviceScreen
-            }
-          ]}
-          onLayout={e => {
-            const { nativeEvent: { layout: { height } } } = e;
-            this.height = height;
-            this.forceUpdate();
-          }}
-        >
-          <View style={eachRow}>
-            <TextComponent isExtraLight style={headerText}>
-              Title
-            </TextComponent>
-            <TextComponent isLight textStyle={contentText}>
-              {title}
-            </TextComponent>
-          </View>
-          <View style={eachRow}>
-            <TextComponent isExtraLight style={headerText}>
-              By
-            </TextComponent>
-            <TextComponent isLight textStyle={contentText}>
-              {sender}
-            </TextComponent>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between"
+    return;
+    {
+      item ? (
+        <View style={container}>
+          <SimpleTabBar onBackPress={() => navigation.goBack(null)} />
+          <ScrollView
+            contentContainerStyle={[
+              contentContainer,
+              {
+                minHeight: this.height || heightOfDeviceScreen
+              }
+            ]}
+            onLayout={e => {
+              const { nativeEvent: { layout: { height } } } = e;
+              this.height = height;
+              this.forceUpdate();
             }}
           >
             <View style={eachRow}>
               <TextComponent isExtraLight style={headerText}>
-                Due date
+                Title
               </TextComponent>
               <TextComponent isLight textStyle={contentText}>
-                {`${visibleDate} | ${visibleTime} ${meridiem}`}
+                {title}
               </TextComponent>
             </View>
-            {listType !== LATER ? (
-              <View>
+            <View style={eachRow}>
+              <TextComponent isExtraLight style={headerText}>
+                By
+              </TextComponent>
+              <TextComponent isLight textStyle={contentText}>
+                {sender}
+              </TextComponent>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between"
+              }}
+            >
+              <View style={eachRow}>
                 <TextComponent isExtraLight style={headerText}>
-                  Reminder
+                  Due date
                 </TextComponent>
-                <ModalDropdown
-                  defaultValue={options[defaultIndex]}
-                  defaultIndex={defaultIndex}
-                  showsVerticalScrollIndicator={false}
-                  options={options}
-                  onSelect={(index, value) => {
-                    _updateReminderTime(item.id, value);
-                  }}
-                  style={{
-                    justifyContent: "center"
-                  }}
-                  dropdownTextStyle={{
-                    padding: 10,
-                    fontSize: 16,
-                    textAlign: "center"
-                  }}
-                  dropdownStyle={{ padding: 0, margin: 0, width: 100 }}
-                >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      borderBottomWidth: 0.8,
-                      borderBottomColor: GRAY
+                <TextComponent isLight textStyle={contentText}>
+                  {`${visibleDate} | ${visibleTime} ${meridiem}`}
+                </TextComponent>
+              </View>
+              {listType !== LATER ? (
+                <View>
+                  <TextComponent isExtraLight style={headerText}>
+                    Reminder
+                  </TextComponent>
+                  <ModalDropdown
+                    defaultValue={options[defaultIndex]}
+                    defaultIndex={defaultIndex}
+                    showsVerticalScrollIndicator={false}
+                    options={options}
+                    onSelect={(index, value) => {
+                      _updateReminderTime(item.id, value);
                     }}
+                    style={{
+                      justifyContent: "center"
+                    }}
+                    dropdownTextStyle={{
+                      padding: 10,
+                      fontSize: 16,
+                      textAlign: "center"
+                    }}
+                    dropdownStyle={{ padding: 0, margin: 0, width: 100 }}
                   >
-                    <Alarm
-                      size={20}
+                    <View
                       style={{
-                        backgroundColor: "transparent",
-                        marginRight: 2
-                      }}
-                      color="black"
-                    />
-                    <TextComponent
-                      isLight
-                      textStyle={{
-                        color: "black",
-                        textAlign: "center"
+                        flexDirection: "row",
+                        alignItems: "center",
+                        borderBottomWidth: 0.8,
+                        borderBottomColor: GRAY
                       }}
                     >
-                      {reminderTime}
-                    </TextComponent>
-                  </View>
-                </ModalDropdown>
+                      <Alarm
+                        size={20}
+                        style={{
+                          backgroundColor: "transparent",
+                          marginRight: 2
+                        }}
+                        color="black"
+                      />
+                      <TextComponent
+                        isLight
+                        textStyle={{
+                          color: "black",
+                          textAlign: "center"
+                        }}
+                      >
+                        {reminderTime}
+                      </TextComponent>
+                    </View>
+                  </ModalDropdown>
+                </View>
+              ) : null}
+            </View>
+            <View style={eachRow}>
+              <TextComponent isExtraLight style={headerText}>
+                Description
+              </TextComponent>
+              <TextComponent isLight textStyle={contentText}>
+                {description}
+              </TextComponent>
+            </View>
+            {attachment ? (
+              <View style={{ margin: 10 }}>
+                <TextComponent isExtraLight style={headerText}>
+                  Attachment
+                </TextComponent>
+                {this.renderAttachment(attachment)}
               </View>
             ) : null}
+            <HoursPicker
+              isPickerVisible={pickerVisible}
+              onVisibilityChange={pickerVisible =>
+                this.setState({ pickerVisible })
+              }
+              initialTime={reminderTime}
+              onSelect={value => {
+                _updateReminderTime(item.id, value);
+              }}
+            />
+          </ScrollView>
+          <View style={{ flexDirection: "row" }}>
+            <ActionButton
+              text={"Not done"}
+              color={RADICAL_RED}
+              onPress={() => this.completeTask(false)}
+            />
+            <ActionButton
+              text={"Done"}
+              color={GREEN}
+              onPress={() => this.completeTask(true)}
+            />
           </View>
-          <View style={eachRow}>
-            <TextComponent isExtraLight style={headerText}>
-              Description
-            </TextComponent>
-            <TextComponent isLight textStyle={contentText}>
-              {description}
-            </TextComponent>
-          </View>
-          {attachment ? (
-            <View style={{ margin: 10 }}>
-              <TextComponent isExtraLight style={headerText}>
-                Attachment
-              </TextComponent>
-              {this.renderAttachment(attachment)}
-            </View>
-          ) : null}
-          <HoursPicker
-            isPickerVisible={pickerVisible}
-            onVisibilityChange={pickerVisible =>
-              this.setState({ pickerVisible })
-            }
-            initialTime={reminderTime}
-            onSelect={value => {
-              _updateReminderTime(item.id, value);
-            }}
-          />
-        </ScrollView>
-        <View style={{ flexDirection: "row" }}>
-          <ActionButton
-            text={"Not done"}
+        </View>
+      ) : (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: WILD_SAND
+          }}
+        >
+          <Spinner
+            style={{ margin: 5 }}
+            isVisible={true}
+            size={50}
+            type={"Bounce"}
             color={RADICAL_RED}
-            onPress={() => this.completeTask(false)}
-          />
-          <ActionButton
-            text={"Done"}
-            color={GREEN}
-            onPress={() => this.completeTask(true)}
           />
         </View>
-      </View>
-    );
+      );
+    }
   }
 }
 const styles = StyleSheet.create({

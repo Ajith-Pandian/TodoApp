@@ -18,6 +18,7 @@ import {
   INCOMPLETE_TODO,
   INCOMPLETE_TODO_SUCCESS,
   INCOMPLETE_TODO_FAILURE,
+  ADD_TODO,
   REMOVE_TODO,
   UPDATE_REMINDER_TIME
 } from "../StoreConstants";
@@ -209,6 +210,13 @@ export default function TodoReducer(state = initialState, action) {
           }
         }
       });
+    }
+    case ADD_TODO: {
+      let { todo } = action;
+      return {
+        ...state,
+        todos: removeDuplicates([...state.todos, todo])
+      };
     }
     case REMOVE_TODO: {
       let { todoId } = action;

@@ -10,24 +10,37 @@ class NewTasks extends Component {
     this.props._fetchNewTaks();
   }
   render() {
-    let { newTasks, _acceptTodo, _rejectTodo } = this.props;
+    let {
+      newTasks,
+      _acceptTodo,
+      _rejectTodo,
+      isOpenedByNotification,
+      navigation
+    } = this.props;
     return (
       <TinderSwiper
         {...this.props}
         onSwipeRight={position => _acceptTodo(newTasks[position].id)}
         onSwipeLeft={position => _rejectTodo(newTasks[position].id)}
+        onClose={() =>
+          isOpenedByNotification
+            ? navigation.navigate("Home")
+            : navigation.goBack(null)
+        }
       />
     );
   }
 }
 
-const mapStateToProps = ({ NewTasksReducer }) => {
+const mapStateToProps = ({ NewTasksReducer, AppStateReducer }) => {
   let { isLoading, isError, isSuccess, newTasks } = NewTasksReducer;
+  let { isOpenedByNotification } = AppStateReducer;
 
   return {
     isLoading,
     isError,
     isSuccess,
+    isOpenedByNotification,
     newTasks
   };
 };

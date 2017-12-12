@@ -1,25 +1,17 @@
-//@flow
-import {
-  MODIFY_FCM,
-  UPDATE_FCM_TOKEN,
-  PRESENT_NOTIFICATION,
-  CREATE_NOTIFICATION,
-  MODIFY_NOTIFICATION,
-  DELETE_NOTIFICATION
-} from "../StoreConstants";
+import { OPENED_BY_NOTIFICATION } from "../StoreConstants";
 import ApiHelper from "../../ApiHelper";
 import FCM from "react-native-fcm";
 
-export function modifyFcm(hasPermission) {
+export function setOpenedByNotification(isOpenedByNotification) {
   return dispatch => {
-    dispatch(_modifyFcm(hasPermission));
+    dispatch(_setOpenedByNotification(isOpenedByNotification));
   };
 }
 
-function _modifyFcm(hasPermission) {
+function _setOpenedByNotification(isOpenedByNotification) {
   return {
-    type: MODIFY_FCM,
-    hasPermission
+    type: OPENED_BY_NOTIFICATION,
+    isOpenedByNotification
   };
 }
 

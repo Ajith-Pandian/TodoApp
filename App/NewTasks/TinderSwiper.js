@@ -102,6 +102,9 @@ export default class TinderSwiper extends Component {
   componentWillUnmount() {
     this.props._clearTasks();
   }
+  onClose = () => {
+    this.props.onClose();
+  };
   render() {
     let { pan, currentPosition } = this.state;
     let cards = this.props.newTasks;
@@ -248,7 +251,7 @@ export default class TinderSwiper extends Component {
             </View>
             <TouchableOpacity
               onPress={() => {
-                this.props.navigation.goBack();
+                this.onClose();
               }}
               style={{ position: "absolute", top: 25, right: 25 }}
             >
@@ -300,7 +303,7 @@ export default class TinderSwiper extends Component {
               {isError ? "Error" : isLoading ? "Loading...." : "No NewTasks"}
             </TextComponent>
             <TouchableOpacity
-              onPress={() => this.props.navigation.goBack()}
+              onPress={() => this.onClose()}
               style={{ position: "absolute", top: 25, right: 25 }}
             >
               <Close

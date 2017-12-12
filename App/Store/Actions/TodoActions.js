@@ -21,6 +21,7 @@ import {
   INCOMPLETE_TODO,
   INCOMPLETE_TODO_SUCCESS,
   INCOMPLETE_TODO_FAILURE,
+  ADD_TODO,
   REMOVE_TODO,
   UPDATE_REMINDER_TIME
 } from "../StoreConstants";
@@ -266,6 +267,19 @@ function _incompleteTodoFailure() {
   };
 }
 
+export function addTodo(todo) {
+  return dispatch => {
+    dispatch(_addTodo(parseTodo(todo)));
+  };
+}
+
+function _addTodo(todo) {
+  return {
+    type: ADD_TODO,
+    todo
+  };
+}
+
 export function removeTodo(todoId) {
   return dispatch => {
     dispatch(_removeTodo(todoId));
@@ -293,34 +307,35 @@ function _updateReminderTime(todoId, reminderTime) {
 }
 
 function getTodos(todos) {
-  return todos.map(todo => {
-    let {
-      id,
-      title,
-      description,
-      attachment,
-      sender,
-      created_date,
-      receiver,
-      assigned_date,
-      due_date,
-      is_accepted,
-      is_completed,
-      completed_date
-    } = todo;
-    return new Todo(
-      id,
-      title,
-      description,
-      attachment,
-      sender,
-      created_date,
-      receiver,
-      assigned_date,
-      due_date,
-      is_accepted,
-      is_completed,
-      completed_date
-    );
-  });
+  return todos.map(todo => parseTodo(todo));
+}
+function parseTodo(todo) {
+  let {
+    id,
+    title,
+    description,
+    attachment,
+    sender,
+    receiver,
+    is_accepted,
+    is_completed,
+    due_date,
+    created_date,
+    assigned_date,
+    completed_date
+  } = todo;
+  return new Todo(
+    id,
+    title,
+    description,
+    attachment,
+    sender,
+    created_date,
+    receiver,
+    assigned_date,
+    due_date,
+    is_accepted,
+    is_completed,
+    completed_date
+  );
 }
