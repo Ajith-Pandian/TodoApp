@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 
 import { fetchNewTaks, clearTasks } from "../Store/Actions/NewTasksActions";
 import { acceptTodo, rejectTodo } from "../Store/Actions/TodoActions";
+import { resetNavigationToFirst } from "../Utils";
 import TinderSwiper from "./TinderSwiper";
 
 class NewTasks extends Component {
@@ -12,6 +13,7 @@ class NewTasks extends Component {
   render() {
     let {
       newTasks,
+      isLoggedIn,
       _acceptTodo,
       _rejectTodo,
       isOpenedByNotification,
@@ -24,7 +26,7 @@ class NewTasks extends Component {
         onSwipeLeft={position => _rejectTodo(newTasks[position].id)}
         onClose={() =>
           isOpenedByNotification
-            ? navigation.navigate("Home")
+            ? resetNavigationToFirst(isLoggedIn ? "Home" : "Login", navigation)
             : navigation.goBack(null)
         }
       />
@@ -32,11 +34,13 @@ class NewTasks extends Component {
   }
 }
 
-const mapStateToProps = ({ NewTasksReducer, AppStateReducer }) => {
+const mapStateToProps = ({ NewTasksReducer, AppStateReducer, UserReducer }) => {
   let { isLoading, isError, isSuccess, newTasks } = NewTasksReducer;
   let { isOpenedByNotification } = AppStateReducer;
+  let { isLoggedIn } = UserReducer;
 
   return {
+    isLoggedIn,
     isLoading,
     isError,
     isSuccess,

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { BackHandler } from "react-native";
 import { NavigationActions } from "react-navigation";
+import moment from "moment";
 
 export function isEmail(email) {
   let emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -10,6 +11,10 @@ export function isEmail(email) {
 export function isDigitsOnly(number) {
   let digitsOnlyRegex = /^\d+$/;
   return digitsOnlyRegex.test(number);
+}
+
+export function todayFilter(date) {
+  return moment().isSame(date, "d");
 }
 
 export function objectEquals(obj1, obj2) {

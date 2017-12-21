@@ -90,6 +90,7 @@ class InputComponent extends Component {
     let { type } = this.props;
     let { isError, errorMessage } = this.state;
     const isTitle = type === InputComponent.TITLE;
+    const color = isError ? RED : GRAY;
     return (
       <TextInputLayout
         style={{
@@ -97,14 +98,17 @@ class InputComponent extends Component {
           marginBottom: 5
         }}
         labelText={type.charAt(0).toUpperCase() + type.slice(1)}
-        hintColor={GRAY}
         labelFontSize={14}
-        errorColor={RED}
-        focusColor={GRAY}
+        hintColor={color}
+        errorColor={color}
+        focusColor={color}
+        checkValid={content => {
+          this.setState({ [type]: content });
+          return !(content && content.length > 0);
+        }}
       >
         <TextInputComponent
           isLight
-          inputStyle={{}}
           style={{
             fontSize: isTitle ? 18 : 16,
             height: 40
@@ -115,43 +119,40 @@ class InputComponent extends Component {
     );
   }
 }
-
 class ContactComponent extends Component {
-  constructor(props) {
-    super(props);
-    let { text } = props;
-    let hasContact = text && text.length > 0 ? false : true;
-
-    this.state = {
-      isError: false,
-      errorMessage: "Select contact",
-      isSelf: false,
-      isSelfPressed: false,
-      hasContact: false
-    };
-  }
   static TO = "To";
-
+  state = {
+    isError: false,
+    errorMessage: "Select contact",
+    isSelf: false,
+    isHighlighted: false
+  };
   setError = isError => {
     this.setState({ isError });
   };
-  componentWillUpdate(nextProps, nextState) {}
+  setSelf = (isSelf, isHighlighted, fromProps) => {
+    let { contact, ownContact, onSuccess } = this.props;
+    this.setState({ isSelf, isHighlighted }, () => {
+      onSuccess(isHighlighted ? (isSelf ? ownContact : contact) : null);
+    });
+  };
+
   componentWillReceiveProps(nextProps) {
-    let { text } = nextProps;
-    let { isSelfPressed } = this.state;
-    let hasContact = text && text.length > 0;
-    this.setState({ hasContact, isSelf: isSelfPressed && !hasContact });
+    let { contact, ownContact, onSuccess } = nextProps;
+    let { isHighlighted, isFirstTime } = this.state;
+    let isSelf = contact && contact.name === ownContact.name;
+    this.setState({ isSelf });
+    //this.setSelf(isSelf, isHighlighted);
   }
 
+  toggleIsSelf = () => {
+    let isSelf = !this.state.isSelf;
+    let isHighlighted = !this.state.isHighlighted;
+    this.setSelf(isSelf, isHighlighted);
+  };
   render() {
-    let { type, text, onClick } = this.props;
-    let {
-      isSelf,
-      isSelfPressed,
-      hasContact,
-      isError,
-      errorMessage
-    } = this.state;
+    let { type, contact } = this.props;
+    let { isSelf, isError, errorMessage } = this.state;
     let { badge } = styles;
     const maxlimit = 30;
     return (
@@ -173,8 +174,8 @@ class ContactComponent extends Component {
             borderBottomColor: isError ? RED : GRAY
           }}
         >
-          <TouchableOpacity onPress={() => onClick()}>
-            {hasContact ? (
+          <TouchableOpacity onPress={() => this.props.onContactClick()}>
+            {!isSelf && contact ? (
               <TextComponent
                 isLight
                 textStyle={[
@@ -185,7 +186,7 @@ class ContactComponent extends Component {
                   }
                 ]}
               >
-                {text}
+                {contact.name}
               </TextComponent>
             ) : (
               <TextComponent
@@ -218,14 +219,7 @@ class ContactComponent extends Component {
             >
               or
             </TextComponent>
-            <TouchableOpacity
-              onPress={() => {
-                isSelf = !isSelf;
-                this.setState({ isSelf, isSelfPressed: true }, () => {
-                  this.props.onSelectSelf(isSelf);
-                });
-              }}
-            >
+            <TouchableOpacity onPress={() => this.toggleIsSelf()}>
               <TextComponent
                 isLight
                 textStyle={[
@@ -257,6 +251,19 @@ class ContactComponent extends Component {
     );
   }
 }
+const mapStateToPropsContacts = ({ UserReducer }) => {
+  let { name, phoneNum: number } = UserReducer;
+  return {
+    ownContact: {
+      name,
+      number
+    }
+  };
+};
+const ContactWrapper = connect(mapStateToPropsContacts, null, null, {
+  withRef: true
+})(ContactComponent);
+
 class ClickableComponent extends Component {
   state = { isError: false, errorMessage: "Error" };
   static TO = "To";
@@ -339,36 +346,13 @@ class ClickableComponent extends Component {
 class CreateTask extends Component {
   constructor() {
     super();
-    this.state = { pickerVisible: false, mode: "date", isSelf: false };
+    this.state = {
+      pickerVisible: false,
+      mode: "date",
+      contactCallback: false
+    };
   }
 
-  syncDateTimeAndCreate = () => {
-    let {
-      date,
-      time,
-      title,
-      description,
-      contact,
-      attachment,
-      isSelf
-    } = this.state;
-    let { _createTodo, ownNumber } = this.props;
-    let dateString = date.toString();
-    let momentDate = moment(dateString, "ddd MMM D YYYY HH:mm:ss ZZ");
-    momentDate.set({ h: time.getHours(), m: time.getMinutes() });
-    let formattedDate = momentDate.format("YYYY-MM-DD HH:MM:ssZ");
-    date = momentDate.toDate();
-    this.setState({ date });
-    let todoToBeCreated = {
-      title,
-      description,
-      receiver: isSelf ? ownNumber : contact.number,
-      due_date: formattedDate,
-      attachment
-    };
-    console.log(todoToBeCreated);
-    _createTodo(todoToBeCreated);
-  };
   openFilePicker = () => {
     FilePickerManager.showFilePicker(null, response => {
       console.log("Response = ", response);
@@ -385,6 +369,7 @@ class CreateTask extends Component {
       }
     });
   };
+
   handleClick = type => {
     switch (type) {
       case ClickableComponent.TO:
@@ -410,20 +395,56 @@ class CreateTask extends Component {
     if (isSuccess && this.submitted) navigation.goBack();
   }
   validateAndCreate = () => {
-    let { contact, title, description, date, time, isSelf } = this.state;
-
-    this.contactRef.setError(!isSelf && !contact);
+    let {
+      contact,
+      selectedContact,
+      title,
+      description,
+      date,
+      time,
+      contactCallback
+    } = this.state;
+    selectedContact = contactCallback ? selectedContact : contact;
+    this.contactRef.getWrappedInstance().setError(!selectedContact);
     this.titleRef.validate();
     this.descriptionRef.validate();
     this.dateRef.setError(!date);
     this.timeRef.setError(!time);
-
-    if (date && time && title && description && contact) {
+    if (date && time && title && description && selectedContact) {
       this.submitted = true;
       this.syncDateTimeAndCreate();
     }
   };
 
+  syncDateTimeAndCreate = () => {
+    let {
+      date,
+      time,
+      title,
+      description,
+      attachment,
+      contact,
+      selectedContact,
+      contactCallback
+    } = this.state;
+    selectedContact = contactCallback ? selectedContact : contact;
+    let { _createTodo, ownNumber } = this.props;
+    let dateString = date.toString();
+    let momentDate = moment(dateString, "ddd MMM D YYYY HH:mm:ss ZZ");
+    momentDate.set({ h: time.getHours(), m: time.getMinutes() });
+    let formattedDate = momentDate.format("YYYY-MM-DD HH:MM:ssZ");
+    date = momentDate.toDate();
+    this.setState({ date });
+    let todoToBeCreated = {
+      title,
+      description,
+      receiver: selectedContact.number,
+      due_date: formattedDate,
+      attachment
+    };
+    console.log(todoToBeCreated);
+    //_createTodo(todoToBeCreated);
+  };
   render() {
     let { goBack } = this.props.navigation;
     let { pickerVisible, mode, contact, date, time, attachment } = this.state;
@@ -441,12 +462,18 @@ class CreateTask extends Component {
               marginVertical: 25
             }}
           >
-            <ContactComponent
-              text={contact ? contact.name : null}
+            <ContactWrapper
+              contact={contact}
               type={ContactComponent.TO}
               ref={ref => (this.contactRef = ref)}
-              onClick={() => this.handleClick(ContactComponent.TO)}
-              onSelectSelf={isSelf => this.setState({ contact: null, isSelf })}
+              onContactClick={() => this.handleClick(ContactComponent.TO)}
+              onSuccess={selectedContact =>
+                this.setState({
+                  contactCallback: true,
+                  contact: selectedContact,
+                  selectedContact
+                })
+              }
             />
             <InputComponent
               type={InputComponent.TITLE}

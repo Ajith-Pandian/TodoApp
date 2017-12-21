@@ -3,7 +3,6 @@ import { FlatList, ToastAndroid, View } from "react-native";
 import { NavigationActions } from "react-navigation";
 import { connect } from "react-redux";
 import Spinner from "react-native-spinkit";
-import moment from "moment";
 
 import SwipeList from "../../Components/SwipeActionView";
 import { TextComponent } from "../../Components/TextComponents";
@@ -15,7 +14,7 @@ import {
   onSearchStateChange
 } from "../../Store/Actions/SearchActions";
 import { fetchTodo, fetchLaterTodo } from "../../Store/Actions/TodoActions";
-import { firstToLower } from "../../Utils";
+import { firstToLower, todayFilter } from "../../Utils";
 import { TODAY, WEEK, LATER, WILD_SAND, RADICAL_RED } from "../../Constants";
 
 class TodoList extends Component {
@@ -102,9 +101,9 @@ class TodoList extends Component {
     }
     //Filtering todos for today
     let isToday = type === TODAY;
-    todos = isToday
-      ? todos.filter(({ dueDate }) => moment().isSame(dueDate, "d"))
-      : todos.filter(({ dueDate }) => !moment().isSame(dueDate, "d"));
+    todos = todos.filter(
+      ({ dueDate }) => (isToday ? todayFilter(dueDate) : !todayFilter(dueDate))
+    );
 
     todos = todos.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
 
@@ -135,10 +134,7 @@ class TodoList extends Component {
             />
           );
         }}
-        ListFooterComponent={() => {
-          //if (this.flatRef && isLoading) this.flatRef.scrolltoEnd();
-          return isLoading ? <LoadingItem /> : null;
-        }}
+        ListFooterComponent={() => (isLoading ? <LoadingItem /> : null)}
         onSwipeRight={() => console.log("Rejected")}
         onSwipeLeft={() => console.log("Accepted")}
       />

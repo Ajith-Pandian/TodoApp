@@ -18,7 +18,7 @@ export class Card extends Component {
       id,
       title,
       description,
-      createdBy,
+      sender,
       assignedTo,
       isAccepted,
       isCompleted,
@@ -65,7 +65,7 @@ export class Card extends Component {
                 {description}
               </TextComponent>
               <TextComponent textStyle={authorText}>
-                {`-${createdBy}`}
+                {`-${sender}`}
               </TextComponent>
             </View>
           </Animated.View>

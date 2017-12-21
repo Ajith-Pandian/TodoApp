@@ -51,37 +51,37 @@ function _fetchNewTaksFailure() {
   };
 }
 
+
 function getTodos(todos) {
-  return todos.map(todo => {
-    let {
-      id,
-      title,
-      description,
-      created_by,
-      assigned_to,
-      isaccepted,
-      iscompleted,
-      isdeleted,
-      due_date,
-      created_date,
-      assigned_date,
-      completed_date,
-      attachment
-    } = todo;
-    return new Todo(
-      id,
-      title,
-      description,
-      created_by,
-      assigned_to,
-      isaccepted,
-      iscompleted,
-      isdeleted,
-      due_date,
-      created_date,
-      assigned_date,
-      completed_date,
-      attachment
-    );
-  });
+  return todos.map(todo => parseTodo(todo));
+}
+function parseTodo(todo) {
+  let {
+    id,
+    title,
+    description,
+    attachment,
+    sender,
+    receiver,
+    is_accepted,
+    is_completed,
+    due_date,
+    created_date,
+    assigned_date,
+    completed_date
+  } = todo;
+  return new Todo(
+    id,
+    title,
+    description,
+    attachment,
+    sender,
+    created_date,
+    receiver,
+    assigned_date,
+    due_date,
+    is_accepted,
+    is_completed,
+    completed_date
+  );
 }

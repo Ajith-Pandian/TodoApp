@@ -29,13 +29,16 @@ import DisplayMessage from "./Components/DisplayMessage";
 import {
   modifyFcm,
   updateFcmToken,
-  presentNotification
+  createLocalNotification
 } from "./Store/Actions/NotificationActions";
 import { setOpenedByNotification } from "./Store/Actions/AppStateActions";
-import { addTodo } from "./Store/Actions/TodoActions";
+import { fetchTodo } from "./Store/Actions/TodoActions";
 
 class StackApp extends Component {
-  state = { opened_from_tray: false, taskId: "" };
+  constructor(props) {
+    super(props);
+    this.state = { opened_from_tray: false, taskId: "" };
+  }
   componentWillReceiveProps(nextProps) {
     let {
       isLoggedIn,
@@ -43,9 +46,9 @@ class StackApp extends Component {
       fcmToken,
       _modifyFcm,
       _updateFcmToken,
-      _presentNotification,
+      _createLocalNotification,
       _setOpenedByNotification,
-      _addTodo
+      _fetchTodo
     } = nextProps;
     //If don't have notification permission request for permissions
     if (!hasPermission)
@@ -58,36 +61,36 @@ class StackApp extends Component {
           console.log("notification permission rejected");
           _modifyFcm(false);
         });
-
     if (!fcmToken)
       FCM.getFCMToken().then(token => {
-        console.log("RefreshToken");
+        console.log("GetFCMToken");
         console.log(token);
-        token && isLoggedIn ? _updateFcmToken(token) : "";
+        token && isLoggedIn
+          ? _updateFcmToken(token)
+          : console.log("Empty token");
       });
-
     this.refreshTokenListener = FCM.on(FCMEvent.RefreshToken, token => {
       console.log("RefreshToken");
       console.log(token);
-      token && isLoggedIn ? _updateFcmToken(token) : "";
+      token && isLoggedIn ? _updateFcmToken(token) : console.log("Empty token");
     });
 
     this.notificationListener = FCM.on(FCMEvent.Notification, async notif => {
       console.log("notificationListener");
       console.log(notif);
-      let { title, description } = notif;
+      let { id, title, description } = notif;
       if (notif.local_notification) {
         //this is a local notification
         console.log("local Notification");
       } else {
-        _presentNotification({ title, description });
+        _createLocalNotification({ id, title, description });
       }
       if (notif.opened_from_tray && notif.opened_from_tray === 1) {
         //iOS: app is open/resumed because user clicked banner
         //Android: app is open/resumed because user clicked banner or tapped app icon
       }
       // await someAsyncCall();
-
+      _fetchTodo();
       if (Platform.OS === "ios") {
         switch (notif._notificationType) {
           case NotificationType.Remote:
@@ -102,13 +105,16 @@ class StackApp extends Component {
         }
       }
     });
-
+    FCM.getScheduledLocalNotifications().then(notif => console.log(notif));
     //This will be called when app opened by clicking notification
     FCM.getInitialNotification().then(notif => {
       console.log("Initial Notification");
       console.log(notif);
-      _setOpenedByNotification(true);
-      this.setState({ opened_from_tray: true });
+      let { title } = notif;
+      if (title) {
+        _setOpenedByNotification(true);
+        this.setState({ opened_from_tray: true });
+      }
     });
   }
 
@@ -205,14 +211,14 @@ const mapDispatchToProps = (dispatch, props) => ({
   _updateFcmToken: fcmToken => {
     dispatch(updateFcmToken(fcmToken));
   },
-  _presentNotification: fcmToken => {
-    dispatch(presentNotification(fcmToken));
+  _createLocalNotification: todo => {
+    dispatch(createLocalNotification(todo));
   },
   _setOpenedByNotification: fcmToken => {
     dispatch(setOpenedByNotification(fcmToken));
   },
-  _addTodo: todo => {
-    dispatch(addTodo(todo));
+  _fetchTodo: todo => {
+    dispatch(fetchTodo(todo));
   }
 });
 

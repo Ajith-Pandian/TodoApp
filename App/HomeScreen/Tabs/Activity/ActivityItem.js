@@ -2,32 +2,54 @@ import React, { Component } from "react";
 import { View, Dimensions, StyleSheet, TouchableOpacity } from "react-native";
 import { firstToLower } from "../../../Utils";
 import { TextComponent } from "../../../Components/TextComponents";
-import { GRAY, ACCENT_COLOR_1 } from "../../../Constants";
+import { GRAY, BLACK, GREEN, RADICAL_RED } from "../../../Constants";
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const DIVIDER_WIDTH = 1,
   MARGIN = 20,
   CONTAINER_PADDING = 10;
-
+const types = [
+  "Accepted",
+  "Rejected",
+  "Assigned",
+  "Assigned by",
+  "Assigned to",
+  "Completed",
+  "Not completed"
+];
+const visibleTaskTypes = [
+  "accepted by",
+  "rejected by",
+  "assigned",
+  "assigned by",
+  "assigned to",
+  "completed by",
+  "not completed by"
+];
+const selfVisibleTaskTypes = [
+  "assigned by",
+  "assigned to",
+  "completed by",
+  "not completed by"
+];
 const getTypeAndColor = type => {
-  let color =
-    type === "Accepted" || type === "Completed" ? "green" : ACCENT_COLOR_1;
-  type = firstToLower(type);
+  let color = type === "Accepted" || type === "Completed" ? GREEN : RADICAL_RED;
+  type = visibleTaskTypes[types.findIndex(taskType => taskType === type)];
   return { type, color };
 };
-const Message = ({ sender, type, title }) => {
+const Message = ({ sender, type, title, isSelf }) => {
   let typeAndColor = getTypeAndColor(type);
   type = typeAndColor.type;
   let color = typeAndColor.color;
   return (
-    <TextComponent isLight extStyle={{ color: GRAY }} numberOfLines={3}>
-      <TextComponent isLight textStyle={{ color: GRAY }}>
-        {sender + " "}
+    <TextComponent isLight numberOfLines={3}>
+      <TextComponent isLight textStyle={{ color: BLACK }} numberOfLines={3}>
+        {title + " "}
       </TextComponent>
       <TextComponent isLight textStyle={{ color }}>
-        {firstToLower(type) + " "}
+        {type + " "}
       </TextComponent>
-      <TextComponent isLight textStyle={{ color: "black" }} numberOfLines={3}>
-        {title}
+      <TextComponent isLight textStyle={{ color: GRAY }}>
+        {isSelf ? "by yourself" : sender}
       </TextComponent>
     </TextComponent>
   );
@@ -49,8 +71,14 @@ class TodoItem extends Component {
       smallFont,
       descriptionText
     } = styles;
-    let { sender_name, task_title, choice, message, id } = activity.item;
-
+    let {
+      id,
+      sender_name,
+      task_title,
+      choice,
+      message,
+      isSelf
+    } = activity.item;
     let { descriptionWidth } = this.state;
     let color = "white";
     return (
@@ -69,7 +97,12 @@ class TodoItem extends Component {
             <View style={image} />
           </View>
           <View style={[descriptionLayout, { width: descriptionWidth }]}>
-            <Message sender={sender_name} title={task_title} type={choice} />
+            <Message
+              sender={sender_name}
+              title={task_title}
+              type={choice}
+              isSelf={isSelf}
+            />
           </View>
         </View>
       </TouchableOpacity>

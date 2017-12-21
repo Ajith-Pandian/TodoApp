@@ -29,14 +29,23 @@ import {
 import ApiHelper from "../../ApiHelper";
 import Todo from "../../Model/Todo";
 import { LATER } from "../../Constants";
+import { todayFilter } from "../../Utils";
+import { createFutureNotifications } from "./NotificationActions";
 
 export function fetchTodo() {
   return (dispatch, getState) => {
     let { authToken } = getState().UserReducer;
     dispatch(_fetchTodo());
     ApiHelper.getWeeklyTasks(authToken).then(res => {
-      if (res && res.success) dispatch(_fetchTodoSuccess(getTodos(res.data)));
-      else dispatch(_fetchTodoFailure());
+      if (res && res.success) {
+        let todos = getTodos(res.data);
+        dispatch(_fetchTodoSuccess(todos));
+        dispatch(
+          createFutureNotifications(
+            todos.filter(({ dueDate }) => todayFilter(dueDate))
+          )
+        );
+      } else dispatch(_fetchTodoFailure());
     });
   };
 }
@@ -82,11 +91,14 @@ function _fetchTodoFailure() {
 
 export function createTodo(todo) {
   return (dispatch, getState) => {
-    let { authToken } = getState().UserReducer;
+    let { authToken, phoneNum } = getState().UserReducer;
     dispatch(_createTodo());
+    let isSelf = phoneNum === todo.receiver;
     ApiHelper.createTask(todo, authToken).then(res => {
-      if (res && res.success) dispatch(_createTodoSuccess());
-      else dispatch(_createTodoFailure());
+      if (res && res.success) {
+        dispatch(_createTodoSuccess());
+        isSelf ? dispatch(fetchTodo()) : null;
+      } else dispatch(_createTodoFailure());
     });
   };
 }

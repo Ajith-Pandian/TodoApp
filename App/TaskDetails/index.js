@@ -12,6 +12,8 @@ import DateTimePicker from "react-native-modal-datetime-picker";
 import moment from "moment";
 import { connect } from "react-redux";
 import * as Mime from "react-native-mime-types";
+import Spinner from "react-native-spinkit";
+
 import SimpleTabBar from "../Components/SimpleTabBar";
 import { Alarm, Bell } from "../Components/Icons";
 import { TextComponent } from "../Components/TextComponents";
@@ -198,28 +200,27 @@ class TaskDetails extends Component {
     todos = listType === LATER ? laterTodos : todos;
     const itemIndex = todos.findIndex(item => item.id === todoId);
     let item = todos[itemIndex];
-    let {
-      title,
-      description,
-      sender,
-      dueDate,
-      attachment,
-      reminderTime
-    } = item;
-    let {
-      container,
-      contentContainer,
-      eachRow,
-      headerText,
-      contentText
-    } = styles;
-    let { visibleDate, visibleTime, meridiem } = this.getTimeAndDate(dueDate);
-    const { height: heightOfDeviceScreen } = Dimensions.get("window");
-    let { pickerVisible, options } = this.state;
-    const defaultIndex = options.findIndex(item => item === reminderTime);
-    return;
-    {
-      item ? (
+    if (item) {
+      let {
+        title,
+        description,
+        sender,
+        dueDate,
+        attachment,
+        reminderTime
+      } = item;
+      let {
+        container,
+        contentContainer,
+        eachRow,
+        headerText,
+        contentText
+      } = styles;
+      let { visibleDate, visibleTime, meridiem } = this.getTimeAndDate(dueDate);
+      const { height: heightOfDeviceScreen } = Dimensions.get("window");
+      let { pickerVisible, options } = this.state;
+      const defaultIndex = options.findIndex(item => item === reminderTime);
+      return (
         <View style={container}>
           <SimpleTabBar onBackPress={() => navigation.goBack(null)} />
           <ScrollView
@@ -359,7 +360,9 @@ class TaskDetails extends Component {
             />
           </View>
         </View>
-      ) : (
+      );
+    } else {
+      return (
         <View
           style={{
             flex: 1,
@@ -380,6 +383,7 @@ class TaskDetails extends Component {
     }
   }
 }
+
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: WILD_SAND },
   contentContainer: { margin: 16, paddingBottom: 30 },

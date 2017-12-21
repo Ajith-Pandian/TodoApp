@@ -1,9 +1,10 @@
 import {
   MODIFY_FCM,
   UPDATE_FCM_TOKEN,
-  CREATE_NOTIFICATION,
-  MODIFY_NOTIFICATION,
-  DELETE_NOTIFICATION
+  CREATE_LOCAL_NOTIFICATION,
+  CREATE_FUTURE_NOTIFICATION,
+  MODIFY_FUTURE_NOTIFICATION,
+  DELETE_FUTURE_NOTIFICATION
 } from "../StoreConstants";
 import { getSortedList, removeDuplicates } from "../../Utils";
 
@@ -29,17 +30,23 @@ export default function NotificationReducer(state = initialState, action) {
         fcmToken
       };
     }
-    case CREATE_NOTIFICATION: {
+    case CREATE_LOCAL_NOTIFICATION: {
       return {
         ...state
       };
     }
-    case MODIFY_NOTIFICATION: {
+    case CREATE_FUTURE_NOTIFICATION: {
+      return {
+        ...state,
+        notifications: [...state.notifications, action.notification]
+      };
+    }
+    case MODIFY_FUTURE_NOTIFICATION: {
       return {
         ...state
       };
     }
-    case DELETE_NOTIFICATION: {
+    case DELETE_FUTURE_NOTIFICATION: {
       return {
         ...state
       };

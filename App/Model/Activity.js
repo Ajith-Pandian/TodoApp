@@ -19,5 +19,6 @@ export default class Activity {
     this.task_id = task_id;
     this.task_title = task_title;
     this.message = message;
+    this.isSelf = sender_id === receiver_id;
   }
 }
