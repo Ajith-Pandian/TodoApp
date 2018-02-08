@@ -133,14 +133,14 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-fcm')
     compile project(':react-native-fetch-blob')
+    compile project(':react-native-fcm')
     compile project(':react-native-pdf')
-    compile project(':react-native-file-picker')
     compile project(':react-native-image-picker')
     compile project(':react-native-spinkit')
     compile project(':react-native-contacts')
     compile project(':react-native-vector-icons')
+    compile project(':react-native-document-picker')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:+"  // From node_modules

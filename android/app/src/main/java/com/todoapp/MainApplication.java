@@ -6,7 +6,7 @@ import com.facebook.react.ReactApplication;
 import com.evollu.react.fcm.FIRMessagingPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import org.wonday.pdf.RCTPdfView;
-import com.filepicker.FilePickerPackage;
+import com.reactnativedocumentpicker.ReactNativeDocumentPicker;
 import com.imagepicker.ImagePickerPackage;
 import com.react.rnspinkit.RNSpinkitPackage;
 import com.rt2zz.reactnativecontacts.ReactNativeContacts;
@@ -29,17 +29,10 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(
-          new MainReactPackage(),
-            new FIRMessagingPackage(),
-            new RNFetchBlobPackage(),
-            new RCTPdfView(),
-            new FilePickerPackage(),
-            new ImagePickerPackage(),
-            new RNSpinkitPackage(),
-            new ReactNativeContacts(),
-            new VectorIconsPackage()
-      );
+      return Arrays.<ReactPackage>asList(new MainReactPackage(),
+            new RNFetchBlobPackage(), new ReactNativeDocumentPicker(),
+          new FIRMessagingPackage(), new RCTPdfView(), new ImagePickerPackage(), new RNSpinkitPackage(),
+          new ReactNativeContacts(), new VectorIconsPackage());
     }
   };
 

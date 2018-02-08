@@ -6,14 +6,19 @@ import {
   StyleSheet,
   Dimensions,
   ToastAndroid,
-  ScrollView
+  ScrollView,
+  Platform
 } from "react-native";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import moment from "moment";
 import { connect } from "react-redux";
 import * as Mime from "react-native-mime-types";
-const FilePickerManager = require("NativeModules").FilePickerManager;
+//const FilePickerManager = require("NativeModules").FilePickerManager;
 import { TextInputLayout } from "rn-textinputlayout";
+import {
+  DocumentPicker,
+  DocumentPickerUtil
+} from "react-native-document-picker";
 
 import { Close, Calendar, Time, Attach } from "../Components/Icons";
 import SimpleTabBar from "../Components/SimpleTabBar";
@@ -350,20 +355,45 @@ class CreateTask extends Component {
   }
 
   openFilePicker = () => {
-    FilePickerManager.showFilePicker(null, response => {
-      console.log("Response = ", response);
-      if (response.didCancel) {
-        console.log("User cancelled file picker");
-      } else if (response.error) {
-        console.log("FilePickerManager Error: ", response.error);
-      } else {
-        let { uri, path } = response;
-        let name = getFileNameFromPath(path);
-        let type = Mime.lookup(name);
-        let attachment = { uri, name, type };
-        this.setState({ attachment });
+    // iPhone/Android
+    const docType =
+      Platform.OS === "ios"
+        ? DocumentPickerUtil.images()
+        : DocumentPickerUtil.allFiles();
+    DocumentPicker.show(
+      {
+        filetype: [DocumentPickerUtil.allFiles()]
+      },
+      (error, res) => {
+        console.log(res);
+        if (res) {
+          let { fileName, uri } = res;
+          let type = Mime.lookup(fileName);
+          let attachment = { uri, name: fileName, type };
+          this.setState({ attachment });
+        }
       }
-    });
+    );
+    // FilePickerManager.showFilePicker(null, response => {
+    //   console.log("Response = ", response);
+    //   if (response.didCancel) {
+    //     console.log("User cancelled file picker");
+    //   } else if (response.error) {
+    //     console.log("FilePickerManager Error: ", response.error);
+    //   } else {
+    //     let { uri, path } = response;
+    //     let name = getFileNameFromPath(path);
+    //     let type = Mime.lookup(name);
+    //     let attachment = {
+    //       uri,
+    //       name,
+    //       type
+    //     };
+    //     this.setState({
+    //       attachment
+    //     });
+    //   }
+    // });
   };
 
   handleClick = type => {
@@ -439,7 +469,7 @@ class CreateTask extends Component {
       attachment
     };
     console.log(todoToBeCreated);
-    _createTodo(todoToBeCreated);
+    //_createTodo(todoToBeCreated);
   };
   render() {
     let { goBack } = this.props.navigation;
