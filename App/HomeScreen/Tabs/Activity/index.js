@@ -130,6 +130,7 @@ class Activity extends Component {
     let {
       activities,
       isLoading,
+      userId,
       phoneNum,
       name,
       image,
@@ -160,10 +161,12 @@ class Activity extends Component {
             }}
             renderItem={(item, index) => {
               let isLast = activities.length - 1 === index;
+              let { sender_id, receiver_id } = item;
               return (
                 <ActivityItem
                   key={index}
                   index={index}
+                  isSent={sender_id === userId}
                   isLast={isLast}
                   activity={item}
                 />
@@ -273,9 +276,10 @@ const mapStateToProps = ({ ActivityReducer, UserReducer }) => {
     isSuccess,
     isError
   } = ActivityReducer;
-  let { phoneNum, name, image } = UserReducer;
+  let { phoneNum, name, image, id: userId } = UserReducer;
 
   return {
+    userId,
     phoneNum,
     name,
     image,

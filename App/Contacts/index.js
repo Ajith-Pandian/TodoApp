@@ -42,7 +42,10 @@ export default class ContactsScreen extends Component {
           return {
             id: recordID,
             name: familyName ? givenName + " " + familyName : givenName,
-            number: phoneNumbers[0].number,
+            number:
+              phoneNumbers && phoneNumbers[0]
+                ? phoneNumbers[0].number.replace(/ /g, "")
+                : undefined,
             photo: thumbnailPath
           };
         });
@@ -52,7 +55,19 @@ export default class ContactsScreen extends Component {
     });
   };
   componentDidMount() {
-    this.getContacts();
+    Contacts.checkPermission((err, permission) => {
+      if (permission === "undefined") {
+        Contacts.requestPermission((err, permission) => {
+          // ...
+        });
+      }
+      if (permission === "authorized") {
+        this.getContacts();
+      }
+      if (permission === "denied") {
+        // x.x
+      }
+    });
   }
   goBackWithContact = contact => {
     const { navigation } = this.props;

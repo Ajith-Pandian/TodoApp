@@ -4,9 +4,9 @@ import { Platform } from "react-native";
 //For Device
 //const BASE_URL = "http://192.168.31.73:8000";
 //For Simulator & Emulator
-const BASE_URL =
+export const BASE_URL = "http://54.149.118.215";
 Platform.OS === "ios" ? "http://localhost:8000" : "http://10.0.2.2:8000";
-const authUrl = phoneNum => `${BASE_URL}/phone/?phone=${phoneNum}`;
+const authUrl = phoneNum => `${BASE_URL}/phone/?phone=91${phoneNum}`;
 const otpCheckUrl = (phoneNum, otp) =>
   `${BASE_URL}/otpverify/?phone=${phoneNum}&otp=${otp}`;
 const dashboardUrl = type => `${BASE_URL}/dashboard/?type=${type}`;

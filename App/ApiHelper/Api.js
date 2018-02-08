@@ -23,21 +23,20 @@ export default class Api {
   }
 
   static request(url, token, params, verb) {
-    var formData = new FormData();
-
-    for (var name in params) {
+    let formData = new FormData();
+    for (let name in params) {
       formData.append(name, params[name]);
     }
     let options = Object.assign(
       { method: verb },
       params ? { body: formData } : null
     );
-
-    console.log(options);
     options.headers = { ...Api.headers(), token };
-    console.log("url" + url);
     return fetch(url, options)
-      .then(response => response.json())
+      .then(response => {
+        console.log(response);
+        return response.json();
+      })
       .then(responseJson => responseJson)
       .catch(error => {
         console.error(error);

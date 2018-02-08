@@ -8,7 +8,7 @@ import {
   UPDATE_PROFILE_SUCCESS,
   UPDATE_PROFILE_FAILURE
 } from "../StoreConstants";
-import ApiHelper from "../../ApiHelper";
+import ApiHelper, { BASE_URL } from "../../ApiHelper";
 export function loginUser() {
   return dispatch => {
     dispatch(getProfile());
@@ -27,7 +27,7 @@ export function getProfile() {
             phoneNum: phone.toString(),
             email,
             name,
-            image: "http://10.0.2.2:8000/" + image
+            image: `${BASE_URL}/${image}`
           })
         );
       }

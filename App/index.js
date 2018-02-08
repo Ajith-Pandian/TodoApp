@@ -110,8 +110,7 @@ class StackApp extends Component {
     FCM.getInitialNotification().then(notif => {
       console.log("Initial Notification");
       console.log(notif);
-      let { title } = notif;
-      if (title) {
+      if (notif && notif.title) {
         _setOpenedByNotification(true);
         this.setState({ opened_from_tray: true });
       }

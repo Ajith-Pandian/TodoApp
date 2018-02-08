@@ -10,11 +10,7 @@ import { ACCENT_COLOR } from "../Constants";
 
 const AddButton = ({ onPress }) => {
   return (
-    <TouchableOpacity
-      onPress={() => {
-        onPress();
-      }}
-    >
+    <TouchableOpacity onPress={() => onPress()}>
       <Image
         style={{ margin: 10, width: 30, height: 30, tintColor: ACCENT_COLOR }}
         source={require("../Resources/add.png")}

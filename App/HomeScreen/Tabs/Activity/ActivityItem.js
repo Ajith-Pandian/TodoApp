@@ -36,7 +36,7 @@ const getTypeAndColor = type => {
   type = visibleTaskTypes[types.findIndex(taskType => taskType === type)];
   return { type, color };
 };
-const Message = ({ sender, type, title, isSelf }) => {
+const Message = ({ sender, receiver, type, title, isSelf, isSent }) => {
   let typeAndColor = getTypeAndColor(type);
   type = typeAndColor.type;
   let color = typeAndColor.color;
@@ -49,7 +49,7 @@ const Message = ({ sender, type, title, isSelf }) => {
         {type + " "}
       </TextComponent>
       <TextComponent isLight textStyle={{ color: GRAY }}>
-        {isSelf ? "by yourself" : sender}
+        {isSelf ? "by yourself" : isSent ? sender : receiver}
       </TextComponent>
     </TextComponent>
   );
@@ -74,6 +74,8 @@ class TodoItem extends Component {
     let {
       id,
       sender_name,
+      receiver_name,
+      isSent,
       task_title,
       choice,
       message,
@@ -99,6 +101,8 @@ class TodoItem extends Component {
           <View style={[descriptionLayout, { width: descriptionWidth }]}>
             <Message
               sender={sender_name}
+              receiver={receiver_name}
+              isSent={isSent}
               title={task_title}
               type={choice}
               isSelf={isSelf}

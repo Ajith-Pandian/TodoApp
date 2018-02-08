@@ -155,13 +155,17 @@ class ContactComponent extends Component {
     let { isSelf, isError, errorMessage } = this.state;
     let { badge } = styles;
     const maxlimit = 30;
+    let contactName = contact ? contact.name : null;
+    let nameLength;
+    if (contactName)
+      if (contactName.length < 12) nameLength = contactName.length;
+      else {
+        nameLength = 12;
+        contactName = `${contactName.substring(0, nameLength)}...`;
+      }
+
     return (
-      <View
-        style={{
-          height: isError ? 70 : 50,
-          marginBottom: 10
-        }}
-      >
+      <View style={{ height: isError ? 70 : 50, marginBottom: 10 }}>
         <TextComponent isLight>To</TextComponent>
         <View
           style={{
@@ -178,15 +182,11 @@ class ContactComponent extends Component {
             {!isSelf && contact ? (
               <TextComponent
                 isLight
-                textStyle={[
-                  badge,
-                  {
-                    color: "white",
-                    backgroundColor: GRAY
-                  }
-                ]}
+                maxLength={12}
+                numberOfLines={1}
+                textStyle={[badge, { color: "white", backgroundColor: GRAY }]}
               >
-                {contact.name}
+                {contactName}
               </TextComponent>
             ) : (
               <TextComponent
@@ -211,11 +211,7 @@ class ContactComponent extends Component {
           >
             <TextComponent
               isLight
-              style={{
-                marginLeft: 10,
-                marginRight: 10,
-                fontSize: 16
-              }}
+              style={{ marginLeft: 10, marginRight: 10, fontSize: 16 }}
             >
               or
             </TextComponent>
@@ -443,7 +439,7 @@ class CreateTask extends Component {
       attachment
     };
     console.log(todoToBeCreated);
-    //_createTodo(todoToBeCreated);
+    _createTodo(todoToBeCreated);
   };
   render() {
     let { goBack } = this.props.navigation;
