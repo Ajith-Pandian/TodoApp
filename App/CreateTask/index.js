@@ -89,7 +89,6 @@ class InputComponent extends Component {
   };
   clearError = type => {
     this.setState({ isError: false, errorMessage: "" });
-    this.props.onSuccess(this.state[type]);
   };
   render() {
     let { type } = this.props;
@@ -98,10 +97,7 @@ class InputComponent extends Component {
     const color = isError ? RED : GRAY;
     return (
       <TextInputLayout
-        style={{
-          width: WIDTH - 50,
-          marginBottom: 5
-        }}
+        style={{ width: WIDTH - 50, marginBottom: 5 }}
         labelText={type.charAt(0).toUpperCase() + type.slice(1)}
         labelFontSize={14}
         hintColor={color}
@@ -114,11 +110,9 @@ class InputComponent extends Component {
       >
         <TextInputComponent
           isLight
-          style={{
-            fontSize: isTitle ? 18 : 16,
-            height: 40
-          }}
+          style={{ fontSize: isTitle ? 18 : 16, height: 40 }}
           placeholder={type.charAt(0).toUpperCase() + type.slice(1)}
+          onChangeText={text => this.props.onSuccess(this.state[type])}
         />
       </TextInputLayout>
     );
@@ -364,6 +358,8 @@ class CreateTask extends Component {
   constructor() {
     super();
     this.state = {
+      title: "",
+      description: "",
       pickerVisible: false,
       mode: "date",
       contactCallback: false
@@ -416,6 +412,7 @@ class CreateTask extends Component {
     if (isSuccess && this.submitted) navigation.goBack();
   }
   validateAndCreate = () => {
+    console.log(this.state);
     let {
       contact,
       selectedContact,
@@ -435,6 +432,9 @@ class CreateTask extends Component {
       this.submitted = true;
       this.syncDateTimeAndCreate();
     }
+    // else {
+    //   DisplayMessage("Please fill all fields");
+    // }
   };
 
   syncDateTimeAndCreate = () => {
