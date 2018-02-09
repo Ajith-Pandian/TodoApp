@@ -13,7 +13,6 @@ import DateTimePicker from "react-native-modal-datetime-picker";
 import moment from "moment";
 import { connect } from "react-redux";
 import * as Mime from "react-native-mime-types";
-//const FilePickerManager = require("NativeModules").FilePickerManager;
 import { TextInputLayout } from "rn-textinputlayout";
 import {
   DocumentPicker,
@@ -185,14 +184,21 @@ class ContactComponent extends Component {
         >
           <TouchableOpacity onPress={() => this.props.onContactClick()}>
             {!isSelf && contact ? (
-              <TextComponent
-                isLight
-                maxLength={12}
-                numberOfLines={1}
-                textStyle={[badge, { color: "white", backgroundColor: GRAY }]}
-              >
-                {contactName}
-              </TextComponent>
+              <View style={[badge, { backgroundColor: GRAY }]}>
+                <TextComponent
+                  isLight
+                  maxLength={12}
+                  numberOfLines={1}
+                  textStyle={{
+                    fontSize: 16,
+                    textAlign: "center",
+                    textAlignVertical: "center",
+                    color: "white"
+                  }}
+                >
+                  {contactName}
+                </TextComponent>
+              </View>
             ) : (
               <TextComponent
                 isLight
@@ -211,7 +217,8 @@ class ContactComponent extends Component {
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
-              alignItems: "center"
+              alignItems: "center",
+              backgroundColor: "transparent"
             }}
           >
             <TextComponent
@@ -221,19 +228,27 @@ class ContactComponent extends Component {
               or
             </TextComponent>
             <TouchableOpacity onPress={() => this.toggleIsSelf()}>
-              <TextComponent
-                isLight
-                textStyle={[
+              <View
+                style={[
                   badge,
-                  {
-                    color: isSelf ? "white" : GRAY,
-                    backgroundColor: isSelf ? GRAY : "transparent"
-                  }
+                  { backgroundColor: isSelf ? GRAY : "transparent" }
                 ]}
-                numberOfLines={1}
               >
-                Self
-              </TextComponent>
+                <TextComponent
+                  isLight
+                  textStyle={[
+                    {
+                      fontSize: 16,
+                      textAlign: "center",
+                      textAlignVertical: "center",
+                      color: isSelf ? "white" : GRAY
+                    }
+                  ]}
+                  numberOfLines={1}
+                >
+                  Self
+                </TextComponent>
+              </View>
             </TouchableOpacity>
           </View>
         </View>
@@ -355,7 +370,6 @@ class CreateTask extends Component {
   }
 
   openFilePicker = () => {
-    // iPhone/Android
     const docType =
       Platform.OS === "ios"
         ? DocumentPickerUtil.images()
@@ -374,26 +388,6 @@ class CreateTask extends Component {
         }
       }
     );
-    // FilePickerManager.showFilePicker(null, response => {
-    //   console.log("Response = ", response);
-    //   if (response.didCancel) {
-    //     console.log("User cancelled file picker");
-    //   } else if (response.error) {
-    //     console.log("FilePickerManager Error: ", response.error);
-    //   } else {
-    //     let { uri, path } = response;
-    //     let name = getFileNameFromPath(path);
-    //     let type = Mime.lookup(name);
-    //     let attachment = {
-    //       uri,
-    //       name,
-    //       type
-    //     };
-    //     this.setState({
-    //       attachment
-    //     });
-    //   }
-    // });
   };
 
   handleClick = type => {
@@ -480,14 +474,10 @@ class CreateTask extends Component {
         : mode === ClickableComponent.TIME && time ? time : new Date();
     return (
       <BackgroundContainer style={{ flex: 1 }} isTop={true}>
+        <SimpleTabBar text={"New Task"} onBackPress={() => goBack(null)} />
+
         <ScrollView contentContainerStyle={{}}>
-          <SimpleTabBar text={"New Task"} onBackPress={() => goBack(null)} />
-          <View
-            style={{
-              alignItems: "center",
-              marginVertical: 25
-            }}
-          >
+          <View style={{ alignItems: "center", marginVertical: 25 }}>
             <ContactWrapper
               contact={contact}
               type={ContactComponent.TO}
@@ -546,7 +536,11 @@ class CreateTask extends Component {
             console.log(selectedDate);
             this.setState({ pickerVisible: false, [mode]: selectedDate });
           }}
-          onCancel={() => this.setState({ pickerVisible: false })}
+          onCancel={() =>
+            this.setState({
+              pickerVisible: false
+            })
+          }
           mode={mode}
           date={visibleDateOrtime}
           is24Hour={false}
@@ -590,18 +584,13 @@ const styles = StyleSheet.create({
   },
   badge: {
     margin: 2,
-    textAlign: "center",
-    textAlignVertical: "center",
-    borderRadius: 20,
+    borderRadius: 30,
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 3,
     paddingBottom: 3,
     borderWidth: 2,
-    borderColor: "#808080",
-    textAlign: "center",
-    textAlignVertical: "center",
-    fontSize: 16
+    borderColor: "#808080"
   }
 });
 

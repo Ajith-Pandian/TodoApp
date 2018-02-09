@@ -118,8 +118,8 @@ class StackApp extends Component {
   }
 
   componentWillUnmount() {
-    this.notificationListener.remove();
-    this.refreshTokenListener.remove();
+    this.notificationListener && this.notificationListener.remove();
+    this.refreshTokenListener && this.refreshTokenListener.remove();
   }
 
   getNavigator = isLoggedIn => {
