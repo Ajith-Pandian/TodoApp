@@ -21,6 +21,7 @@ import {
 
 import { Close, Calendar, Time, Attach } from "../Components/Icons";
 import SimpleTabBar from "../Components/SimpleTabBar";
+import DisplayMessage from "../Components/DisplayMessage";
 import { GRAY, RED, ACCENT_COLOR_1 } from "../Constants";
 import BackgroundContainer from "../Components/BackgroundContainer";
 import { getFileNameFromPath } from "../Utils";
@@ -452,18 +453,25 @@ class CreateTask extends Component {
     let dateString = date.toString();
     let momentDate = moment(dateString, "ddd MMM D YYYY HH:mm:ss ZZ");
     momentDate.set({ h: time.getHours(), m: time.getMinutes() });
-    let formattedDate = momentDate.format("YYYY-MM-DD HH:MM:ssZ");
+
     date = momentDate.toDate();
     this.setState({ date });
-    let todoToBeCreated = {
-      title,
-      description,
-      receiver: selectedContact.number,
-      due_date: formattedDate,
-      attachment
-    };
-    console.log(todoToBeCreated);
-    //_createTodo(todoToBeCreated);
+
+    if (moment().diff(momentDate) < 0) {
+      let formattedDate = momentDate.format("YYYY-MM-DD HH:mm:ssZ");
+      let todoToBeCreated = {
+        title,
+        description,
+        receiver: selectedContact.number,
+        due_date: formattedDate,
+        attachment
+      };
+      //FIXME:remove on production
+      console.log(todoToBeCreated);
+      _createTodo(todoToBeCreated);
+    } else {
+      DisplayMessage("Please select future time");
+    }
   };
   render() {
     let { goBack } = this.props.navigation;
@@ -475,7 +483,6 @@ class CreateTask extends Component {
     return (
       <BackgroundContainer style={{ flex: 1 }} isTop={true}>
         <SimpleTabBar text={"New Task"} onBackPress={() => goBack(null)} />
-
         <ScrollView contentContainerStyle={{}}>
           <View style={{ alignItems: "center", marginVertical: 25 }}>
             <ContactWrapper

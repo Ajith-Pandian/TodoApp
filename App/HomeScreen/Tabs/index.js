@@ -201,7 +201,6 @@ class Tabs extends Component {
           currentIndex={
             navigation.state.params && navigation.state.params.currentIndex
           }
-          onChangeText={text => console.log(text)}
         />
       )
     };

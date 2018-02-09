@@ -34,6 +34,7 @@ class TodoItem extends PureComponent {
       nameAndTime,
       smallFont,
       ownBadge,
+      ownBadgeText,
       blackFont,
       descriptionText
     } = styles;
@@ -70,12 +71,14 @@ class TodoItem extends PureComponent {
           <View style={divider} />
           <View style={descriptionLayout}>
             <View style={nameAndTime}>
-              <TextComponent
-                isExtraLight
-                textStyle={isOwn ? ownBadge : smallFont}
-              >
-                {creatorName}
-              </TextComponent>
+              <View style={isOwn ? ownBadge : null}>
+                <TextComponent
+                  isExtraLight
+                  textStyle={isOwn ? ownBadgeText : smallFont}
+                >
+                  {creatorName}
+                </TextComponent>
+              </View>
               <TextComponent isExtraLight textStyle={smallFont}>
                 {reminderTime}
               </TextComponent>
@@ -85,9 +88,7 @@ class TodoItem extends PureComponent {
               isLight
               textStyle={[
                 descriptionText,
-                {
-                  width: this.state.descriptionWidth
-                }
+                { width: this.state.descriptionWidth }
               ]}
             >
               {title}
@@ -142,16 +143,19 @@ const styles = StyleSheet.create({
     color: GRAY
   },
   ownBadge: {
-    fontSize: 12,
-    color: "black",
     paddingLeft: 10,
     paddingRight: 10,
     paddingTop: 2,
     paddingBottom: 2,
     backgroundColor: SILVER,
-    borderRadius: 5
+    borderRadius: 10
+  },
+  ownBadgeText: {
+    fontSize: 12,
+    color: "black"
   },
   descriptionText: {
+    marginVertical: 5,
     color: "black"
   }
 });

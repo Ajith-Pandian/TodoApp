@@ -19,10 +19,10 @@ import { Search, Close, Bell } from "./Icons";
 import { APP_COLOR, ACCENT_COLOR_1 } from "../Constants";
 import { NavigationActions } from "react-navigation";
 
-const SEARCH_ICON = (
+const SearchIcon = (
   <Search size={25} style={{ backgroundColor: "transparent" }} color="white" />
 );
-const CLOSE_ICON = (
+const CloseIcon = (
   <Close size={25} style={{ backgroundColor: "transparent" }} color="white" />
 );
 
@@ -99,24 +99,16 @@ class TabBar extends Component {
       </View>
     );
     let optionsComp = (
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center"
-        }}
-      >
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
         <TouchableOpacity
           activeOpacity={0.4}
           onPress={() => {
             let newSearchState = !searchState;
             _onSearchStateChange(newSearchState);
           }}
-          style={{
-            marginLeft: 10,
-            marginRight: searchState ? 20 : 10
-          }}
+          style={{ marginLeft: 10, marginRight: searchState ? 20 : 10 }}
         >
-          {searchState ? CLOSE_ICON : SEARCH_ICON}
+          {searchState ? CloseIcon : currentIndex !== 3 ? SearchIcon : null}
         </TouchableOpacity>
         {!searchState ? (
           <TouchableOpacity
@@ -128,9 +120,7 @@ class TabBar extends Component {
           >
             <Bell
               size={25}
-              style={{
-                backgroundColor: "transparent"
-              }}
+              style={{ backgroundColor: "transparent" }}
               color="white"
             />
           </TouchableOpacity>

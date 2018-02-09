@@ -300,7 +300,7 @@ export default class TinderSwiper extends Component {
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
             <TextComponent>
-              {isError ? "Error" : isLoading ? "Loading...." : "No NewTasks"}
+              {isError ? "Error" : isLoading ? "Loading...." : "No New Tasks"}
             </TextComponent>
             <TouchableOpacity
               onPress={() => this.onClose()}

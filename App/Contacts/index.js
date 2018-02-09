@@ -41,15 +41,20 @@ export default class ContactsScreen extends Component {
           } = contact;
           return {
             id: recordID,
-            name: familyName ? givenName + " " + familyName : givenName,
+            name: familyName
+              ? givenName + " " + familyName
+              : givenName || "No Name",
             number:
               phoneNumbers && phoneNumbers[0]
-                ? phoneNumbers[0].number.replace(/ /g, "")
+                ? phoneNumbers[0].number.replace(/ |-|\(|\)/g, "")
                 : undefined,
             photo: thumbnailPath
           };
         });
-        contacts.sort((a, b) => a.name.localeCompare(b.name));
+        contacts.sort(
+          ({ name: aName }, { name: bName }) =>
+            aName && bName ? aName.localeCompare(bName) : true
+        );
         this.setState({ contacts, filteredContacts: contacts });
       }
     });
@@ -179,7 +184,13 @@ export default class ContactsScreen extends Component {
                 )}
               />
             ) : (
-              <View>
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
                 <TextComponent>No contacts</TextComponent>
               </View>
             )}
