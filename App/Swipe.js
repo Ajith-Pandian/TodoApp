@@ -11,6 +11,7 @@ import {
   Image,
   ToastAndroid
 } from "react-native";
+import PropTypes from "prop-types";
 import { ACCENT_COLOR_1 } from "./Constants";
 
 const { width } = Dimensions.get("window");
@@ -229,10 +230,10 @@ class SwipeListRow extends Component {
   }
 }
 SwipeListRow.propTypes = {
-  children: React.PropTypes.node.isRequired,
-  onSwipeRight: React.PropTypes.func.isRequired,
-  onSwipeLeft: React.PropTypes.func.isRequired,
-  swipeEnabled: React.PropTypes.bool.isRequired
+  children: PropTypes.node.isRequired,
+  onSwipeRight: PropTypes.func.isRequired,
+  onSwipeLeft: PropTypes.func.isRequired,
+  swipeEnabled: PropTypes.bool.isRequired
 };
 let dataSource = [
   { id: 1, text: "AA" },
