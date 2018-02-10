@@ -7,8 +7,8 @@ import Spinner from "react-native-spinkit";
 import SwipeList from "../../Components/SwipeActionView";
 import { TextComponent } from "../../Components/TextComponents";
 import EmptyTask from "../../Components/EmptyTask";
+import LoadingItem from "../../Components/LoadingItem";
 import TodoItem from "./TodoItem";
-import LoadingItem from "./LoadingItem";
 import {
   onSearchTermChange,
   onSearchStateChange

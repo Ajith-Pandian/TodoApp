@@ -14,7 +14,7 @@ import { Activity as ActivityIcon } from "../../../Components/Icons";
 import { RADICAL_RED, GRAY, BLACK, WILD_SAND } from "../../../Constants";
 import ActivityItem from "./ActivityItem";
 import { fetchActivities } from "../../../Store/Actions/ActivityActions";
-import LoadingItem from "../LoadingItem";
+import LoadingItem from "../../../Components/LoadingItem";
 
 const ProfilePic = ({ source }) => {
   let { imageContainer, image } = styles;

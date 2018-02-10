@@ -10,6 +10,8 @@ import {
 } from "react-native";
 import { Close } from "../Components/Icons";
 import SearchBar from "../Components/SearchBar";
+import LoadingItem from "../Components/LoadingItem";
+
 import { GRAY, ACCENT_COLOR_1 } from "../Constants";
 import BackgroundContainer from "../Components/BackgroundContainer";
 import {
@@ -90,9 +92,7 @@ export default class ContactsScreen extends Component {
   };
   render() {
     let { goBack, state } = this.props.navigation;
-
     const { filteredContacts } = this.state;
-
     return (
       <BackgroundContainer style={{ flex: 1 }} isTop={true}>
         <View style={{ flex: 1, alignItems: "center" }}>
@@ -191,7 +191,8 @@ export default class ContactsScreen extends Component {
                   justifyContent: "center"
                 }}
               >
-                <TextComponent>No contacts</TextComponent>
+                {/*<TextComponent>No contacts</TextComponent>*/}
+                <LoadingItem />
               </View>
             )}
           </View>
