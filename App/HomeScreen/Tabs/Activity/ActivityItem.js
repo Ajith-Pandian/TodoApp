@@ -17,29 +17,34 @@ const types = [
   "Not completed"
 ];
 const visibleTaskTypes = [
-  "accepted by",
-  "rejected by",
+  "accepted",
+  "rejected",
   "assigned",
   "assigned by",
   "assigned to",
-  "completed by",
-  "not completed by"
+  "completed",
+  "not completed"
 ];
-const selfVisibleTaskTypes = [
-  "assigned by",
-  "assigned to",
-  "completed by",
-  "not completed by"
-];
+const selfVisibleTaskTypes = ["assigned", "completed by", "not completed by"];
 const getTypeAndColor = type => {
   let color = type === "Accepted" || type === "Completed" ? GREEN : RADICAL_RED;
   type = visibleTaskTypes[types.findIndex(taskType => taskType === type)];
   return { type, color };
 };
-const Message = ({ sender, receiver, type, title, isSelf, isSent }) => {
+const Message = ({
+  sender,
+  receiver,
+  type,
+  title,
+  isSelf,
+  isSent,
+  isReceived
+}) => {
   let typeAndColor = getTypeAndColor(type);
   type = typeAndColor.type;
   let color = typeAndColor.color;
+  const isAssign =
+    type.split(" ").length != 1 && type.split(" ")[0] === "assigned";
   return (
     <TextComponent isLight numberOfLines={3}>
       <TextComponent isLight textStyle={{ color: BLACK }} numberOfLines={3}>
@@ -49,7 +54,9 @@ const Message = ({ sender, receiver, type, title, isSelf, isSent }) => {
         {type + " "}
       </TextComponent>
       <TextComponent isLight textStyle={{ color: GRAY }}>
-        {isSelf ? "by yourself" : isSent ? sender : receiver}
+        {`${!isAssign ? "by" : ""} ${
+          isSelf ? "you" : isSent ? receiver : "you"
+        }`}
       </TextComponent>
     </TextComponent>
   );
@@ -59,7 +66,6 @@ class ActivityItem extends Component {
 
   render() {
     let { activity, isSent, isReceived } = this.props;
-    console.log(this.props);
     let {
       container,
       imageLayout,
@@ -103,6 +109,7 @@ class ActivityItem extends Component {
               sender={sender_name}
               receiver={receiver_name}
               isSent={isSent}
+              isReceived={isReceived}
               title={task_title}
               type={choice}
               isSelf={isSelf}

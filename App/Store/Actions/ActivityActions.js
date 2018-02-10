@@ -12,13 +12,9 @@ export function fetchActivities(page) {
     dispatch(_fetchActivities());
     ApiHelper.getActivities(page, authToken).then(res => {
       if (res && res.success) {
-        dispatch(
-          _fetchActivitiesSuccess(
-            page,
-            res.total_pages,
-            getActivities(res.data)
-          )
-        );
+        let { data, total_pages } = res;
+        let sorted = getActivities(data).sort((a, b) => b.id - a.id);
+        dispatch(_fetchActivitiesSuccess(page, total_pages, sorted));
       } else dispatch(_fetchActivitiesFailure());
     });
   };

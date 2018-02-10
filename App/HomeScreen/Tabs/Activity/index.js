@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, PureComponent } from "react";
 import {
   View,
   Image,
@@ -95,18 +95,20 @@ const Profile = ({ phoneNum, image, name, navigation }) => {
     </View>
   );
 };
-class Activity extends Component {
+class Activity extends PureComponent {
   onEndReached = () => {
     let { isLoading, totalPages, page, _fetchActivities } = this.props;
     if (!this.onEndReachedCalledDuringMomentum) {
       page++;
-      const isPagePending = page <= totalPages;
-      isPagePending && _fetchActivities(page);
-      isPagePending &&
-        isLoading &&
-        this.flatList.scrollToEnd({
-          animated: true
-        });
+      console.log("called");
+      _fetchActivities(page);
+      // if (page <= totalPages) {
+      //   isLoading
+      //     ? this.flatList.scrollToEnd({
+      //         animated: true
+      //       })
+      //     : _fetchActivities(page);
+      // }
       this.onEndReachedCalledDuringMomentum = true;
     }
   };
@@ -122,6 +124,16 @@ class Activity extends Component {
     } = this.props;
 
     let { container, seperator } = styles;
+
+    //Filter by send ||receive
+    const userIdStr = userId.toString();
+    // const filteredActivities = activities.filter(
+    //   ({ isSelf, sender_id, receiver_id, choice }) =>
+    //     isSelf ||
+    //     (receiver_id === userIdStr && choice === "Assigned to") ||
+    //     (sender_id === userIdStr && choice === "Assigned by")
+    // );
+    // activities = filteredActivities;
     const ProfileItem = (
       <Profile
         phoneNum={phoneNum}
@@ -149,9 +161,9 @@ class Activity extends Component {
               return isLoading ? <LoadingItem /> : null;
             }}
             renderItem={(activity, index) => {
-              let { sender_id, receiver_d, isSelf } = activity.item;
-              const isSent = userId.toString() === sender_id;
-              const isReceived = userId.toString() === receiver_d;
+              let { sender_id, receiver_id, isSelf } = activity.item;
+              const isSent = userIdStr === sender_id;
+              const isReceived = userIdStr === receiver_id;
               return (
                 <ActivityItem
                   key={index}

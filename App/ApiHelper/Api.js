@@ -34,7 +34,6 @@ export default class Api {
     options.headers = { ...Api.headers(), token };
     return fetch(url, options)
       .then(response => {
-        console.log(response);
         return response.json();
       })
       .then(responseJson => responseJson)

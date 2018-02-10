@@ -25,14 +25,13 @@ export default function ActivityReducer(state = initialState, action) {
       };
     }
     case FETCH_ACTIVITIES_SUCCESS: {
+      let { page, totalPages, activities } = action;
       return {
         ...state,
-        activities: removeDuplicates([
-          ...state.activities,
-          ...action.activities
-        ]),
-        page: action.page,
-        totalPages: action.totalPages,
+        activities:
+          page === 1 ? activities : [...state.activities, ...activities],
+        page,
+        totalPages,
         isLoading: false,
         isSuccess: true,
         isError: false
