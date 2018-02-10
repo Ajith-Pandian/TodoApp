@@ -100,15 +100,14 @@ class Activity extends PureComponent {
     let { isLoading, totalPages, page, _fetchActivities } = this.props;
     if (!this.onEndReachedCalledDuringMomentum) {
       page++;
-      console.log("called");
       _fetchActivities(page);
-      // if (page <= totalPages) {
-      //   isLoading
-      //     ? this.flatList.scrollToEnd({
-      //         animated: true
-      //       })
-      //     : _fetchActivities(page);
-      // }
+      if (page <= totalPages) {
+        isLoading
+          ? this.flatList.scrollToEnd({
+              animated: true
+            })
+          : _fetchActivities(page);
+      }
       this.onEndReachedCalledDuringMomentum = true;
     }
   };

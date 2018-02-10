@@ -37,6 +37,7 @@ import {
   incompleteTodo,
   updateReminderTime
 } from "../Store/Actions/TodoActions";
+import { BASE_URL } from "../ApiHelper";
 
 class ActionButton extends Component {
   constructor() {
@@ -102,7 +103,8 @@ const PDFComponent = ({ uri, navigation }) => {
   );
 };
 const ImageComponent = ({ uri }) => {
-  uri = uri ? "http://10.0.2.2:8000/" + uri : undefined;
+  uri = uri ? `${BASE_URL}/${uri}` : undefined;
+  console.log(uri);
   return (
     <View style={{ margin: 10 }}>
       <Image style={{ width: 200, height: 200 }} source={{ uri }} />
