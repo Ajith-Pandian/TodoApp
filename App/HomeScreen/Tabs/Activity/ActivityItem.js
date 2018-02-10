@@ -54,11 +54,12 @@ const Message = ({ sender, receiver, type, title, isSelf, isSent }) => {
     </TextComponent>
   );
 };
-class TodoItem extends Component {
+class ActivityItem extends Component {
   state = { descriptionWidth: SCREEN_WIDTH * 0.71 };
 
   render() {
-    let { index, activity } = this.props;
+    let { activity, isSent, isReceived } = this.props;
+    console.log(this.props);
     let {
       container,
       imageLayout,
@@ -75,7 +76,6 @@ class TodoItem extends Component {
       id,
       sender_name,
       receiver_name,
-      isSent,
       task_title,
       choice,
       message,
@@ -139,4 +139,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default TodoItem;
+export default ActivityItem;

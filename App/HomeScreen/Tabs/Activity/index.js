@@ -96,36 +96,20 @@ const Profile = ({ phoneNum, image, name, navigation }) => {
   );
 };
 class Activity extends Component {
-  constructor() {
-    super();
-    this.state = { offset: 0 };
-    this.isCloseToBottom = false;
-  }
-  onScrollList = event => {
-    let { offset } = this.state;
-    let { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
-    const scrollOffsetY = contentOffset.y;
-    const isScrollingUp = scrollOffsetY < offset;
-    const isGonnaReachBottom =
-      layoutMeasurement.height + contentOffset.y >= contentSize.height - 200;
-    const shouldShowTabBar = isScrollingUp || isGonnaReachBottom;
-    this.props.onTabBarVisibilityChange(shouldShowTabBar);
-    offset = scrollOffsetY;
-    let isCloseToBottom = this.isCloseToBottom;
-
-    isCloseToBottom =
-      layoutMeasurement.height + contentOffset.y >= contentSize.height - 50;
-    this.isCloseToBottom = isCloseToBottom;
-    this.setState({ offset });
-  };
-  componentWillReceiveProps(nextProps) {
-    let { isLoading, totalPages, page, _fetchActivities } = nextProps;
-    let isCloseToBottom = this.isCloseToBottom;
-    if (isCloseToBottom && !isLoading) {
+  onEndReached = () => {
+    let { isLoading, totalPages, page, _fetchActivities } = this.props;
+    if (!this.onEndReachedCalledDuringMomentum) {
       page++;
-      if (page <= totalPages) _fetchActivities(page);
+      const isPagePending = page <= totalPages;
+      isPagePending && _fetchActivities(page);
+      isPagePending &&
+        isLoading &&
+        this.flatList.scrollToEnd({
+          animated: true
+        });
+      this.onEndReachedCalledDuringMomentum = true;
     }
-  }
+  };
   render() {
     let {
       activities,
@@ -150,35 +134,40 @@ class Activity extends Component {
       <View style={container}>
         {activities && activities.length > 0 ? (
           <FlatList
+            ref={ref => (this.flatList = ref)}
             data={activities}
-            onScroll={e => this.onScrollList(e)}
             scrollEventThrottle={16}
             keyExtractor={(item, index) => index}
             ListHeaderComponent={() => ProfileItem}
+            onMomentumScrollBegin={() => {
+              this.onEndReachedCalledDuringMomentum = false;
+            }}
+            onEndReached={() => this.onEndReached()}
+            onEndReachedThreshold={0.5}
             ItemSeparatorComponent={() => <View style={seperator} />}
             ListFooterComponent={() => {
               return isLoading ? <LoadingItem /> : null;
             }}
-            renderItem={(item, index) => {
-              let isLast = activities.length - 1 === index;
-              let { sender_id, receiver_id } = item;
+            renderItem={(activity, index) => {
+              let { sender_id, receiver_d, isSelf } = activity.item;
+              const isSent = userId.toString() === sender_id;
+              const isReceived = userId.toString() === receiver_d;
               return (
                 <ActivityItem
                   key={index}
-                  index={index}
-                  isSent={sender_id === userId}
-                  isLast={isLast}
-                  activity={item}
+                  isSent={isSent}
+                  isReceived={isReceived}
+                  activity={activity}
                 />
               );
             }}
           />
         ) : (
-          <View>
-            {ProfileItem}
+          <View style={{ flex: 1 }}>
+            <View style={{ flex: 1 }}>{ProfileItem}</View>
             <View
               style={{
-                height: 250,
+                flex: 1,
                 alignItems: "center",
                 justifyContent: "center"
               }}
@@ -201,6 +190,52 @@ class Activity extends Component {
     );
   }
 }
+
+Activity.navigationOptions = props => {
+  let { navigation, screenProps } = props;
+  let { tabBarVisible } = screenProps;
+  return {
+    tabBarIcon: ({ tintColor }) => (
+      <ActivityIcon
+        size={25}
+        style={{ backgroundColor: "transparent" }}
+        color={tintColor}
+      />
+    ),
+    tabBarVisible
+  };
+};
+
+const mapStateToProps = ({ ActivityReducer, UserReducer }) => {
+  let {
+    activities,
+    page,
+    totalPages,
+    isLoading,
+    isSuccess,
+    isError
+  } = ActivityReducer;
+  let { phoneNum, name, image, id: userId } = UserReducer;
+
+  return {
+    userId,
+    phoneNum,
+    name,
+    image,
+    activities,
+    page,
+    totalPages,
+    isLoading,
+    isSuccess,
+    isError
+  };
+};
+
+const mapDispatchToProps = (dispatch, props) => ({
+  _fetchActivities: page => dispatch(fetchActivities(page))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Activity);
 
 const styles = StyleSheet.create({
   container: {
@@ -251,49 +286,3 @@ const styles = StyleSheet.create({
     backgroundColor: GRAY
   }
 });
-
-Activity.navigationOptions = props => {
-  let { navigation, screenProps } = props;
-  let { tabBarVisible } = screenProps;
-  return {
-    tabBarIcon: ({ tintColor }) => (
-      <ActivityIcon
-        size={25}
-        style={{ backgroundColor: "transparent" }}
-        color={tintColor}
-      />
-    ),
-    tabBarVisible
-  };
-};
-
-const mapStateToProps = ({ ActivityReducer, UserReducer }) => {
-  let {
-    activities,
-    page,
-    totalPages,
-    isLoading,
-    isSuccess,
-    isError
-  } = ActivityReducer;
-  let { phoneNum, name, image, id: userId } = UserReducer;
-
-  return {
-    userId,
-    phoneNum,
-    name,
-    image,
-    activities,
-    page,
-    totalPages,
-    isLoading,
-    isSuccess,
-    isError
-  };
-};
-
-const mapDispatchToProps = (dispatch, props) => ({
-  _fetchActivities: page => dispatch(fetchActivities(page))
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Activity);
