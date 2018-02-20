@@ -42,7 +42,9 @@ export default class ApiHelper {
     });
   }
   static updateProfile(token, user) {
-    return Api.post(profileUrl, token, { ...user }).then(res => {
+    return Api.post(profileUrl, token, {
+      ...user
+    }).then(res => {
       console.log(res);
       return res;
     });
@@ -102,7 +104,6 @@ export default class ApiHelper {
     });
   }
   static updateDeviceId(device_id, token) {
-    console.log("Update Device ID called");
     return Api.post(deviceIdUpdateUrl, token, { device_id }).then(res => {
       console.log(res);
       return res;

@@ -33,7 +33,7 @@ export default class ContactsScreen extends Component {
         console.log(err);
       } else {
         contacts = contacts.map((contact, index) => {
-          console.log(contact);
+          //console.log(contact);
           let {
             recordID,
             givenName,
@@ -41,15 +41,27 @@ export default class ContactsScreen extends Component {
             phoneNumbers,
             thumbnailPath
           } = contact;
+
+          let phoneNumber =
+            phoneNumbers && phoneNumbers[0]
+              ? phoneNumbers[0].number.replace(/ |-|\+|\(|\)/g, "")
+              : undefined;
+
+          phoneNumber =
+            phoneNumber &&
+            phoneNumber.length > 10 &&
+            phoneNumber.startsWith("91")
+              ? phoneNumber
+              : `91${phoneNumber}`;
+
+          console.log(phoneNumber);
+
           return {
             id: recordID,
             name: familyName
               ? givenName + " " + familyName
               : givenName || "No Name",
-            number:
-              phoneNumbers && phoneNumbers[0]
-                ? phoneNumbers[0].number.replace(/ |-|\(|\)/g, "")
-                : undefined,
+            number: phoneNumber,
             photo: thumbnailPath
           };
         });

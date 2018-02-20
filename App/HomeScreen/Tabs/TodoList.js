@@ -88,13 +88,14 @@ class TodoList extends Component {
     todos =
       isLater && searchState ? searchedTodos : isLater ? laterTodos : todos;
 
-    //Filtering todos by search term-searching in TODAY & WEEK
+    //Filtering todos by search term - searching in TODAY & WEEK
     if (searchState && searchTerm && searchTerm.length > 0) {
       searchTerm = searchTerm.toLowerCase();
       todos = todos.filter(
         ({ title, description }) =>
           title.toLowerCase().includes(searchTerm) ||
-          description.toLowerCase().includes(searchTerm)
+          description.toLowerCase().includes(searchTerm) ||
+          sender.toLowerCase().includes(searchTerm)
       );
     } else {
       searchTerm = "";

@@ -112,7 +112,7 @@ class InputComponent extends Component {
           isLight
           style={{ fontSize: isTitle ? 18 : 16, height: 40 }}
           placeholder={type.charAt(0).toUpperCase() + type.slice(1)}
-          onChangeText={text => this.props.onSuccess(this.state[type])}
+          onChangeText={text => this.props.onSuccess(text)}
         />
       </TextInputLayout>
     );
@@ -467,7 +467,7 @@ class CreateTask extends Component {
         attachment
       };
       //FIXME:remove on production
-      console.log(todoToBeCreated);
+      //console.log(todoToBeCreated);
       _createTodo(todoToBeCreated);
     } else {
       DisplayMessage("Please select future time");
