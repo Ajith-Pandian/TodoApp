@@ -10,6 +10,7 @@ import PersistReducer from "./PersistReducer";
 import NewTasksReducer from "./NewTasksReducer";
 import NotificationReducer from "./NotificationReducer";
 import AppStateReducer from "./AppStateReducer";
+import TaskCountReducer from "./TaskCountReducer";
 
 const getRootReducer = () =>
   combineReducers({
@@ -23,7 +24,8 @@ const getRootReducer = () =>
     PersistReducer,
     NewTasksReducer,
     NotificationReducer,
-    AppStateReducer
+    AppStateReducer,
+    TaskCountReducer
   });
 
 export default getRootReducer;

@@ -36,45 +36,31 @@ const Task = ({ count, name }) => {
     </View>
   );
 };
-const TaskDetails = () => {
+const TaskDetails = ({ counts }) => {
   let { taskDetailsContainer, taskDetails, taskSeperator } = styles;
+  let { total, completed, assigned } = counts;
   return (
     <View style={taskDetailsContainer}>
-      <Task count={220} name={"Tasks"} />
+      <Task count={total} name={"Tasks"} />
       <View style={taskSeperator} />
-      <Task count={101} name={"Completed"} />
+      <Task count={completed} name={"Completed"} />
       <View style={taskSeperator} />
-      <Task count={101} name={"Assigned"} />
+      <Task count={assigned} name={"Assigned"} />
     </View>
   );
 };
 
-const Profile = ({ phoneNum, image, name, navigation }) => {
+const Profile = ({ phoneNum, image, name, navigation, counts }) => {
   let { profileContainer, profileDetails } = styles;
   return (
     <View style={profileContainer}>
       <View style={profileDetails}>
         <ProfilePic source={image} />
-        <View
-          style={{
-            margin: 5,
-            alignItems: "center"
-          }}
-        >
-          <TextComponent
-            isLight
-            textStyle={{
-              color: GRAY
-            }}
-          >
+        <View style={{ margin: 5, alignItems: "center" }}>
+          <TextComponent isLight textStyle={{ color: GRAY }}>
             {name}
           </TextComponent>
-          <TextComponent
-            isLight
-            textStyle={{
-              color: GRAY
-            }}
-          >
+          <TextComponent isLight textStyle={{ color: GRAY }}>
             {phoneNum}
           </TextComponent>
         </View>
@@ -91,7 +77,7 @@ const Profile = ({ phoneNum, image, name, navigation }) => {
           </TextComponent>
         </TouchableOpacity>
       </View>
-      <TaskDetails />
+      <TaskDetails counts={counts} />
     </View>
   );
 };
@@ -119,6 +105,7 @@ class Activity extends PureComponent {
       phoneNum,
       name,
       image,
+      counts,
       screenProps
     } = this.props;
 
@@ -139,6 +126,7 @@ class Activity extends PureComponent {
         name={name}
         image={image}
         navigation={screenProps.rootNavigation}
+        counts={counts}
       />
     );
     return (
@@ -217,7 +205,11 @@ Activity.navigationOptions = props => {
   };
 };
 
-const mapStateToProps = ({ ActivityReducer, UserReducer }) => {
+const mapStateToProps = ({
+  ActivityReducer,
+  UserReducer,
+  TaskCountReducer
+}) => {
   let {
     activities,
     page,
@@ -227,7 +219,8 @@ const mapStateToProps = ({ ActivityReducer, UserReducer }) => {
     isError
   } = ActivityReducer;
   let { phoneNum, name, image, id: userId } = UserReducer;
-
+  let { total, completed, assigned } = TaskCountReducer;
+  let counts = { total, completed, assigned };
   return {
     userId,
     phoneNum,
@@ -236,6 +229,7 @@ const mapStateToProps = ({ ActivityReducer, UserReducer }) => {
     activities,
     page,
     totalPages,
+    counts,
     isLoading,
     isSuccess,
     isError

@@ -32,6 +32,7 @@ import {
 import { onSearchStateChange } from "../../Store/Actions/SearchActions";
 import { fetchLaterTodo } from "../../Store/Actions/TodoActions";
 import { fetchActivities } from "../../Store/Actions/ActivityActions";
+import { fetchTasksCount } from "../../Store/Actions/TaskCountActions";
 
 const shadowOpt = {
   height: 50,
@@ -215,14 +216,18 @@ class Tabs extends Component {
       laterTodos,
       _fetchActivities,
       activities,
-      searchState
+      searchState,
+      _fetchTasksCount
     } = this.props;
     return (
       <MyApp
         onNavigationStateChange={(prevState, newState) => {
           let { routes, index } = newState;
           if (index == 2 && laterTodos.length === 0) _fetchLaterTodo(1);
-          if (index == 3) _fetchActivities(1);
+          if (index == 3) {
+            _fetchActivities(1);
+            _fetchTasksCount();
+          }
           navigation.setParams({ currentIndex: index });
         }}
         screenProps={{
@@ -246,6 +251,7 @@ const mapStateToProps = ({ TodoReducer, ActivityReducer, SearchReducer }) => {
 
 const mapDispatchToProps = (dispatch, props) => ({
   _fetchLaterTodo: page => dispatch(fetchLaterTodo(page)),
-  _fetchActivities: page => dispatch(fetchActivities(page))
+  _fetchActivities: page => dispatch(fetchActivities(page)),
+  _fetchTasksCount: () => dispatch(fetchTasksCount())
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Tabs);

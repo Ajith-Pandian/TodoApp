@@ -21,6 +21,7 @@ const acceptTaskUrl = `${BASE_URL}/accepttask/`;
 const completeTaskUrl = `${BASE_URL}/completetask/`;
 const activitiesUrlWithPage = page => `${BASE_URL}/activity?page=${page}`;
 const deviceIdUpdateUrl = `${BASE_URL}/deviceid/`;
+const tasksCountUrl = `${BASE_URL}/taskscount/`;
 
 export default class ApiHelper {
   static authenticate(phoneNum) {
@@ -104,7 +105,15 @@ export default class ApiHelper {
     });
   }
   static updateDeviceId(device_id, token) {
-    return Api.post(deviceIdUpdateUrl, token, { device_id }).then(res => {
+    return Api.post(deviceIdUpdateUrl, token, {
+      device_id
+    }).then(res => {
+      console.log(res);
+      return res;
+    });
+  }
+  static getTasksCount(token) {
+    return Api.get(tasksCountUrl, token).then(res => {
       console.log(res);
       return res;
     });
