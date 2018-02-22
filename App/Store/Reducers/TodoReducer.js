@@ -35,7 +35,8 @@ const initialState = {
   totalPages: 1,
   isLoading: false,
   isSuccess: false,
-  isError: false
+  isError: false,
+  isRefreshed: false
 };
 
 export default function TodoReducer(state = initialState, action) {
@@ -44,6 +45,7 @@ export default function TodoReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: true,
+        isRefreshed: action.isRefreshed || false,
         isSuccess: false,
         isError: false
       };
@@ -53,6 +55,7 @@ export default function TodoReducer(state = initialState, action) {
         ...state,
         todos: removeDuplicates([...state.todos, ...action.todos]),
         isLoading: false,
+        isRefreshed: false,
         isSuccess: true,
         isError: false
       };
@@ -67,6 +70,7 @@ export default function TodoReducer(state = initialState, action) {
         page: action.page,
         totalPages: action.totalPages,
         isLoading: false,
+        isRefreshed: false,
         isSuccess: true,
         isError: false
       };
@@ -75,6 +79,7 @@ export default function TodoReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: false,
+        isRefreshed: false,
         isSuccess: false,
         isError: true
       };

@@ -32,10 +32,10 @@ import { LATER } from "../../Constants";
 import { todayFilter } from "../../Utils";
 import { createFutureNotifications } from "./NotificationActions";
 
-export function fetchTodo() {
+export function fetchTodo(isRefreshed) {
   return (dispatch, getState) => {
     let { authToken } = getState().UserReducer;
-    dispatch(_fetchTodo());
+    dispatch(_fetchTodo(isRefreshed));
     ApiHelper.getWeeklyTasks(authToken).then(res => {
       if (res && res.success) {
         let todos = getTodos(res.data);
@@ -50,10 +50,10 @@ export function fetchTodo() {
   };
 }
 
-export function fetchLaterTodo(page) {
+export function fetchLaterTodo(page, isRefreshed) {
   return (dispatch, getState) => {
     let { authToken } = getState().UserReducer;
-    dispatch(_fetchTodo());
+    dispatch(_fetchTodo(isRefreshed));
     ApiHelper.getLaterTasks(page, authToken).then(res => {
       if (res && res.success)
         dispatch(
@@ -64,10 +64,8 @@ export function fetchLaterTodo(page) {
   };
 }
 
-function _fetchTodo() {
-  return {
-    type: FETCH_TODO
-  };
+function _fetchTodo(isRefreshed) {
+  return { type: FETCH_TODO, isRefreshed };
 }
 function _fetchTodoSuccess(todos) {
   return {

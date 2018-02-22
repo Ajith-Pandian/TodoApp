@@ -19,6 +19,6 @@ const store = createStore(
 );
 persistStore(store, {
   storage: AsyncStorage,
-  whitelist: ["UserReducer", "NotificationReducer"]
+  whitelist: ["UserReducer", "NotificationReducer", "TaskCountReducer"]
 });
 export default store;

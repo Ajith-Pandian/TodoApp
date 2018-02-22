@@ -11,7 +11,7 @@ const initialState = {
   assigned: 0
 };
 
-export default function TaskCounterReducer(state = initialState, action) {
+export default function TaskCountReducer(state = initialState, action) {
   switch (action.type) {
     case FETCH_TASKS_COUNT: {
       return {

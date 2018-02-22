@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { FlatList, ToastAndroid, View } from "react-native";
+import {
+  FlatList,
+  ToastAndroid,
+  View,
+  ScrollView,
+  RefreshControl
+} from "react-native";
 import { NavigationActions } from "react-navigation";
 import { connect } from "react-redux";
 import Spinner from "react-native-spinkit";
@@ -20,7 +26,7 @@ import { TODAY, WEEK, LATER, WILD_SAND, RADICAL_RED } from "../../Constants";
 class TodoList extends Component {
   constructor() {
     super();
-    this.state = { offset: 0 };
+    this.state = { offset: 0, isRefreshed: false };
     this.isCloseToBottom = false;
   }
   onScrollList = event => {
@@ -44,14 +50,19 @@ class TodoList extends Component {
   };
 
   componentDidMount() {
-    let { _fetchTodo, navigation } = this.props;
-    let type = navigation.state.key;
-    if (type === TODAY) {
-      //download Week tasks once for Today and Week
-      type = firstToLower(WEEK);
-      _fetchTodo(type, this.page);
-    }
+    this.fetchData(false);
   }
+
+  refreshData = () => {
+    this.setState({ isRefreshed: true }, () => this.fetchData(true));
+  };
+
+  fetchData = isRefreshed => {
+    let { navigation, _fetchTodo, _fetchLaterTodo } = this.props;
+    let isLater = navigation.state.key === LATER;
+    isLater ? _fetchLaterTodo(1, isRefreshed) : _fetchTodo(isRefreshed);
+  };
+
   componentWillReceiveProps(nextProps) {
     let {
       navigation,
@@ -75,6 +86,7 @@ class TodoList extends Component {
       page,
       totalPages,
       isLoading,
+      isRefreshed,
       searchTerm,
       searchState,
       _fetchLaterTodo,
@@ -127,30 +139,45 @@ class TodoList extends Component {
               isLast={isLast}
               todo={item}
               onClick={() => {
-                navigate("TaskDetails", {
-                  id: item.id,
-                  type
-                });
+                navigate("TaskDetails", { id: item.id, type });
               }}
             />
           );
         }}
-        ListFooterComponent={() => (isLoading ? <LoadingItem /> : null)}
+        ListFooterComponent={() =>
+          isLoading && !isRefreshed ? <LoadingItem /> : null
+        }
         onSwipeRight={() => console.log("Rejected")}
         onSwipeLeft={() => console.log("Accepted")}
+        onRefresh={() => this.refreshData()}
+        refreshing={isRefreshed && isLoading}
       />
-    ) : isLoading ? (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Spinner
-          style={{ margin: 5 }}
-          isVisible={true}
-          size={50}
-          type={"Bounce"}
-          color={RADICAL_RED}
-        />
-      </View>
     ) : (
-      <EmptyTask onCreateTaskClick={() => navigate("CreateTask")} />
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshed && isLoading}
+            onRefresh={() => this.refreshData()}
+          />
+        }
+        contentContainerStyle={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        {isLoading && !isRefreshed ? (
+          <Spinner
+            style={{ margin: 5 }}
+            isVisible={true}
+            size={50}
+            type={"Bounce"}
+            color={RADICAL_RED}
+          />
+        ) : (
+          <EmptyTask onCreateTaskClick={() => navigate("CreateTask")} />
+        )}
+      </ScrollView>
     );
   }
 }
@@ -162,7 +189,8 @@ const mapStateToProps = ({ TodoReducer, SearchReducer }) => {
     searchedTodos,
     totalPages,
     page,
-    isLoading
+    isLoading,
+    isRefreshed
   } = TodoReducer;
   let { searchTerm, searchState } = SearchReducer;
 
@@ -170,6 +198,7 @@ const mapStateToProps = ({ TodoReducer, SearchReducer }) => {
     todos,
     page,
     isLoading,
+    isRefreshed,
     totalPages,
     laterTodos,
     searchTerm,
@@ -179,8 +208,9 @@ const mapStateToProps = ({ TodoReducer, SearchReducer }) => {
 };
 
 const mapDispatchToProps = (dispatch, props) => ({
-  _fetchTodo: (type, page) => dispatch(fetchTodo(type, page)),
-  _fetchLaterTodo: page => dispatch(fetchLaterTodo(page))
+  _fetchTodo: isRefreshed => dispatch(fetchTodo(isRefreshed)),
+  _fetchLaterTodo: (page, isRefreshed) =>
+    dispatch(fetchLaterTodo(page, isRefreshed))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodoList);
